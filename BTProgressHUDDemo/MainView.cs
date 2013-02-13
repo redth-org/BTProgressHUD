@@ -75,7 +75,7 @@ namespace BTProgressHUDDemo
 
 		}
 
-		void KillAfter (float timeout = 3)
+		void KillAfter (float timeout = 1)
 		{
 			if (timer != null) 
 			{

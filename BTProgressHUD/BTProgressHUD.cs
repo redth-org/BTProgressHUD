@@ -41,6 +41,7 @@ namespace BigTed
 			AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
 		}
 
+
 		public UIColor HudBackgroundColour = UIColor.FromWhiteAlpha (0.0f, 0.8f);
 		public UIColor HudForegroundColor = UIColor.White;
 		public UIColor HudStatusShadowColor = UIColor.Black;
@@ -48,13 +49,13 @@ namespace BigTed
 
 		public static void Show (float progress = -1, string status = null, SVProgressHUDMaskType maskType = SVProgressHUDMaskType.None)
 		{
-			SharedView.ShowProgressWorker (progress, status, maskType);
+			new NSObject().InvokeOnMainThread (() => SharedView.ShowProgressWorker (progress, status, maskType));
 		}
 
 
 		public static void SetStatus (string status)
 		{
-			SharedView.SetStatusWorker (status);
+			new NSObject().InvokeOnMainThread (() => SharedView.SetStatusWorker (status));
 		}
 
 		public static void ShowSuccessWithStatus(string status)
@@ -68,12 +69,12 @@ namespace BigTed
 		}
 		public static void ShowImage(UIImage image, string status) 
 		{
-			SharedView.ShowImageWorker (image, status, new TimeSpan (0, 0, 1));
+			new NSObject().InvokeOnMainThread (() => SharedView.ShowImageWorker (image, status, new TimeSpan (0, 0, 1)));
 		}
 
 		public static void Dismiss()
 		{
-			SharedView.DismissWorker ();
+			new NSObject().InvokeOnMainThread (() => SharedView.DismissWorker ());
 		}
 		public static bool IsVisible
 		{
@@ -444,28 +445,33 @@ namespace BigTed
 
 		void DismissWorker() 
 		{
-			InvokeOnMainThread (delegate {
-				UIView.Animate (0.15, 0, UIViewAnimationOptions.CurveEaseIn | UIViewAnimationOptions.AllowUserInteraction,
-			               delegate {
-					HudView.Transform.Scale (0.8f, 0.8f);
-					this.Alpha = 0;
-				}, delegate {
-					if (Alpha == 0) {
-						InvokeOnMainThread (delegate {
-							NSNotificationCenter.DefaultCenter.RemoveObserver (this);
-							CancelRingLayerAnimation ();
-							StringLabel.RemoveFromSuperview ();
-							SpinnerView.RemoveFromSuperview ();
-							ImageView.RemoveFromSuperview ();
-							HudView.RemoveFromSuperview ();
-							HudView = null;
-							OverlayView.RemoveFromSuperview ();
-							OverlayView = null;
-						});
-					}
-				});
-			});
+			UIView.Animate (0.15, 0, UIViewAnimationOptions.CurveEaseIn | UIViewAnimationOptions.AllowUserInteraction,
+		               delegate {
+				//InvokeOnMainThread(() => {
+				HudView.Transform.Scale (0.8f, 0.8f);
+				this.Alpha = 0;
+				//});
+			}, delegate {
+				if (Alpha == 0) {
+					InvokeOnMainThread (delegate {
+						NSNotificationCenter.DefaultCenter.RemoveObserver (this);
+						CancelRingLayerAnimation ();
+						StringLabel.RemoveFromSuperview ();
+						SpinnerView.RemoveFromSuperview ();
+						ImageView.RemoveFromSuperview ();
 
+						StringLabel = null;
+						SpinnerView = null;
+						ImageView = null;
+
+						HudView.RemoveFromSuperview ();
+						HudView = null;
+						OverlayView.RemoveFromSuperview ();
+						OverlayView = null;
+						this.RemoveFromSuperview();
+					});
+				}
+			});
 		}
 
 		void SetStatusWorker(string status)
