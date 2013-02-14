@@ -47,15 +47,21 @@ namespace BigTed
 		public UIColor HudStatusShadowColor = UIColor.Black;
 		public UIFont HudFont = UIFont.BoldSystemFontOfSize(16f);
 
+		static NSObject obj = new NSObject();
+
 		public static void Show (float progress = -1, string status = null, SVProgressHUDMaskType maskType = SVProgressHUDMaskType.None)
 		{
-			new NSObject().InvokeOnMainThread (() => SharedView.ShowProgressWorker (progress, status, maskType));
+			obj.InvokeOnMainThread (() => SharedView.ShowProgressWorker (progress, status, maskType));
 		}
 
+		public static void ShowToast(string status, bool showToastCentered = true)
+		{
+			obj.InvokeOnMainThread (() => SharedView.ShowProgressWorker (status: status, textOnly: true, showToastCentered: showToastCentered));
+		}
 
 		public static void SetStatus (string status)
 		{
-			new NSObject().InvokeOnMainThread (() => SharedView.SetStatusWorker (status));
+			obj.InvokeOnMainThread (() => SharedView.SetStatusWorker (status));
 		}
 
 		public static void ShowSuccessWithStatus(string status)
@@ -69,12 +75,12 @@ namespace BigTed
 		}
 		public static void ShowImage(UIImage image, string status) 
 		{
-			new NSObject().InvokeOnMainThread (() => SharedView.ShowImageWorker (image, status, new TimeSpan (0, 0, 1)));
+			obj.InvokeOnMainThread (() => SharedView.ShowImageWorker (image, status, new TimeSpan (0, 0, 1)));
 		}
 
 		public static void Dismiss()
 		{
-			new NSObject().InvokeOnMainThread (() => SharedView.DismissWorker ());
+			obj.InvokeOnMainThread (() => SharedView.DismissWorker ());
 		}
 		public static bool IsVisible
 		{
@@ -140,7 +146,7 @@ namespace BigTed
 			}
 		}
 
-		void ShowProgressWorker(float progress = -1, string status = null, SVProgressHUDMaskType maskType = SVProgressHUDMaskType.None)
+		void ShowProgressWorker(float progress = -1, string status = null, SVProgressHUDMaskType maskType = SVProgressHUDMaskType.None, bool textOnly = false, bool showToastCentered = true)
 		{
 			if (OverlayView.Superview == null)
 				UIApplication.SharedApplication.KeyWindow.AddSubview (OverlayView);
@@ -154,7 +160,7 @@ namespace BigTed
 			_progress = progress;
 			
 			StringLabel.Text = status;
-			UpdatePosition ();
+			UpdatePosition (textOnly);
 			
 			if(progress >= 0) 
 			{
@@ -162,7 +168,11 @@ namespace BigTed
 				ImageView.Hidden = false;
 				SpinnerView.StopAnimating();
 				RingLayer.StrokeEnd = progress;
-			} else 
+			} else if (textOnly)
+			{
+				CancelRingLayerAnimation();
+				SpinnerView.StopAnimating();
+			} else
 			{
 				CancelRingLayerAnimation();
 				SpinnerView.StartAnimating();
@@ -179,6 +189,7 @@ namespace BigTed
 			}
 
 			OverlayView.Hidden = false;
+			this.showToastCentered = showToastCentered;
 			PositionHUD (null);
 
 		
@@ -194,6 +205,8 @@ namespace BigTed
 					Alpha = 1;
 				}, delegate {
 					//UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, string);
+
+					if (textOnly) StartDismissTimer(new TimeSpan(0,0,1));
 				});
 
 				SetNeedsDisplay();
@@ -214,6 +227,11 @@ namespace BigTed
 			UpdatePosition ();
 			SpinnerView.StopAnimating ();
 
+			StartDismissTimer (duration);
+		}
+
+		void StartDismissTimer (TimeSpan duration)
+		{
 			_fadeoutTimer = NSTimer.CreateTimer (duration, DismissWorker);
 			NSRunLoop.Main.AddTimer (_fadeoutTimer, NSRunLoopMode.Common);
 		}
@@ -501,6 +519,8 @@ namespace BigTed
 			HudView.Center = newCenter;
 		}
 
+		bool showToastCentered = true;
+
 		void PositionHUD(NSNotification notification)
 		{
 			float keyboardHeight = 0;
@@ -549,6 +569,11 @@ namespace BigTed
 			activeHeight -= keyboardHeight;
 			float posY = (float)Math.Floor(activeHeight*0.45);
 			float posX = orientationFrame.Size.Width/2;
+
+			if (!showToastCentered)
+			{
+				posY = activeHeight - 40;
+			}
 			
 			PointF newCenter;
 			float rotateAngle;
@@ -596,7 +621,7 @@ namespace BigTed
 				_fadeoutTimer = newtimer;
 		}
 
-		void UpdatePosition()
+		void UpdatePosition (bool textOnly = false)
 		{
 			float hudWidth = 100f;
 			float hudHeight = 100f;
@@ -608,6 +633,8 @@ namespace BigTed
 
 			// False if it's text-only
 			bool imageUsed = (ImageView.Image != null) || (ImageView.Hidden);
+			if (textOnly)
+				imageUsed = false;
 			
 			if(!string.IsNullOrEmpty (@string)) 
 			{
@@ -618,7 +645,7 @@ namespace BigTed
 				if (imageUsed)
 					hudHeight = 80+stringHeight;
 				else
-					hudHeight = 60+stringHeight;
+					hudHeight = (textOnly ? 20 : 60)+stringHeight;
 				
 				if(stringWidth > hudWidth)
 					hudWidth = (float)Math.Ceiling(stringWidth/2)*2;
@@ -644,19 +671,22 @@ namespace BigTed
 
 			StringLabel.Hidden = false;
 			StringLabel.Frame = labelRect;
-			
-			if(!string.IsNullOrEmpty (@string)) {
-				SpinnerView.Center = new PointF((float)Math.Ceiling(HudView.Bounds.Width / 2.0f) + 0.5f, 40.5f);
-				if (_progress != -1)
-				{
-					BackgroundRingLayer.Position = RingLayer.Position = new PointF(HudView.Bounds.Width / 2, 36f);
+
+			if (!textOnly)
+			{
+				if(!string.IsNullOrEmpty (@string)) {
+					SpinnerView.Center = new PointF((float)Math.Ceiling(HudView.Bounds.Width / 2.0f) + 0.5f, 40.5f);
+					if (_progress != -1)
+					{
+						BackgroundRingLayer.Position = RingLayer.Position = new PointF(HudView.Bounds.Width / 2, 36f);
+					}
 				}
-			}
-			else {
-				SpinnerView.Center = new PointF((float)Math.Ceiling(HudView.Bounds.Width / 2.0f) + 0.5f, (float)Math.Ceiling(HudView.Bounds.Height / 2.0f) + 0.5f);
-				if (_progress != -1)
-				{
-					BackgroundRingLayer.Position = RingLayer.Position = new PointF(HudView.Bounds.Width / 2, HudView.Bounds.Height / 2.0f + 0.5f);
+				else {
+					SpinnerView.Center = new PointF((float)Math.Ceiling(HudView.Bounds.Width / 2.0f) + 0.5f, (float)Math.Ceiling(HudView.Bounds.Height / 2.0f) + 0.5f);
+					if (_progress != -1)
+					{
+						BackgroundRingLayer.Position = RingLayer.Position = new PointF(HudView.Bounds.Width / 2, HudView.Bounds.Height / 2.0f + 0.5f);
+					}
 				}
 			}
 		}

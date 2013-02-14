@@ -40,6 +40,10 @@ namespace BTProgressHUDDemo
 				BTProgressHUD.ShowErrorWithStatus("Oh, thats bad") ;
 			});
 
+			MakeButton ("Toast", () => {
+				BTProgressHUD.ShowToast("Hello from the toast", showToastCentered: false) ;
+
+			});
 
 
 			MakeButton ("Dismiss", () => {
@@ -100,7 +104,7 @@ namespace BTProgressHUDDemo
 			View.Add (button);
 		
 			
-			y += 60;
+			y += 45;
 
 		}
 
