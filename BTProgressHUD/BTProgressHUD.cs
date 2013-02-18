@@ -530,13 +530,8 @@ namespace BigTed
 			
 			if(notification != null) 
 			{
-				var keyboardInfo = notification.UserInfo;
-
-				NSValue kf = keyboardInfo[UIKeyboard.FrameBeginUserInfoKey] as NSValue;
-				NSNumber ad = keyboardInfo[UIKeyboard.AnimationDurationUserInfoKey] as NSNumber;
-
-				RectangleF keyboardFrame = kf.RectangleFValue;
-				animationDuration = ad.FloatValue;
+				RectangleF keyboardFrame = UIKeyboard.FrameEndFromNotification(notification);
+				animationDuration = UIKeyboard.AnimationDurationFromNotification(notification);
 				
 				if(notification.Name == UIKeyboard.WillShowNotification || notification.Name == UIKeyboard.DidShowNotification) 
 				{
