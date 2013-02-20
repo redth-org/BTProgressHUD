@@ -52,12 +52,12 @@ namespace BTProgressHUDDemo
 
 			MakeButton ("Progress", () => {
 				progress = 0;
-				BTProgressHUD.Show(progress, "Hello!");
+				BTProgressHUD.Show("Hello!", progress);
 				if (timer != null) 
 				{
 					timer.Invalidate();
 				}
-				timer = NSTimer.CreateRepeatingTimer(0.3f, delegate {
+				timer = NSTimer.CreateRepeatingTimer(0.5f, delegate {
 					progress += 0.1f;
 					if (progress > 1)
 					{
@@ -65,7 +65,7 @@ namespace BTProgressHUDDemo
 						timer = null;
 						BTProgressHUD.Dismiss();
 					} else {
-						BTProgressHUD.Show (progress, "Hello!");
+						BTProgressHUD.Show ("Hello!", progress);
 					}
 
 

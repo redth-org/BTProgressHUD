@@ -1,5 +1,7 @@
 // BTProgressHUD - port of SVProgressHUD
 //
+//  https://github.com/nicwise/BTProgressHUD
+// 
 //  Ported by Nic Wise - 
 //  Copyright 2013 Nic Wise. MIT license.
 // 
@@ -21,16 +23,6 @@ using MonoTouch.CoreGraphics;
 
 namespace BigTed
 {
-
-	public enum SVProgressHUDMaskType
-	{
-		None = 1,
-		Clear,
-		Black,
-		Gradient
-	}
-
-
 	public class BTProgressHUD : UIView
 	{
 		public BTProgressHUD (RectangleF frame) : base(frame)
@@ -41,6 +33,14 @@ namespace BigTed
 			AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
 		}
 
+		public enum MaskType
+		{
+			None = 1,
+			Clear,
+			Black,
+			Gradient
+		}
+
 
 		public UIColor HudBackgroundColour = UIColor.FromWhiteAlpha (0.0f, 0.8f);
 		public UIColor HudForegroundColor = UIColor.White;
@@ -49,7 +49,7 @@ namespace BigTed
 
 		static NSObject obj = new NSObject();
 
-		public static void Show (float progress = -1, string status = null, SVProgressHUDMaskType maskType = SVProgressHUDMaskType.None)
+		public static void Show (string status = null, float progress = -1, MaskType maskType = MaskType.None)
 		{
 			obj.InvokeOnMainThread (() => SharedView.ShowProgressWorker (progress, status, maskType));
 		}
@@ -73,9 +73,10 @@ namespace BigTed
 		{
 			ShowImage (UIImage.FromBundle ("error.png"), status);
 		}
-		public static void ShowImage(UIImage image, string status) 
+		public static void ShowImage(UIImage image, string status, double timeoutMs = 1000) 
 		{
-			obj.InvokeOnMainThread (() => SharedView.ShowImageWorker (image, status, new TimeSpan (0, 0, 1)));
+			
+			obj.InvokeOnMainThread (() => SharedView.ShowImageWorker (image, status, TimeSpan.FromMilliseconds(timeoutMs)));
 		}
 
 		public static void Dismiss()
@@ -105,7 +106,7 @@ namespace BigTed
 		float _ringRadius = 14f;
 		float _ringThickness = 6f;
 
-		SVProgressHUDMaskType _maskType;
+		MaskType _maskType;
 		NSTimer _fadeoutTimer;
 		UIView _overlayView;
 		UIView _hudView;
@@ -125,11 +126,11 @@ namespace BigTed
 			{
 				switch(_maskType)
 				{
-					case SVProgressHUDMaskType.Black:
+					case MaskType.Black:
 						UIColor.FromWhiteAlpha(0f, 0.5f).SetColor();
 						context.FillRect(Bounds);
 						break;
-					case SVProgressHUDMaskType.Gradient:
+					case MaskType.Gradient:
 						float[] colors = new float[] {0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.75f};
 						float[] locations = new float[] {0.0f, 1.0f};
 						using(var colorSpace = CGColorSpace.CreateDeviceRGB()) {
@@ -146,7 +147,7 @@ namespace BigTed
 			}
 		}
 
-		void ShowProgressWorker(float progress = -1, string status = null, SVProgressHUDMaskType maskType = SVProgressHUDMaskType.None, bool textOnly = false, bool showToastCentered = true)
+		void ShowProgressWorker(float progress = -1, string status = null, MaskType maskType = MaskType.None, bool textOnly = false, bool showToastCentered = true)
 		{
 			if (OverlayView.Superview == null)
 				UIApplication.SharedApplication.KeyWindow.AddSubview (OverlayView);
@@ -178,7 +179,7 @@ namespace BigTed
 				SpinnerView.StartAnimating();
 			}
 			
-			if(maskType != SVProgressHUDMaskType.None) {
+			if(maskType != MaskType.None) {
 				OverlayView.UserInteractionEnabled = true;
 				//AccessibilityLabel = status;
 				//IsAccessibilityElement = true;
@@ -215,6 +216,8 @@ namespace BigTed
 
 		void ShowImageWorker(UIImage image, string status, TimeSpan duration)
 		{
+
+
 			_progress = -1;
 			CancelRingLayerAnimation ();
 
@@ -463,12 +466,12 @@ namespace BigTed
 
 		void DismissWorker() 
 		{
-			UIView.Animate (0.15, 0, UIViewAnimationOptions.CurveEaseIn | UIViewAnimationOptions.AllowUserInteraction,
+			SetFadeoutTimer (null);
+
+			UIView.Animate (0.3, 0, UIViewAnimationOptions.CurveEaseIn | UIViewAnimationOptions.AllowUserInteraction,
 		               delegate {
-				//InvokeOnMainThread(() => {
 				HudView.Transform.Scale (0.8f, 0.8f);
 				this.Alpha = 0;
-				//});
 			}, delegate {
 				if (Alpha == 0) {
 					InvokeOnMainThread (delegate {
