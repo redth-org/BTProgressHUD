@@ -30,7 +30,7 @@ namespace BTProgressHUDDemo
 			MakeButton ("Show with Cancel", () => {
 				BTProgressHUD.Show ("Cancel Me", () => {
 					BTProgressHUD.ShowErrorWithStatus("Operation Cancelled!");
-				}, "Please Wait..."); 
+				}, "Please Wait"); 
 				//KillAfter ();
 			});
 
@@ -89,6 +89,8 @@ namespace BTProgressHUDDemo
 			}
 			timer = NSTimer.CreateRepeatingTimer(timeout, delegate {
 				BTProgressHUD.Dismiss();
+				timer.Invalidate();
+				timer = null;
 			});
 			NSRunLoop.Current.AddTimer(timer, NSRunLoopMode.Common);
 		}

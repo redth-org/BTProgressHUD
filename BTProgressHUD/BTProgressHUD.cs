@@ -750,10 +750,12 @@ namespace BigTed
 				if(hudHeight > 100) 
 				{
 					cancelRect = new RectangleF(12, cancelRectY, hudWidth, stringHeight);
+					labelRect = new RectangleF(12, labelRect.Y, hudWidth, stringHeight);
 					hudWidth+=24;
 				} else {
 					hudWidth+=24;
 					cancelRect = new RectangleF(0, cancelRectY, hudWidth, stringHeight);
+					labelRect = new RectangleF(0, labelRect.Y, hudWidth, stringHeight);
 				}
 				CancelHudButton.Frame = cancelRect;
 				hudHeight += (cancelRect.Height + gap);
