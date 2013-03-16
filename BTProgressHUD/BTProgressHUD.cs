@@ -54,6 +54,15 @@ namespace BigTed
 			obj.InvokeOnMainThread (() => SharedView.ShowProgressWorker (progress, status, maskType));
 		}
 
+		public static void Show (string cancelCaption, Action cancelCallback, string status = null, float progress = -1, MaskType maskType = MaskType.None)
+		{
+			// Making cancelCaption optional hides the method via the overload
+			if(string.IsNullOrEmpty(cancelCaption)){
+				cancelCaption = "Cancel";
+			}
+			obj.InvokeOnMainThread (() => SharedView.ShowProgressWorker (progress, status, maskType, cancelCaption: cancelCaption, cancelCallback: cancelCallback));
+		}
+
 		public static void ShowToast(string status, bool showToastCentered = true)
 		{
 			obj.InvokeOnMainThread (() => SharedView.ShowProgressWorker (status: status, textOnly: true, showToastCentered: showToastCentered));
@@ -113,6 +122,7 @@ namespace BigTed
 		UILabel _stringLabel;
 		UIImageView _imageView;
 		UIActivityIndicatorView _spinnerView;
+		UIButton _cancelHud;
 
 		float _progress;
 		CAShapeLayer _backgroundRingLayer;
@@ -146,8 +156,20 @@ namespace BigTed
 				}
 			}
 		}
-
-		void ShowProgressWorker(float progress = -1, string status = null, MaskType maskType = MaskType.None, bool textOnly = false, bool showToastCentered = true)
+		/*
+		void ShowProgressWorker(string cancelCaption, Delegate cancelCallback, float progress = -1, string status = null, MaskType maskType = MaskType.None){
+			CancelHudButton.SetTitle(cancelCaption, UIControlState.Normal);
+			CancelHudButton.TouchUpInside += delegate {
+				BTProgressHUD.Dismiss();
+				if(cancelCallback != null){
+					cancelCallback.DynamicInvoke(null);
+				}
+			};
+			UpdatePosition();
+			ShowProgressWorker(progress, status, maskType);
+		}
+*/
+		void ShowProgressWorker(float progress = -1, string status = null, MaskType maskType = MaskType.None, bool textOnly = false, bool showToastCentered = true, string cancelCaption = null, Action cancelCallback = null)
 		{
 			if (OverlayView.Superview == null)
 				UIApplication.SharedApplication.KeyWindow.AddSubview (OverlayView);
@@ -161,8 +183,20 @@ namespace BigTed
 			_progress = progress;
 			
 			StringLabel.Text = status;
+
+			if(!string.IsNullOrEmpty(cancelCaption)){
+				CancelHudButton.SetTitle(cancelCaption, UIControlState.Normal);
+				CancelHudButton.TouchUpInside += delegate {
+					BTProgressHUD.Dismiss();
+					if(cancelCallback != null){
+						obj.InvokeOnMainThread (() => cancelCallback.DynamicInvoke(null));
+						//cancelCallback.DynamicInvoke(null);
+					}
+				};
+			}
+
 			UpdatePosition (textOnly);
-			
+
 			if(progress >= 0) 
 			{
 				ImageView.Image = null;
@@ -396,6 +430,35 @@ namespace BigTed
 			set { _stringLabel = value; }
 		}
 
+		UIButton CancelHudButton{
+			get{
+				if(_cancelHud == null){
+					_cancelHud = new UIButton();
+
+					_cancelHud.BackgroundColor = UIColor.Clear;
+					_cancelHud.SetTitleColor(HudForegroundColor, UIControlState.Normal);
+					_cancelHud.UserInteractionEnabled = true;
+					_cancelHud.Font = HudFont;
+					this.UserInteractionEnabled = true; 
+				}
+				if(_cancelHud.Superview == null){
+					HudView.AddSubview(_cancelHud);
+					// Position the Cancel button at the bottom
+					/* var hudFrame = HudView.Frame;
+					var cancelFrame = _cancelHud.Frame;
+					var x = ((hudFrame.Width - cancelFrame.Width)/2) + 0;
+					var y = (hudFrame.Height - cancelFrame.Height - 10);
+					_cancelHud.Frame = new RectangleF(x, y, cancelFrame.Width, cancelFrame.Height);
+					HudView.SizeToFit();
+					*/
+				}
+				return _cancelHud;
+			}
+			set{
+				_cancelHud = value;
+			}
+		}
+
 		UIImageView ImageView
 		{
 			get
@@ -480,10 +543,12 @@ namespace BigTed
 						StringLabel.RemoveFromSuperview ();
 						SpinnerView.RemoveFromSuperview ();
 						ImageView.RemoveFromSuperview ();
+						CancelHudButton.RemoveFromSuperview();
 
 						StringLabel = null;
 						SpinnerView = null;
 						ImageView = null;
+						CancelHudButton = null;
 
 						HudView.RemoveFromSuperview ();
 						HudView = null;
@@ -538,7 +603,7 @@ namespace BigTed
 				
 				if(notification.Name == UIKeyboard.WillShowNotification || notification.Name == UIKeyboard.DidShowNotification) 
 				{
-					if(IsPortrate(orientation))
+					if(IsPortrait(orientation))
 						keyboardHeight = keyboardFrame.Size.Height;
 					else
 						keyboardHeight = keyboardFrame.Size.Width;
@@ -633,18 +698,20 @@ namespace BigTed
 			bool imageUsed = (ImageView.Image != null) || (ImageView.Hidden);
 			if (textOnly)
 				imageUsed = false;
-			
+
+			if (imageUsed)
+				hudHeight = 80;
+			else
+				hudHeight = (textOnly ? 20 : 60);
+
 			if(!string.IsNullOrEmpty (@string)) 
 			{
 				SizeF stringSize = new NSString(@string).StringSize(StringLabel.Font, new SizeF(200,300));
 				stringWidth = stringSize.Width;
 				stringHeight = stringSize.Height;
 
-				if (imageUsed)
-					hudHeight = 80+stringHeight;
-				else
-					hudHeight = (textOnly ? 20 : 60)+stringHeight;
-				
+				hudHeight += stringHeight;
+
 				if(stringWidth > hudWidth)
 					hudWidth = (float)Math.Ceiling(stringWidth/2)*2;
 				
@@ -658,6 +725,38 @@ namespace BigTed
 					hudWidth+=24;
 					labelRect = new RectangleF(0, labelRectY, hudWidth, stringHeight);
 				}
+			}
+
+			// Adjust for Cancel Button
+			var cancelRect = new RectangleF();
+			string @cancelCaption = CancelHudButton.Title(UIControlState.Normal);
+			if(!string.IsNullOrEmpty(@cancelCaption)) {
+				const int gap = 20;
+				SizeF stringSize = new NSString(@cancelCaption).StringSize(StringLabel.Font, new SizeF(200,300));
+				stringWidth = stringSize.Width;
+				stringHeight = stringSize.Height;
+
+				if(stringWidth > hudWidth)
+					hudWidth = (float)Math.Ceiling(stringWidth/2)*2;
+
+				// Adjust for label
+				float cancelRectY = 0f;
+				if(labelRect.Height > 0){
+					cancelRectY = labelRect.Y + labelRect.Height + gap;
+				}else{
+					cancelRectY = (imageUsed ? 66 : 9);
+				}
+
+				if(hudHeight > 100) 
+				{
+					cancelRect = new RectangleF(12, cancelRectY, hudWidth, stringHeight);
+					hudWidth+=24;
+				} else {
+					hudWidth+=24;
+					cancelRect = new RectangleF(0, cancelRectY, hudWidth, stringHeight);
+				}
+				CancelHudButton.Frame = cancelRect;
+				hudHeight += (cancelRect.Height + gap);
 			}
 
 			HudView.Bounds = new RectangleF(0,0,hudWidth, hudHeight);
@@ -693,7 +792,7 @@ namespace BigTed
 			return (orientation == UIInterfaceOrientation.LandscapeLeft || orientation == UIInterfaceOrientation.LandscapeRight);
 		}
 
-		public bool IsPortrate(UIInterfaceOrientation orientation)
+		public bool IsPortrait(UIInterfaceOrientation orientation)
 		{
 			return (orientation == UIInterfaceOrientation.Portrait || orientation == UIInterfaceOrientation.PortraitUpsideDown);
 		}
