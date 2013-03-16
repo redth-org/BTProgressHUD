@@ -27,6 +27,13 @@ namespace BTProgressHUDDemo
 				KillAfter ();
 			});
 
+			MakeButton ("Show with Cancel", () => {
+				BTProgressHUD.Show ("Cancel Me", () => {
+					BTProgressHUD.ShowErrorWithStatus("Operation Cancelled!");
+				}, "Please Wait..."); 
+				//KillAfter ();
+			});
+
 			MakeButton ("Show Message", () => {
 				BTProgressHUD.Show (status: "Processing your image"); 
 				KillAfter ();
@@ -43,11 +50,6 @@ namespace BTProgressHUDDemo
 			MakeButton ("Toast", () => {
 				BTProgressHUD.ShowToast("Hello from the toast", showToastCentered: false) ;
 
-			});
-
-
-			MakeButton ("Dismiss", () => {
-				BTProgressHUD.Dismiss (); 
 			});
 
 			MakeButton ("Progress", () => {
