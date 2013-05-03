@@ -73,14 +73,14 @@ namespace BigTed
 			obj.InvokeOnMainThread (() => SharedView.SetStatusWorker (status));
 		}
 
-		public static void ShowSuccessWithStatus(string status)
+		public static void ShowSuccessWithStatus(string status, double timeoutMs = 1000)
 		{
-			ShowImage (UIImage.FromBundle ("success.png"), status);
+			ShowImage (UIImage.FromBundle ("success.png"), status, timeoutMs);
 		}
 
-		public static void ShowErrorWithStatus(string status)
+		public static void ShowErrorWithStatus(string status, double timeoutMs = 1000)
 		{
-			ShowImage (UIImage.FromBundle ("error.png"), status);
+			ShowImage (UIImage.FromBundle ("error.png"), status, timeoutMs);
 		}
 		public static void ShowImage(UIImage image, string status, double timeoutMs = 1000) 
 		{
