@@ -14,7 +14,6 @@ namespace BTProgressHUDDemo
 		{
 
 		}
-		UITextView text;
 		float progress = -1;
 		NSTimer timer;
 		public override void LoadView ()
@@ -45,6 +44,10 @@ namespace BTProgressHUDDemo
 
 			MakeButton ("Show Fail", () => {
 				BTProgressHUD.ShowErrorWithStatus("Oh, thats bad") ;
+			});
+
+			MakeButton ("Show Fail 5 seconds", () => {
+				BTProgressHUD.ShowErrorWithStatus("Oh, thats bad", timeoutMs:5000) ;
 			});
 
 			MakeButton ("Toast", () => {
@@ -112,17 +115,6 @@ namespace BTProgressHUDDemo
 
 		}
 
-		public override void ViewDidLoad ()
-		{
-			base.ViewDidLoad ();
-		
-		}
-
-		public override void ViewDidAppear (bool animated)
-		{
-			base.ViewDidAppear (animated);
-
-		}
 	}
 }
 

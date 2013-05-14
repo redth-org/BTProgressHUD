@@ -63,9 +63,9 @@ namespace BigTed
 			obj.InvokeOnMainThread (() => SharedView.ShowProgressWorker (progress, status, maskType, cancelCaption: cancelCaption, cancelCallback: cancelCallback));
 		}
 
-		public static void ShowToast(string status, bool showToastCentered = true)
+		public static void ShowToast(string status, bool showToastCentered = true, double timeoutMs = 1000)
 		{
-			obj.InvokeOnMainThread (() => SharedView.ShowProgressWorker (status: status, textOnly: true, showToastCentered: showToastCentered));
+			obj.InvokeOnMainThread (() => SharedView.ShowProgressWorker (status: status, textOnly: true, showToastCentered: showToastCentered, timeoutMs: timeoutMs));
 		}
 
 		public static void SetStatus (string status)
@@ -127,7 +127,6 @@ namespace BigTed
 		float _progress;
 		CAShapeLayer _backgroundRingLayer;
 		CAShapeLayer _ringLayer;
-		float _visibleKeyboardHeight;
 
 		public override void Draw (RectangleF rect)
 		{
@@ -169,7 +168,8 @@ namespace BigTed
 			ShowProgressWorker(progress, status, maskType);
 		}
 */
-		void ShowProgressWorker(float progress = -1, string status = null, MaskType maskType = MaskType.None, bool textOnly = false, bool showToastCentered = true, string cancelCaption = null, Action cancelCallback = null)
+		void ShowProgressWorker(float progress = -1, string status = null, MaskType maskType = MaskType.None, bool textOnly = false, 
+		                        bool showToastCentered = true, string cancelCaption = null, Action cancelCallback = null, double timeoutMs = 1000)
 		{
 			if (OverlayView.Superview == null)
 				UIApplication.SharedApplication.KeyWindow.AddSubview (OverlayView);
@@ -241,7 +241,7 @@ namespace BigTed
 				}, delegate {
 					//UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, string);
 
-					if (textOnly) StartDismissTimer(new TimeSpan(0,0,1));
+					if (textOnly) StartDismissTimer(TimeSpan.FromMilliseconds(timeoutMs));
 				});
 
 				SetNeedsDisplay();
