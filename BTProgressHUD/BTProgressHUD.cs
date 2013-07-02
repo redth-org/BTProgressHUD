@@ -25,6 +25,7 @@ namespace BigTed
 {
 	public class BTProgressHUD : UIView
 	{
+
 		public BTProgressHUD (RectangleF frame) : base(frame)
 		{
 			UserInteractionEnabled = false;
@@ -130,7 +131,6 @@ namespace BigTed
 
 		public override void Draw (RectangleF rect)
 		{
-
 			using (var context = UIGraphics.GetCurrentContext())
 			{
 				switch(_maskType)
@@ -172,8 +172,19 @@ namespace BigTed
 		                        bool showToastCentered = true, string cancelCaption = null, Action cancelCallback = null, double timeoutMs = 1000)
 		{
 			if (OverlayView.Superview == null)
-				UIApplication.SharedApplication.KeyWindow.AddSubview (OverlayView);
+			{
+				var windows = UIApplication.SharedApplication.Windows;
+				Array.Reverse (windows);
+				foreach(UIWindow window in windows)
+				{
+					if (window.WindowLevel == UIWindow.LevelNormal)
+					{
+						window.AddSubview (OverlayView);
+					}
+				}
+			}
 
+		
 			if (Superview == null)
 				OverlayView.AddSubview (this);
 			

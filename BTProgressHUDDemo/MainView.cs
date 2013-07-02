@@ -16,6 +16,8 @@ namespace BTProgressHUDDemo
 		}
 		float progress = -1;
 		NSTimer timer;
+		UIAlertView alert;
+
 		public override void LoadView ()
 		{
 			base.LoadView ();
@@ -31,6 +33,17 @@ namespace BTProgressHUDDemo
 					BTProgressHUD.ShowErrorWithStatus("Operation Cancelled!");
 				}, "Please Wait"); 
 				//KillAfter ();
+			});
+
+			MakeButton ("Show inside Alert", () => {
+				alert = new UIAlertView("Oh, Hai", "Press the button to show it.", null, "Cancel", "Show the HUD");
+
+				alert.Clicked += (object sender, UIButtonEventArgs e) => {
+					if (e.ButtonIndex == 0) return;
+					BTProgressHUD.Show("this should never go away?");
+					KillAfter ();
+				};
+				alert.Show();
 			});
 
 			MakeButton ("Show Message", () => {
