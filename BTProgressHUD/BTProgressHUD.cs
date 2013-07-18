@@ -25,6 +25,9 @@ namespace BigTed
 {
 	public class BTProgressHUD : UIView
 	{
+		public BTProgressHUD() : this(UIScreen.MainScreen.Bounds) 
+		{
+		}
 
 		public BTProgressHUD (RectangleF frame) : base(frame)
 		{
@@ -50,66 +53,65 @@ namespace BigTed
 
 		static NSObject obj = new NSObject();
 
-		public static void Show (string status = null, float progress = -1, MaskType maskType = MaskType.None)
+		public void Show (string status = null, float progress = -1, MaskType maskType = MaskType.None)
 		{
-			obj.InvokeOnMainThread (() => SharedView.ShowProgressWorker (progress, status, maskType));
+			obj.InvokeOnMainThread (() => ShowProgressWorker (progress, status, maskType));
 		}
 
-		public static void Show (string cancelCaption, Action cancelCallback, string status = null, float progress = -1, MaskType maskType = MaskType.None)
+		public void Show (string cancelCaption, Action cancelCallback, string status = null, float progress = -1, MaskType maskType = MaskType.None)
 		{
 			// Making cancelCaption optional hides the method via the overload
 			if(string.IsNullOrEmpty(cancelCaption)){
 				cancelCaption = "Cancel";
 			}
-			obj.InvokeOnMainThread (() => SharedView.ShowProgressWorker (progress, status, maskType, cancelCaption: cancelCaption, cancelCallback: cancelCallback));
+			obj.InvokeOnMainThread (() => ShowProgressWorker (progress, status, maskType, cancelCaption: cancelCaption, cancelCallback: cancelCallback));
 		}
 
-		public static void ShowToast(string status, bool showToastCentered = true, double timeoutMs = 1000)
+		public void ShowToast(string status, bool showToastCentered = true, double timeoutMs = 1000)
 		{
-			obj.InvokeOnMainThread (() => SharedView.ShowProgressWorker (status: status, textOnly: true, showToastCentered: showToastCentered, timeoutMs: timeoutMs));
+			obj.InvokeOnMainThread (() => ShowProgressWorker (status: status, textOnly: true, showToastCentered: showToastCentered, timeoutMs: timeoutMs));
 		}
 
-		public static void SetStatus (string status)
+		public void SetStatus (string status)
 		{
-			obj.InvokeOnMainThread (() => SharedView.SetStatusWorker (status));
+			obj.InvokeOnMainThread (() => SetStatusWorker (status));
 		}
 
-		public static void ShowSuccessWithStatus(string status, double timeoutMs = 1000)
+		public void ShowSuccessWithStatus(string status, double timeoutMs = 1000)
 		{
 			ShowImage (UIImage.FromBundle ("success.png"), status, timeoutMs);
 		}
 
-		public static void ShowErrorWithStatus(string status, double timeoutMs = 1000)
+		public void ShowErrorWithStatus(string status, double timeoutMs = 1000)
 		{
 			ShowImage (UIImage.FromBundle ("error.png"), status, timeoutMs);
 		}
-		public static void ShowImage(UIImage image, string status, double timeoutMs = 1000) 
+		public void ShowImage(UIImage image, string status, double timeoutMs = 1000) 
 		{
 			
-			obj.InvokeOnMainThread (() => SharedView.ShowImageWorker (image, status, TimeSpan.FromMilliseconds(timeoutMs)));
+			obj.InvokeOnMainThread (() => ShowImageWorker (image, status, TimeSpan.FromMilliseconds(timeoutMs)));
 		}
 
-		public static void Dismiss()
+		public void Dismiss()
 		{
-			obj.InvokeOnMainThread (() => SharedView.DismissWorker ());
+			obj.InvokeOnMainThread(DismissWorker);
 		}
-		public static bool IsVisible
+		public bool IsVisible
 		{
 			get 
 			{
-				return BTProgressHUD.SharedView.Alpha == 1;
+				return Alpha == 1;
 			}
 		}
 
-		static BTProgressHUD sharedView = null;
-
-		static BTProgressHUD SharedView
+		static BTProgressHUD sharedHUD = null;
+		public static BTProgressHUD Shared
 		{
 			get 
 			{
-				if (sharedView == null)
-					sharedView = new BTProgressHUD (UIScreen.MainScreen.Bounds);
-				return sharedView;
+				if (sharedHUD == null)
+					sharedHUD = new BTProgressHUD(UIScreen.MainScreen.Bounds);
+				return sharedHUD;
 			}
 		}
 
@@ -198,7 +200,7 @@ namespace BigTed
 			if(!string.IsNullOrEmpty(cancelCaption)){
 				CancelHudButton.SetTitle(cancelCaption, UIControlState.Normal);
 				CancelHudButton.TouchUpInside += delegate {
-					BTProgressHUD.Dismiss();
+					Dismiss();
 					if(cancelCallback != null){
 						obj.InvokeOnMainThread (() => cancelCallback.DynamicInvoke(null));
 						//cancelCallback.DynamicInvoke(null);
@@ -266,8 +268,8 @@ namespace BigTed
 			_progress = -1;
 			CancelRingLayerAnimation ();
 
-			if (!BTProgressHUD.IsVisible)
-				BTProgressHUD.Show ();
+			if (!IsVisible)
+				Show ();
 
 			ImageView.Image = image;
 			ImageView.Hidden = false;

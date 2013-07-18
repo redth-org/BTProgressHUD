@@ -24,13 +24,13 @@ namespace BTProgressHUDDemo
 			View.BackgroundColor = UIColor.LightGray;
 
 			MakeButton ("Show", () => {
-				BTProgressHUD.Show (); 
+				BTProgressHUD.Shared.Show (); 
 				KillAfter ();
 			});
 
 			MakeButton ("Show with Cancel", () => {
-				BTProgressHUD.Show ("Cancel Me", () => {
-					BTProgressHUD.ShowErrorWithStatus("Operation Cancelled!");
+				BTProgressHUD.Shared.Show ("Cancel Me", () => {
+					BTProgressHUD.Shared.ShowErrorWithStatus("Operation Cancelled!");
 				}, "Please Wait"); 
 				//KillAfter ();
 			});
@@ -40,37 +40,37 @@ namespace BTProgressHUDDemo
 
 				alert.Clicked += (object sender, UIButtonEventArgs e) => {
 					if (e.ButtonIndex == 0) return;
-					BTProgressHUD.Show("this should never go away?");
+					BTProgressHUD.Shared.Show("this should never go away?");
 					KillAfter ();
 				};
 				alert.Show();
 			});
 
 			MakeButton ("Show Message", () => {
-				BTProgressHUD.Show (status: "Processing your image"); 
+				BTProgressHUD.Shared.Show (status: "Processing your image"); 
 				KillAfter ();
 			});
 
 			MakeButton ("Show Success", () => {
-				BTProgressHUD.ShowSuccessWithStatus("Great success!") ;
+				BTProgressHUD.Shared.ShowSuccessWithStatus("Great success!") ;
 			});
 
 			MakeButton ("Show Fail", () => {
-				BTProgressHUD.ShowErrorWithStatus("Oh, thats bad") ;
+				BTProgressHUD.Shared.ShowErrorWithStatus("Oh, thats bad") ;
 			});
 
 			MakeButton ("Show Fail 5 seconds", () => {
-				BTProgressHUD.ShowErrorWithStatus("Oh, thats bad", timeoutMs:5000) ;
+				BTProgressHUD.Shared.ShowErrorWithStatus("Oh, thats bad", timeoutMs:5000) ;
 			});
 
 			MakeButton ("Toast", () => {
-				BTProgressHUD.ShowToast("Hello from the toast", showToastCentered: false) ;
+				BTProgressHUD.Shared.ShowToast("Hello from the toast", showToastCentered: false) ;
 
 			});
 
 			MakeButton ("Progress", () => {
 				progress = 0;
-				BTProgressHUD.Show("Hello!", progress);
+				BTProgressHUD.Shared.Show("Hello!", progress);
 				if (timer != null) 
 				{
 					timer.Invalidate();
@@ -81,9 +81,9 @@ namespace BTProgressHUDDemo
 					{
 						timer.Invalidate();
 						timer = null;
-						BTProgressHUD.Dismiss();
+						BTProgressHUD.Shared.Dismiss();
 					} else {
-						BTProgressHUD.Show ("Hello!", progress);
+						BTProgressHUD.Shared.Show ("Hello!", progress);
 					}
 
 
@@ -92,7 +92,7 @@ namespace BTProgressHUDDemo
 			});
 
 			MakeButton ("Dismiss", () => {
-				BTProgressHUD.Dismiss (); 
+				BTProgressHUD.Shared.Dismiss (); 
 			});
 
 		}
@@ -104,7 +104,7 @@ namespace BTProgressHUDDemo
 				timer.Invalidate();
 			}
 			timer = NSTimer.CreateRepeatingTimer(timeout, delegate {
-				BTProgressHUD.Dismiss();
+				BTProgressHUD.Shared.Dismiss();
 				timer.Invalidate();
 				timer = null;
 			});
