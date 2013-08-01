@@ -1,15 +1,17 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release|iPhoneSimulator" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.IPhone.6.1" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhoneSimulator" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.IPhone.6.1" />
   <MonoDevelop.Ide.Workbench ActiveDocument="BTProgressHUD/BTProgressHUD.cs">
     <Files>
-      <File FileName="BTProgressHUD/BTProgressHUD.cs" Line="561" Column="24" />
-      <File FileName="BTProgressHUDDemo/MainView.cs" Line="1" Column="1" />
+      <File FileName="BTProgressHUD/BTProgressHUD.cs" Line="15" Column="16" />
+      <File FileName="BTProgressHUDDemo/MainView.cs" Line="120" Column="31" />
       <File FileName="README.md" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="BTProgressHUD" expanded="True" selected="True" />
+          <Node name="BTProgressHUD" expanded="True">
+            <Node name="BTProgressHUD.cs" selected="True" />
+          </Node>
           <Node name="BTProgressHUDDemo" expanded="True" />
         </State>
       </Pad>

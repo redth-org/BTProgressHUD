@@ -5,6 +5,7 @@ using System.Threading;
 using System.Drawing;
 using System.Collections.Generic;
 using MonoTouch.Foundation;
+using System.Threading.Tasks;
 
 namespace BTProgressHUDDemo
 {
@@ -22,6 +23,12 @@ namespace BTProgressHUDDemo
 		{
 			base.LoadView ();
 			View.BackgroundColor = UIColor.LightGray;
+
+
+			MakeButton ("Jose Test", () => {
+				JoseTest();
+			});
+
 
 			MakeButton ("Show", () => {
 				BTProgressHUD.Show (); 
@@ -95,7 +102,34 @@ namespace BTProgressHUDDemo
 				BTProgressHUD.Dismiss (); 
 			});
 
+
+
 		}
+
+		async void JoseTest()
+		{
+
+				BTProgressHUD.Show ("Cancel", delegate() {
+					Console.WriteLine ("Canceled.");
+				}, "Please wait", -1, BTProgressHUD.MaskType.Black);
+
+				var result = await BackgroundOperation ();
+
+				BTProgressHUD.Dismiss ();
+
+				BTProgressHUD.ShowSuccessWithStatus ("Done", 2000);
+
+		}
+
+		async Task<bool> BackgroundOperation ()
+		{
+			return await Task.Run (() => {
+				Thread.Sleep (2000);
+				return true;
+			});
+		}
+
+
 
 		void KillAfter (float timeout = 1)
 		{

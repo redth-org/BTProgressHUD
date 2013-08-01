@@ -11,6 +11,8 @@
 //  Copyright 2011 Sam Vermette. All rights reserved.
 //
 //  https://github.com/samvermette/SVProgressHUD
+//
+//  Version 1.6
 
 
 
@@ -265,6 +267,14 @@ namespace BigTed
 
 			_progress = -1;
 			CancelRingLayerAnimation ();
+
+			//this should happen when Dismiss is called, but it happens AFTER the animation ends
+			// so sometimes, the cancel button is left on :(
+			if (CancelHudButton != null)
+			{
+				CancelHudButton.RemoveFromSuperview ();
+				CancelHudButton = null;
+			}
 
 			if (!BTProgressHUD.IsVisible)
 				BTProgressHUD.Show ();
@@ -554,7 +564,8 @@ namespace BigTed
 						StringLabel.RemoveFromSuperview ();
 						SpinnerView.RemoveFromSuperview ();
 						ImageView.RemoveFromSuperview ();
-						CancelHudButton.RemoveFromSuperview();
+						if (CancelHudButton != null) 
+							CancelHudButton.RemoveFromSuperview();
 
 						StringLabel = null;
 						SpinnerView = null;
