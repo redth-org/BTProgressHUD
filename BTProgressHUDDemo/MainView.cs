@@ -58,6 +58,19 @@ namespace BTProgressHUDDemo
 				KillAfter ();
 			});
 
+            MakeButton("Show Continuous Progress", () =>
+            {
+                /* Default values below
+                BTProgressHUD.Ring.Color = UIColor.White;
+                BTProgressHUD.Ring.BackgroundColor = UIColor.DarkGray;
+                BTProgressHUD.Ring.ProgressUpdateInterval = 300;
+                */
+
+                BTProgressHUD.Ring.Color = UIColor.Green;
+                BTProgressHUD.ShowContinuousProgress("Continuous progress...");
+                KillAfter(3);
+            });
+
 			MakeButton ("Show Success", () => {
 				BTProgressHUD.ShowSuccessWithStatus("Great success!") ;
 			});
