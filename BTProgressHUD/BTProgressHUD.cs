@@ -35,35 +35,40 @@ namespace BigTed
 			Alpha = 0;
 			AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
 		}
-
-		public enum MaskType
-		{
+        
+        public enum MaskType
+        {
 			None = 1,
 			Clear,
 			Black,
 			Gradient
 		}
 
-
 		public UIColor HudBackgroundColour = UIColor.FromWhiteAlpha (0.0f, 0.8f);
 		public UIColor HudForegroundColor = UIColor.White;
 		public UIColor HudStatusShadowColor = UIColor.Black;
 		public UIFont HudFont = UIFont.BoldSystemFontOfSize(16f);
+        public static Ring Ring = new Ring(); 
 
 		static NSObject obj = new NSObject();
-
+        
 		public static void Show (string status = null, float progress = -1, MaskType maskType = MaskType.None)
 		{
 			obj.InvokeOnMainThread (() => SharedView.ShowProgressWorker (progress, status, maskType));
 		}
 
-		public static void Show (string cancelCaption, Action cancelCallback, string status = null, float progress = -1, MaskType maskType = MaskType.None)
+        public static void ShowContinuousProgress(string status = null, MaskType maskType = MaskType.None)
+        {
+            obj.InvokeOnMainThread(() => SharedView.ShowProgressWorker(0, status, maskType, false, true, null, null, 1000, true));
+        }
+
+        public static void Show(string cancelCaption, Action cancelCallback, string status = null, float progress = -1, MaskType maskType = MaskType.None)
 		{
 			// Making cancelCaption optional hides the method via the overload
 			if(string.IsNullOrEmpty(cancelCaption)){
 				cancelCaption = "Cancel";
 			}
-			obj.InvokeOnMainThread (() => SharedView.ShowProgressWorker (progress, status, maskType, cancelCaption: cancelCaption, cancelCallback: cancelCallback));
+			obj.InvokeOnMainThread (() => SharedView.ShowProgressWorker (progress, status, maskType, cancelCaption: cancelCaption, cancelCallback: cancelCallback, timeoutMs: 1000));
 		}
 
 		public static void ShowToast(string status, bool showToastCentered = true, double timeoutMs = 1000)
@@ -120,6 +125,7 @@ namespace BigTed
 
 		MaskType _maskType;
 		NSTimer _fadeoutTimer;
+        NSTimer _progressTimer;
 		UIView _overlayView;
 		UIView _hudView;
 		UILabel _stringLabel;
@@ -171,7 +177,7 @@ namespace BigTed
 		}
 */
 		void ShowProgressWorker(float progress = -1, string status = null, MaskType maskType = MaskType.None, bool textOnly = false, 
-		                        bool showToastCentered = true, string cancelCaption = null, Action cancelCallback = null, double timeoutMs = 1000)
+		                        bool showToastCentered = true, string cancelCaption = null, Action cancelCallback = null, double timeoutMs = 1000, bool showContinuousProgress = false)
 		{
 			if (OverlayView.Superview == null)
 			{
@@ -210,22 +216,32 @@ namespace BigTed
 
 			UpdatePosition (textOnly);
 
-			if(progress >= 0) 
-			{
-				ImageView.Image = null;
-				ImageView.Hidden = false;
-				SpinnerView.StopAnimating();
-				RingLayer.StrokeEnd = progress;
-			} else if (textOnly)
-			{
-				CancelRingLayerAnimation();
-				SpinnerView.StopAnimating();
-			} else
-			{
-				CancelRingLayerAnimation();
-				SpinnerView.StartAnimating();
-			}
-			
+            if (showContinuousProgress)
+            {
+                RingLayer.StrokeEnd = 0.0f;
+                StartProgressTimer(TimeSpan.FromMilliseconds(Ring.ProgressUpdateInterval));
+            }
+            else
+            {
+                if (progress >= 0)
+                {
+                    ImageView.Image = null;
+                    ImageView.Hidden = false;
+                    SpinnerView.StopAnimating();
+                    RingLayer.StrokeEnd = progress;
+                }
+                else if (textOnly)
+                {
+                    CancelRingLayerAnimation();
+                    SpinnerView.StopAnimating();
+                }
+                else
+                {
+                    CancelRingLayerAnimation();
+                    SpinnerView.StartAnimating();
+                }
+            }
+
 			if(maskType != MaskType.None) {
 				OverlayView.UserInteractionEnabled = true;
 				//AccessibilityLabel = status;
@@ -294,6 +310,27 @@ namespace BigTed
 			NSRunLoop.Main.AddTimer (_fadeoutTimer, NSRunLoopMode.Common);
 		}
 
+        void StartProgressTimer(TimeSpan duration)
+        {
+            _progressTimer = NSTimer.CreateRepeatingTimer(duration, UpdateProgress);
+            NSRunLoop.Current.AddTimer(_progressTimer, NSRunLoopMode.Common);
+        }
+
+        void UpdateProgress()
+        {
+            obj.InvokeOnMainThread(delegate
+            {
+                ImageView.Image = null;
+                ImageView.Hidden = false;
+                SpinnerView.StopAnimating();
+
+                if (RingLayer.StrokeEnd > 1)
+                    RingLayer.StrokeEnd = 0.0f;
+                else
+                    RingLayer.StrokeEnd += 0.1f;
+            });
+        }
+
 		void CancelRingLayerAnimation()
 		{
 			CATransaction.Begin ();
@@ -323,7 +360,7 @@ namespace BigTed
 			{
 				if(_ringLayer == null) {
 					var center = new PointF(HudView.Frame.Width/2, HudView.Frame.Height / 2);
-					_ringLayer = CreateRingLayer(center,_ringRadius, _ringThickness, UIColor.White);
+					_ringLayer = CreateRingLayer(center,_ringRadius, _ringThickness, Ring.Color);
 					HudView.Layer.AddSublayer(_ringLayer);
 				}
 				return _ringLayer;
@@ -338,7 +375,7 @@ namespace BigTed
 				if (_backgroundRingLayer == null)
 				{
 					var center = new PointF(HudView.Frame.Width /2, HudView.Frame.Height / 2);
-					_backgroundRingLayer = CreateRingLayer(center, _ringRadius, _ringThickness, UIColor.DarkGray);
+					_backgroundRingLayer = CreateRingLayer(center, _ringRadius, _ringThickness, Ring.BackgroundColor);
 					_backgroundRingLayer.StrokeEnd = 1;
 					HudView.Layer.AddSublayer(_backgroundRingLayer);
 				}
@@ -551,6 +588,7 @@ namespace BigTed
 		void DismissWorker() 
 		{
 			SetFadeoutTimer (null);
+            SetProgressTimer(null);
 
 			UIView.Animate (0.3, 0, UIViewAnimationOptions.CurveEaseIn | UIViewAnimationOptions.AllowUserInteraction,
 		               delegate {
@@ -705,6 +743,18 @@ namespace BigTed
 			if (newtimer != null)
 				_fadeoutTimer = newtimer;
 		}
+
+        void SetProgressTimer(NSTimer newtimer)
+        {
+            if (_progressTimer != null)
+            {
+                _progressTimer.Invalidate();
+                _progressTimer = null;
+            }
+
+            if (newtimer != null)
+                _progressTimer = newtimer;
+        }
 
 		void UpdatePosition (bool textOnly = false)
 		{
