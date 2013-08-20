@@ -12,7 +12,7 @@
 //
 //  https://github.com/samvermette/SVProgressHUD
 //
-//  Version 1.6
+//  Version 1.6.1
 
 
 
@@ -25,6 +25,9 @@ using MonoTouch.CoreGraphics;
 
 namespace BigTed
 {
+
+
+
 	public class BTProgressHUD : UIView
 	{
 		public BTProgressHUD() : this(UIScreen.MainScreen.Bounds) 
