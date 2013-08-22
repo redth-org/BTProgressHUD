@@ -34,7 +34,7 @@ You can call Show with the following parameters
 
 * status: <string> - show status text
 * progress: <float> - show a progress circle with 0.0 - 1.0 of progress. Call again to change the progress.
-* maskType: <BTProgressHUD.MaskType> - show with the background (the whole window) clear, black or gradient. Default is none, which allows interaction with the underlying elements.
+* maskType: <ProgressHUD.MaskType> - show with the background (the whole window) clear, black or gradient. Default is none, which allows interaction with the underlying elements.
 
 ```csharp
 public enum MaskType

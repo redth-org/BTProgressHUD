@@ -11,10 +11,14 @@ SVProgressHUD (and BTProgressHUD) is a clean and easy-to-use HUD meant to displa
 
 This is also available in the [Xamarin Component Store](https://components.xamarin.com/view/btprogresshud/). 
 
+If you need this for Xamarin.Android, [redth has a very similar component](https://github.com/Redth/AndHUD)
+
+
+
 
 ##Installation
 
-* Grab BTProgressHUD.cs, add it to your project.
+* Grab the .cs files, and the images, and add them to your project.
 * Use it :)
 
 ##TODO
@@ -42,13 +46,14 @@ BTProgressHUD.Dismiss();
 
 BTProgressHUD is aware of the thread you are calling from, and ensures that HUDs are always manipulated from the UI thread.
 
+If you need to make your own instance of the HUD, you can make a new ProgressHUD.
 
 ###Other Show options
 
 You can call Show with the following parameters
 * status: <string> - show status text
 * progress: <float> - show a progress circle with 0.0 - 1.0 of progress. Call again to change the progress.
-* maskType: <BTProgressHUD.MaskType> - show with the background (the whole window) clear, black or gradient. Default is none, which allows interaction with the underlying elements.
+* maskType: <ProgressHUD.MaskType> - show with the background (the whole window) clear, black or gradient. Default is none, which allows interaction with the underlying elements.
 
 ```csharp
 public enum MaskType
@@ -87,4 +92,11 @@ BTProgressHUD is brought to you by [Nic Wise](http://www.fastchicken.co.nz/). I'
 requests for the MonoTouch version. If you use BTProgressHUD in your project, attribution would also be 
 nice - or [tweet](http://twitter.com/fastchicken) me a link to your project when it's live.
 
-Thanks to [mloenow](https://github.com/mloenow) and [Ramesh Sringeri](https://github.com/idispose) for the updates / fixes.
+Thanks to 
+
+* [mloenow](https://github.com/mloenow)
+* [Ramesh Sringeri](https://github.com/idispose) 
+* [Danny Cabrera](https://github.com/dannycabrera)
+* [Gred Shackles](https://github.com/gshackles)
+
+for the updates / fixes.

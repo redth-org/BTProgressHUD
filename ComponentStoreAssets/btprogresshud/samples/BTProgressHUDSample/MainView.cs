@@ -6,6 +6,12 @@ using System.Drawing;
 using System.Collections.Generic;
 using MonoTouch.Foundation;
 
+
+/*
+ * The source for this is on
+ * https://github.com/nicwise/BTProgressHUD
+ */
+
 namespace BTProgressHUDDemo
 {
 	public class MainViewController : UIViewController

@@ -43,14 +43,16 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <BundleResource Include="error.png" />
-    <BundleResource Include="error%402x.png" />
-    <BundleResource Include="success.png" />
-    <BundleResource Include="success%402x.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="BTProgressHUD.cs" />
     <Compile Include="ProgressHUD.cs" />
     <Compile Include="Ring.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="success%402x.png">
+      <DependentUpon>BTProgressHUD.cs</DependentUpon>
+    </BundleResource>
+    <BundleResource Include="error.png" />
+    <BundleResource Include="error%402x.png" />
+    <BundleResource Include="success.png" />
   </ItemGroup>
 </Project>

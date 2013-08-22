@@ -3,7 +3,7 @@ using MonoTouch.UIKit;
 
 namespace BigTed
 {
-	public static class BTProgHUD
+	public static class BTProgressHUD
 	{
 		public static void Show (string status = null, float progress = -1, ProgressHUD.MaskType maskType = ProgressHUD.MaskType.None)
 		{

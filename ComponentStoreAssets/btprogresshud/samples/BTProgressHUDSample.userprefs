@@ -1,9 +1,9 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhoneSimulator" />
-  <MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhoneSimulator" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.IPhone.5.1" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="BTProgressHUDSample/MainView.cs">
     <Files>
       <File FileName="BTProgressHUDSample/AppDelegate.cs" Line="1" Column="1" />
-      <File FileName="BTProgressHUDSample/MainView.cs" Line="80" Column="26" />
+      <File FileName="BTProgressHUDSample/MainView.cs" Line="19" Column="31" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
