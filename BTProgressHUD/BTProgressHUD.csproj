@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BTProgressHUD.cs" />
-    <Compile Include="BTProgHUD.cs" />
+    <Compile Include="ProgressHUD.cs" />
+    <Compile Include="Ring.cs" />
   </ItemGroup>
 </Project>

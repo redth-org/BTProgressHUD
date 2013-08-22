@@ -25,20 +25,23 @@ namespace BTProgressHUDDemo
 			base.LoadView ();
 			View.BackgroundColor = UIColor.LightGray;
 
-
-			MakeButton ("Jose Test", () => {
-				JoseTest ();
+			MakeButton ("Show Continuous Progress", () =>
+			{
+				ProgressHUD.Shared.Ring.Color = UIColor.Green;
+				ProgressHUD.Shared.ShowContinuousProgress ("Continuous progress...");
+				KillAfter (3);
 			});
 
 
+
 			MakeButton ("Show", () => {
-				BTProgressHUD.Shared.Show (); 
+				ProgressHUD.Shared.Show (); 
 				KillAfter ();
 			});
 
 			MakeButton ("Show with Cancel", () => {
-				BTProgressHUD.Shared.Show ("Cancel Me", () => {
-					BTProgressHUD.Shared.ShowErrorWithStatus ("Operation Cancelled!");
+				ProgressHUD.Shared.Show ("Cancel Me", () => {
+					ProgressHUD.Shared.ShowErrorWithStatus ("Operation Cancelled!");
 				}, "Please Wait"); 
 				//KillAfter ();
 			});
@@ -49,37 +52,37 @@ namespace BTProgressHUDDemo
 				alert.Clicked += (object sender, UIButtonEventArgs e) => {
 					if (e.ButtonIndex == 0)
 						return;
-					BTProgressHUD.Shared.Show ("this should never go away?");
+					ProgressHUD.Shared.Show ("this should never go away?");
 					KillAfter ();
 				};
 				alert.Show ();
 			});
 
 			MakeButton ("Show Message", () => {
-				BTProgressHUD.Shared.Show (status: "Processing your image"); 
+				ProgressHUD.Shared.Show (status: "Processing your image"); 
 				KillAfter ();
 			});
 
 			MakeButton ("Show Success", () => {
-				BTProgressHUD.Shared.ShowSuccessWithStatus ("Great success!");
+				ProgressHUD.Shared.ShowSuccessWithStatus ("Great success!");
 			});
 
 			MakeButton ("Show Fail", () => {
-				BTProgressHUD.Shared.ShowErrorWithStatus ("Oh, thats bad");
+				ProgressHUD.Shared.ShowErrorWithStatus ("Oh, thats bad");
 			});
 
 			MakeButton ("Show Fail 5 seconds", () => {
-				BTProgressHUD.Shared.ShowErrorWithStatus ("Oh, thats bad", timeoutMs: 5000);
+				ProgressHUD.Shared.ShowErrorWithStatus ("Oh, thats bad", timeoutMs: 5000);
 			});
 
 			MakeButton ("Toast", () => {
-				BTProgressHUD.Shared.ShowToast ("Hello from the toast", showToastCentered: false);
+				ProgressHUD.Shared.ShowToast ("Hello from the toast", showToastCentered: false);
 
 			});
 
 			MakeButton ("Progress", () => {
 				progress = 0;
-				BTProgressHUD.Shared.Show ("Hello!", progress);
+				ProgressHUD.Shared.Show ("Hello!", progress);
 				if (timer != null)
 				{
 					timer.Invalidate ();
@@ -91,10 +94,10 @@ namespace BTProgressHUDDemo
 					{
 						timer.Invalidate ();
 						timer = null;
-						BTProgressHUD.Shared.Dismiss ();
+						ProgressHUD.Shared.Dismiss ();
 					} else
 					{
-						BTProgressHUD.Shared.Show ("Hello!", progress);
+						ProgressHUD.Shared.Show ("Hello!", progress);
 					}
 
 
@@ -103,30 +106,33 @@ namespace BTProgressHUDDemo
 			});
 
 			MakeButton ("Dismiss", () => {
-				BTProgressHUD.Shared.Dismiss (); 
+				ProgressHUD.Shared.Dismiss (); 
 			});
 
-
+			//From a bug report from Jose
+			MakeButton ("Show, Dismiss, remove cancel", () => {
+				ShowWaitDismissWithProperCancelButton ();
+			});
 
 		}
 
-		async void JoseTest ()
+		async void ShowWaitDismissWithProperCancelButton ()
 		{
 
-			BTProgressHUD.Shared.Show ("Cancel", delegate()
+			ProgressHUD.Shared.Show ("Cancel", delegate()
 			{
 				Console.WriteLine ("Canceled.");
-			}, "Please wait", -1, BTProgressHUD.MaskType.Black);
+			}, "Please wait", -1, ProgressHUD.MaskType.Black);
 
-			var result = await BackgroundOperation ();
+			var result = await BackgroundSleepOperation ();
 
-			BTProgressHUD.Shared.Dismiss ();
+			ProgressHUD.Shared.Dismiss ();
 
-			BTProgressHUD.Shared.ShowSuccessWithStatus ("Done", 2000);
+			ProgressHUD.Shared.ShowSuccessWithStatus ("Done", 2000);
 
 		}
 
-		async Task<bool> BackgroundOperation ()
+		async Task<bool> BackgroundSleepOperation ()
 		{
 			return await Task.Run (() => {
 				Thread.Sleep (2000);
@@ -142,7 +148,7 @@ namespace BTProgressHUDDemo
 			}
 			timer = NSTimer.CreateRepeatingTimer (timeout, delegate
 			{
-				BTProgressHUD.Shared.Dismiss ();
+				ProgressHUD.Shared.Dismiss ();
 				timer.Invalidate ();
 				timer = null;
 			});
