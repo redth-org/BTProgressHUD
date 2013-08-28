@@ -251,7 +251,7 @@ namespace BigTed
 				//IsAccessibilityElement = true;
 			} else
 			{
-				OverlayView.UserInteractionEnabled = true;
+				OverlayView.UserInteractionEnabled = false;
 				//hudView.IsAccessibilityElement = true;
 			}
 
