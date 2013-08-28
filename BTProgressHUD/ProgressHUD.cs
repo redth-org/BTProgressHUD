@@ -243,8 +243,11 @@ namespace BigTed
 					SpinnerView.StartAnimating ();
 				}
 			}
-			
-			if (maskType != MaskType.None)
+
+			bool cancelButtonVisible = _cancelHud != null && _cancelHud.IsDescendantOfView (_hudView);
+
+			// intercept user interaction with the underlying view
+			if (maskType != MaskType.None || cancelButtonVisible)
 			{
 				OverlayView.UserInteractionEnabled = true;
 				//AccessibilityLabel = status;
@@ -292,10 +295,10 @@ namespace BigTed
 
 			//this should happen when Dismiss is called, but it happens AFTER the animation ends
 			// so sometimes, the cancel button is left on :(
-			if (CancelHudButton != null)
+			if (_cancelHud != null)
 			{
-				CancelHudButton.RemoveFromSuperview ();
-				CancelHudButton = null;
+				_cancelHud.RemoveFromSuperview ();
+				_cancelHud = null;
 			}
 
 			if (!IsVisible)
@@ -619,13 +622,13 @@ namespace BigTed
 						StringLabel.RemoveFromSuperview ();
 						SpinnerView.RemoveFromSuperview ();
 						ImageView.RemoveFromSuperview ();
-						if (CancelHudButton != null) 
-							CancelHudButton.RemoveFromSuperview ();
+						if (_cancelHud != null) 
+							_cancelHud.RemoveFromSuperview ();
 
 						StringLabel = null;
 						SpinnerView = null;
 						ImageView = null;
-						CancelHudButton = null;
+						_cancelHud = null;
 
 						HudView.RemoveFromSuperview ();
 						HudView = null;
@@ -825,7 +828,7 @@ namespace BigTed
 
 			// Adjust for Cancel Button
 			var cancelRect = new RectangleF ();
-			string @cancelCaption = CancelHudButton.Title (UIControlState.Normal);
+			string @cancelCaption = _cancelHud == null ? null : CancelHudButton.Title (UIControlState.Normal);
 			if (!string.IsNullOrEmpty (@cancelCaption))
 			{
 				const int gap = 20;
