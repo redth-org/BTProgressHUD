@@ -187,9 +187,10 @@ namespace BigTed
 				Array.Reverse (windows);
 				foreach (UIWindow window in windows)
 				{
-					if (window.WindowLevel == UIWindow.LevelNormal)
+					if (window.WindowLevel == UIWindow.LevelNormal && !window.Hidden)
 					{
 						window.AddSubview (OverlayView);
+						break;
 					}
 				}
 			}
