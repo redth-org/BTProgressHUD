@@ -19,6 +19,7 @@ using MonoTouch.Foundation;
 using MonoTouch.CoreAnimation;
 using System.Drawing;
 using MonoTouch.CoreGraphics;
+using System.Collections.Generic;
 
 namespace BigTed
 {
@@ -136,6 +137,7 @@ namespace BigTed
 		float _progress;
 		CAShapeLayer _backgroundRingLayer;
 		CAShapeLayer _ringLayer;
+		List<NSObject> _eventListeners;
 
 		public override void Draw (RectangleF rect)
 		{
@@ -615,6 +617,8 @@ namespace BigTed
 				{
 					InvokeOnMainThread (delegate
 					{
+						//Removing observers
+						UnRegisterNotifications();
 						NSNotificationCenter.DefaultCenter.RemoveObserver (this);
 
 						Ring.ResetStyle();
@@ -650,17 +654,30 @@ namespace BigTed
 
 		void RegisterNotifications ()
 		{
+			if(_eventListeners == null)
+			{
+				_eventListeners = new List<NSObject>();
+			}
+			_eventListeners.Add(NSNotificationCenter.DefaultCenter.AddObserver (UIApplication.DidChangeStatusBarOrientationNotification,
+			                                                                    PositionHUD));
+			_eventListeners.Add(NSNotificationCenter.DefaultCenter.AddObserver (UIKeyboard.WillHideNotification,
+			                                                                    PositionHUD));
+			_eventListeners.Add(NSNotificationCenter.DefaultCenter.AddObserver (UIKeyboard.DidHideNotification,
+			                                                                    PositionHUD));
+			_eventListeners.Add(NSNotificationCenter.DefaultCenter.AddObserver (UIKeyboard.WillShowNotification,
+			                                                                    PositionHUD));
+			_eventListeners.Add(NSNotificationCenter.DefaultCenter.AddObserver (UIKeyboard.DidShowNotification,
+			                                                                    PositionHUD));
+		}
 
-			NSNotificationCenter.DefaultCenter.AddObserver (UIApplication.DidChangeStatusBarOrientationNotification,
-			                                                PositionHUD);
-			NSNotificationCenter.DefaultCenter.AddObserver (UIKeyboard.WillHideNotification,
-			                                                PositionHUD);
-			NSNotificationCenter.DefaultCenter.AddObserver (UIKeyboard.DidHideNotification,
-			                                                PositionHUD);
-			NSNotificationCenter.DefaultCenter.AddObserver (UIKeyboard.WillShowNotification,
-			                                                PositionHUD);
-			NSNotificationCenter.DefaultCenter.AddObserver (UIKeyboard.DidShowNotification,
-			                                                PositionHUD);
+		void UnRegisterNotifications ()
+		{
+			if(_eventListeners != null)
+			{
+				NSNotificationCenter.DefaultCenter.RemoveObservers(_eventListeners);
+				_eventListeners.Clear();
+				_eventListeners = null;
+			}
 		}
 
 		void MoveToPoint (PointF newCenter, float angle)
