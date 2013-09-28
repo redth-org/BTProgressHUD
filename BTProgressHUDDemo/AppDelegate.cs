@@ -24,7 +24,7 @@ namespace BTProgressHUDDemo
 		// You have 17 seconds to return from this method, or iOS will terminate your application.
 		//
 
-		MainViewController viewController;
+		UINavigationController viewController;
 		public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 		{
 			// create a new window instance based on the screen size
@@ -33,7 +33,7 @@ namespace BTProgressHUDDemo
 			// If you have defined a root view controller, set it here:
 			// window.RootViewController = myViewController;
 
-			viewController = new MainViewController ();
+			viewController = new UINavigationController(new MainViewController ());
 			window.RootViewController = viewController;
 
 

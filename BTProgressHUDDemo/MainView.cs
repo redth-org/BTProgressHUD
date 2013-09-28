@@ -6,12 +6,13 @@ using System.Drawing;
 using System.Collections.Generic;
 using MonoTouch.Foundation;
 using System.Threading.Tasks;
+using MonoTouch.Dialog;
 
 namespace BTProgressHUDDemo
 {
-	public class MainViewController : UIViewController
+	public class MainViewController : DialogViewController
 	{
-		public MainViewController ()
+		public MainViewController () : base(null, false)
 		{
 
 		}
@@ -20,10 +21,15 @@ namespace BTProgressHUDDemo
 		NSTimer timer;
 		UIAlertView alert;
 
+		Section mainSection;
+
 		public override void LoadView ()
 		{
 			base.LoadView ();
-			View.BackgroundColor = UIColor.LightGray;
+
+			var root = new RootElement ("BTProgressHUD");
+			mainSection = new Section ();
+
 
 			MakeButton ("Show Continuous Progress", () =>
 			{
@@ -114,6 +120,10 @@ namespace BTProgressHUDDemo
 				ShowWaitDismissWithProperCancelButton ();
 			});
 
+			root.Add (mainSection);
+
+			Root = root;
+
 		}
 
 		async void ShowWaitDismissWithProperCancelButton ()
@@ -159,19 +169,11 @@ namespace BTProgressHUDDemo
 
 		void MakeButton (string text, Action del)
 		{
-			float x = 20;
-
-			var button = new UIButton (UIButtonType.RoundedRect);
-			button.Frame = new RectangleF (x, y, 280, 40);
-			button.SetTitle (text, UIControlState.Normal);
-			button.TouchUpInside += (o,e) => {
-				del ();
+			var el = new StringElement (text);
+			el.Tapped += () => {
+				del();
 			};
-			View.Add (button);
-		
-			
-			y += 45;
-
+			mainSection.Add (el);
 		}
 	}
 }

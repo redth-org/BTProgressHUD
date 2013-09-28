@@ -27,9 +27,18 @@
 		<key>UINavigationBar</key>
 		<dict>
 			<key>Style</key>
-			<string>UIBarStyleBlack</string>
+			<string>UIBarStyleDefault</string>
 			<key>Translucent</key>
-			<true/>
+			<false/>
+			<key>TintColor</key>
+			<dict>
+				<key>Red</key>
+				<real>0</real>
+				<key>Green</key>
+				<real>0.8480354009308</real>
+				<key>Blue</key>
+				<real>1</real>
+			</dict>
 		</dict>
 	</dict>
 </dict>
