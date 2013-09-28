@@ -1012,6 +1012,8 @@ namespace BigTed
 		{
 			get
 			{
+				//if you want to default it to the 7 style - or the 6 style - just change it here.
+
 				return UIDevice.CurrentDevice.CheckSystemVersion (7, 0);
 			}
 		}

@@ -13,6 +13,9 @@ This is also available in the [Xamarin Component Store](https://components.xamar
 
 If you need this for Xamarin.Android, [redth has a very similar component](https://github.com/Redth/AndHUD)
 
+__Now includes iOS7-style HUD if the app is running on iOS7__
+
+You can force iOS6 or iOS7 style in the IsiOS7 property in ProgressHUD.cs
 
 
 
