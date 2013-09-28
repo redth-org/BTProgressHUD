@@ -150,7 +150,7 @@ namespace BTProgressHUDDemo
 			});
 		}
 
-		void KillAfter (float timeout = 1)
+		void KillAfter (float timeout = 2)
 		{
 			if (timer != null)
 			{
@@ -165,11 +165,10 @@ namespace BTProgressHUDDemo
 			NSRunLoop.Current.AddTimer (timer, NSRunLoopMode.Common);
 		}
 
-		float y = 20;
 
 		void MakeButton (string text, Action del)
 		{
-			var el = new StringElement (text);
+			var el = new StyledStringElement (text);
 			el.Tapped += () => {
 				del();
 			};

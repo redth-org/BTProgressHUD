@@ -18,11 +18,12 @@ namespace BigTed
 		/// </summary>
 		public Double ProgressUpdateInterval = 300;
 
-		public void ResetStyle()
+		public void ResetStyle(bool isiOS7, UIColor colorToUse)
 		{
-			Color = UIColor.White;
-			BackgroundColor = UIColor.DarkGray;
+			Color = colorToUse;
+			BackgroundColor = isiOS7 ? UIColor.White : UIColor.DarkGray;
 			ProgressUpdateInterval = 300;
+
 
 		}
 	}

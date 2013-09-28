@@ -35,6 +35,15 @@ namespace BigTed
 			BackgroundColor = UIColor.Clear;
 			Alpha = 0;
 			AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
+
+			if (IsiOS7)
+			{
+				HudBackgroundColour = UIColor.White.ColorWithAlpha(0.8f);
+				HudForegroundColor = UIColor.FromWhiteAlpha (0.0f, 0.8f);
+				HudStatusShadowColor = UIColor.FromWhiteAlpha (200f / 255f, 0.8f);
+				_ringThickness = 1f;
+
+			}
 		}
 
 		public enum MaskType
@@ -84,12 +93,12 @@ namespace BigTed
 
 		public void ShowSuccessWithStatus (string status, double timeoutMs = 1000)
 		{
-			ShowImage (UIImage.FromBundle ("success.png"), status, timeoutMs);
+			ShowImage (SuccessImage, status, timeoutMs);
 		}
 
 		public void ShowErrorWithStatus (string status, double timeoutMs = 1000)
 		{
-			ShowImage (UIImage.FromBundle ("error.png"), status, timeoutMs);
+			ShowImage (ErrorImage, status, timeoutMs);
 		}
 
 		public void ShowImage (UIImage image, string status, double timeoutMs = 1000)
@@ -101,6 +110,22 @@ namespace BigTed
 		public void Dismiss ()
 		{
 			obj.InvokeOnMainThread (DismissWorker);
+		}
+
+		public UIImage ErrorImage
+		{
+			get
+			{
+				return (IsiOS7 ? UIImage.FromBundle ("error_7.png") : UIImage.FromBundle ("error.png"));
+			}
+		}
+
+		public UIImage SuccessImage
+		{
+			get
+			{
+				return (IsiOS7 ? UIImage.FromBundle ("success_7.png") : UIImage.FromBundle ("success.png"));
+			}
 		}
 
 		public bool IsVisible
@@ -271,12 +296,23 @@ namespace BigTed
 				RegisterNotifications ();
 				HudView.Transform.Scale (1.3f, 1.3f);
 
+				if (isClear)
+				{
+					Alpha = 1f;
+					HudView.Alpha = 0f;
+				}
+
 				UIView.Animate (0.15f, 0, 
 				                UIViewAnimationOptions.AllowUserInteraction | UIViewAnimationOptions.CurveEaseOut | UIViewAnimationOptions.BeginFromCurrentState,
 				                delegate
 				{
 					HudView.Transform.Scale ((float)1 / 1.3f, (float)1f / 1.3f);
-					Alpha = 1;
+					if (isClear)
+					{
+						HudView.Alpha = 1f;
+					} else {
+						Alpha = 1f;
+					}
 				}, delegate
 				{
 					//UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, string);
@@ -440,6 +476,14 @@ namespace BigTed
 		
 		}
 
+		bool isClear
+		{
+			get
+			{
+				return (_maskType == ProgressHUD.MaskType.Clear || _maskType == ProgressHUD.MaskType.None);
+			}
+		}
+
 		UIView OverlayView
 		{
 			get
@@ -462,11 +506,21 @@ namespace BigTed
 			{
 				if (_hudView == null)
 				{
-					_hudView = new UIView ();
+					if (IsiOS7)
+					{
+						_hudView = new UIToolbar ();
+						(_hudView as UIToolbar).Translucent = true;
+						(_hudView as UIToolbar).BarTintColor = HudBackgroundColour;
+					} else
+					{
+						_hudView = new UIView ();
+					}
 					_hudView.Layer.CornerRadius = 10;
+					_hudView.Layer.MasksToBounds = true;
 					_hudView.BackgroundColor = HudBackgroundColour;
 					_hudView.AutoresizingMask = (UIViewAutoresizing.FlexibleBottomMargin | UIViewAutoresizing.FlexibleTopMargin |
-						UIViewAutoresizing.FlexibleRightMargin | UIViewAutoresizing.FlexibleLeftMargin);
+					UIViewAutoresizing.FlexibleRightMargin | UIViewAutoresizing.FlexibleLeftMargin);
+
 					AddSubview (_hudView);
 				}
 				return _hudView;
@@ -487,8 +541,11 @@ namespace BigTed
 					_stringLabel.BaselineAdjustment = UIBaselineAdjustment.AlignCenters;
 					_stringLabel.TextColor = HudForegroundColor;
 					_stringLabel.Font = HudFont;
-					_stringLabel.ShadowColor = HudStatusShadowColor;
-					_stringLabel.ShadowOffset = new SizeF (0, -1);
+					if (!IsiOS7)
+					{
+						_stringLabel.ShadowColor = HudStatusShadowColor;
+						_stringLabel.ShadowOffset = new SizeF (0, -1);
+					} 
 					_stringLabel.Lines = 0;
 				}
 				if (_stringLabel.Superview == null)
@@ -610,18 +667,26 @@ namespace BigTed
 			                delegate
 			{
 				HudView.Transform.Scale (0.8f, 0.8f);
-				this.Alpha = 0;
+					if (isClear)
+					{
+						HudView.Alpha = 0f;
+					} else {
+						Alpha = 0f;
+					}
 			}, delegate
 			{
-				if (Alpha == 0)
+					if (Alpha == 0f || HudView.Alpha == 0f)
 				{
 					InvokeOnMainThread (delegate
 					{
+						Alpha = 0f;
+						HudView.Alpha = 0f;
+
 						//Removing observers
 						UnRegisterNotifications();
 						NSNotificationCenter.DefaultCenter.RemoveObserver (this);
 
-						Ring.ResetStyle();
+						Ring.ResetStyle(IsiOS7, (IsiOS7 ? TintColor : UIColor.White));
 
 						CancelRingLayerAnimation ();
 						StringLabel.RemoveFromSuperview ();
@@ -640,6 +705,15 @@ namespace BigTed
 						OverlayView.RemoveFromSuperview ();
 						OverlayView = null;
 						this.RemoveFromSuperview ();
+
+						if (IsiOS7)
+						{
+							var rootController = UIApplication.SharedApplication.KeyWindow.RootViewController;
+							rootController.SetNeedsStatusBarAppearanceUpdate();
+						}
+
+
+
 					});
 				}
 			});
@@ -806,6 +880,18 @@ namespace BigTed
 			float hudHeight = 100f;
 			float stringWidth = 0f;
 			float stringHeight = 0f;
+			float stringHeightBuffer = 20f;
+			float stringAndImageHeightBuffer = 80f;
+
+			/*if (IsiOS7)
+			{
+				hudHeight += 50;
+				hudWidth += 50f;
+				stringHeightBuffer += 50f;
+				stringAndImageHeightBuffer += 50f;
+			}*/
+
+
 			RectangleF labelRect = new RectangleF ();
 			
 			string @string = StringLabel.Text;
@@ -816,9 +902,9 @@ namespace BigTed
 				imageUsed = false;
 
 			if (imageUsed)
-				hudHeight = 80;
+				hudHeight = stringAndImageHeightBuffer + stringHeight;
 			else
-				hudHeight = (textOnly ? 20 : 60);
+				hudHeight = (textOnly ? stringHeightBuffer : stringHeightBuffer + 40);
 
 			if (!string.IsNullOrEmpty (@string))
 			{
@@ -920,6 +1006,14 @@ namespace BigTed
 		public bool IsPortrait (UIInterfaceOrientation orientation)
 		{
 			return (orientation == UIInterfaceOrientation.Portrait || orientation == UIInterfaceOrientation.PortraitUpsideDown);
+		}
+
+		public bool IsiOS7
+		{
+			get
+			{
+				return UIDevice.CurrentDevice.CheckSystemVersion (7, 0);
+			}
 		}
 	}
 }

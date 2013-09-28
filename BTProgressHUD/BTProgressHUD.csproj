@@ -54,5 +54,9 @@
     <BundleResource Include="error.png" />
     <BundleResource Include="error%402x.png" />
     <BundleResource Include="success.png" />
+    <BundleResource Include="error_7.png" />
+    <BundleResource Include="error_7%402x.png" />
+    <BundleResource Include="success_7.png" />
+    <BundleResource Include="success_7%402x.png" />
   </ItemGroup>
 </Project>
