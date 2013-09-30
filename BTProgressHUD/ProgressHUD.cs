@@ -164,6 +164,18 @@ namespace BigTed
 		CAShapeLayer _ringLayer;
 		List<NSObject> _eventListeners;
 
+		public float RingRadius
+		{
+			get { return _ringRadius; }
+			set { _ringRadius = value; }
+		}
+
+		public float RingThickness
+		{
+			get { return _ringThickness; }
+			set { _ringThickness = value; }
+		}
+
 		public override void Draw (RectangleF rect)
 		{
 			using (var context = UIGraphics.GetCurrentContext())
