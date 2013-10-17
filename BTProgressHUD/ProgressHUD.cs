@@ -721,11 +721,9 @@ namespace BigTed
 						if (IsiOS7)
 						{
 							var rootController = UIApplication.SharedApplication.KeyWindow.RootViewController;
-							rootController.SetNeedsStatusBarAppearanceUpdate();
+                            if (rootController != null)
+							    rootController.SetNeedsStatusBarAppearanceUpdate();
 						}
-
-
-
 					});
 				}
 			});
