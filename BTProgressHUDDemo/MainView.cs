@@ -38,11 +38,24 @@ namespace BTProgressHUDDemo
 				KillAfter (3);
 			});
 
-
-
 			MakeButton ("Show", () => {
 				ProgressHUD.Shared.Show (); 
 				KillAfter ();
+			});
+
+			MakeButton ("Show BT", () => {
+				BTProgressHUD.Show (); 
+				if (timer != null)
+				{
+					timer.Invalidate ();
+				}
+				timer = NSTimer.CreateRepeatingTimer (2f, delegate
+					{
+						BTProgressHUD.Dismiss ();
+						timer.Invalidate ();
+						timer = null;
+					});
+				NSRunLoop.Current.AddTimer (timer, NSRunLoopMode.Common);
 			});
 
 			MakeButton ("Show with Cancel", () => {

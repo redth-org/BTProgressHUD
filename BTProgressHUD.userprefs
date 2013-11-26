@@ -1,36 +1,13 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhoneSimulator" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.IPhoneRetina4.7.0" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="BTProgressHUDDemo/MainView.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="BTProgressHUD/ProgressHUD.cs">
     <Files>
-      <File FileName="BTProgressHUD/ProgressHUD.cs" Line="1" Column="1" />
-      <File FileName="BTProgressHUDDemo/MainView.cs" Line="131" Column="4" />
+      <File FileName="BTProgressHUD/ProgressHUD.cs" Line="70" Column="75" />
+      <File FileName="BTProgressHUDDemo/MainView.cs" Line="41" Column="4" />
       <File FileName="README.md" Line="1" Column="1" />
       <File FileName="BTProgressHUD/BTProgressHUD.cs" Line="1" Column="1" />
       <File FileName="BTProgressHUD/Ring.cs" Line="1" Column="1" />
     </Files>
-    <Pads>
-      <Pad Id="ProjectPad">
-        <State expanded="True">
-          <Node name="BTProgressHUD" expanded="True" />
-          <Node name="BTProgressHUDDemo" expanded="True">
-            <Node name="MainView.cs" selected="True" />
-          </Node>
-        </State>
-      </Pad>
-      <Pad Id="ClassPad">
-        <State expanded="True" selected="True" />
-      </Pad>
-      <Pad Id="MonoDevelop.Debugger.WatchPad">
-        <State>
-          <Value>data</Value>
-          <Value>cmd</Value>
-          <Value>cmd</Value>
-        </State>
-      </Pad>
-      <Pad Id="ConnectionManagerPad">
-        <State selected="True" />
-      </Pad>
-    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />

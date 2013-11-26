@@ -25,11 +25,11 @@ namespace BigTed
 {
 	public class ProgressHUD : UIView
 	{
-		public ProgressHUD () : this(UIScreen.MainScreen.Bounds)
+		public ProgressHUD () : this (UIScreen.MainScreen.Bounds)
 		{
 		}
 
-		public ProgressHUD (RectangleF frame) : base(frame)
+		public ProgressHUD (RectangleF frame) : base (frame)
 		{
 			UserInteractionEnabled = false;
 			BackgroundColor = UIColor.Clear;
@@ -38,7 +38,7 @@ namespace BigTed
 
 			if (IsiOS7)
 			{
-				HudBackgroundColour = UIColor.White.ColorWithAlpha(0.8f);
+				HudBackgroundColour = UIColor.White.ColorWithAlpha (0.8f);
 				HudForegroundColor = UIColor.FromWhiteAlpha (0.0f, 0.8f);
 				HudStatusShadowColor = UIColor.FromWhiteAlpha (200f / 255f, 0.8f);
 				_ringThickness = 1f;
@@ -66,14 +66,16 @@ namespace BigTed
 			obj.InvokeOnMainThread (() => ShowProgressWorker (progress, status, maskType));
 		}
 
-		public void Show (string cancelCaption, Action cancelCallback, string status = null, float progress = -1, MaskType maskType = MaskType.None)
+		public void Show (string cancelCaption, Action cancelCallback, string status = null, 
+		                  float progress = -1, MaskType maskType = MaskType.None)
 		{
 			// Making cancelCaption optional hides the method via the overload
 			if (string.IsNullOrEmpty (cancelCaption))
 			{
 				cancelCaption = "Cancel";
 			}
-			obj.InvokeOnMainThread (() => ShowProgressWorker (progress, status, maskType, cancelCaption: cancelCaption, cancelCallback: cancelCallback, timeoutMs: 1000));
+			obj.InvokeOnMainThread (() => ShowProgressWorker (progress, status, maskType, 
+				cancelCaption: cancelCaption, cancelCallback: cancelCallback, timeoutMs: 1000));
 		}
 
 		public void ShowContinuousProgress (string status = null, MaskType maskType = MaskType.None)
@@ -178,7 +180,7 @@ namespace BigTed
 
 		public override void Draw (RectangleF rect)
 		{
-			using (var context = UIGraphics.GetCurrentContext())
+			using (var context = UIGraphics.GetCurrentContext ())
 			{
 				switch (_maskType)
 				{
@@ -189,9 +191,9 @@ namespace BigTed
 					case MaskType.Gradient:
 						float[] colors = new float[] { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.75f };
 						float[] locations = new float[] { 0.0f, 1.0f };
-						using (var colorSpace = CGColorSpace.CreateDeviceRGB())
+						using (var colorSpace = CGColorSpace.CreateDeviceRGB ())
 						{
-							using (var gradient = new CGGradient(colorSpace,colors, locations))
+							using (var gradient = new CGGradient (colorSpace, colors, locations))
 							{
 								var center = new PointF (Bounds.Size.Width / 2, Bounds.Size.Height / 2);
 								float radius = Math.Min (Bounds.Size.Width, Bounds.Size.Height);
@@ -203,19 +205,7 @@ namespace BigTed
 				}
 			}
 		}
-		/*
-		void ShowProgressWorker(string cancelCaption, Delegate cancelCallback, float progress = -1, string status = null, MaskType maskType = MaskType.None){
-			CancelHudButton.SetTitle(cancelCaption, UIControlState.Normal);
-			CancelHudButton.TouchUpInside += delegate {
-				BTProgressHUD.Dismiss();
-				if(cancelCallback != null){
-					cancelCallback.DynamicInvoke(null);
-				}
-			};
-			UpdatePosition();
-			ShowProgressWorker(progress, status, maskType);
-		}
-*/
+
 		void ShowProgressWorker (float progress = -1, string status = null, MaskType maskType = MaskType.None, bool textOnly = false, 
 		                         bool showToastCentered = true, string cancelCaption = null, Action cancelCallback = null, 
 		                         double timeoutMs = 1000, bool showContinuousProgress = false)
@@ -315,22 +305,23 @@ namespace BigTed
 				}
 
 				UIView.Animate (0.15f, 0, 
-				                UIViewAnimationOptions.AllowUserInteraction | UIViewAnimationOptions.CurveEaseOut | UIViewAnimationOptions.BeginFromCurrentState,
-				                delegate
-				{
-					HudView.Transform.Scale ((float)1 / 1.3f, (float)1f / 1.3f);
-					if (isClear)
+					UIViewAnimationOptions.AllowUserInteraction | UIViewAnimationOptions.CurveEaseOut | UIViewAnimationOptions.BeginFromCurrentState,
+					delegate
 					{
-						HudView.Alpha = 1f;
-					} else {
-						Alpha = 1f;
-					}
-				}, delegate
+						HudView.Transform.Scale ((float)1 / 1.3f, (float)1f / 1.3f);
+						if (isClear)
+						{
+							HudView.Alpha = 1f;
+						} else
+						{
+							Alpha = 1f;
+						}
+					}, delegate
 				{
 					//UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, string);
 
 					if (textOnly)
-						StartDismissTimer (TimeSpan.FromMilliseconds (timeoutMs));
+							StartDismissTimer (TimeSpan.FromMilliseconds (timeoutMs));
 				});
 
 				SetNeedsDisplay ();
@@ -366,6 +357,7 @@ namespace BigTed
 
 		void StartDismissTimer (TimeSpan duration)
 		{
+
 			_fadeoutTimer = NSTimer.CreateTimer (duration, DismissWorker);
 			NSRunLoop.Main.AddTimer (_fadeoutTimer, NSRunLoopMode.Common);
 		}
@@ -660,7 +652,7 @@ namespace BigTed
 				foreach (var possibleKeyboard in keyboardWindow.Subviews)
 				{
 					if (possibleKeyboard.GetType ().Name == "UIPeripheralHostView" ||
-						possibleKeyboard.GetType ().Name == "UIKeyboard")
+					    possibleKeyboard.GetType ().Name == "UIKeyboard")
 					{
 						return possibleKeyboard.Bounds.Size.Height;
 					}
@@ -676,18 +668,19 @@ namespace BigTed
 			SetProgressTimer (null);
 
 			UIView.Animate (0.3, 0, UIViewAnimationOptions.CurveEaseIn | UIViewAnimationOptions.AllowUserInteraction,
-			                delegate
-			{
-				HudView.Transform.Scale (0.8f, 0.8f);
+				delegate
+				{
+					HudView.Transform.Scale (0.8f, 0.8f);
 					if (isClear)
 					{
 						HudView.Alpha = 0f;
-					} else {
+					} else
+					{
 						Alpha = 0f;
 					}
-			}, delegate
+				}, delegate
 			{
-					if (Alpha == 0f || HudView.Alpha == 0f)
+				if (Alpha == 0f || HudView.Alpha == 0f)
 				{
 					InvokeOnMainThread (delegate
 					{
@@ -695,16 +688,16 @@ namespace BigTed
 						HudView.Alpha = 0f;
 
 						//Removing observers
-						UnRegisterNotifications();
+						UnRegisterNotifications ();
 						NSNotificationCenter.DefaultCenter.RemoveObserver (this);
 
-						Ring.ResetStyle(IsiOS7, (IsiOS7 ? TintColor : UIColor.White));
+						Ring.ResetStyle (IsiOS7, (IsiOS7 ? TintColor : UIColor.White));
 
 						CancelRingLayerAnimation ();
 						StringLabel.RemoveFromSuperview ();
 						SpinnerView.RemoveFromSuperview ();
 						ImageView.RemoveFromSuperview ();
-						if (_cancelHud != null) 
+						if (_cancelHud != null)
 							_cancelHud.RemoveFromSuperview ();
 
 						StringLabel = null;
@@ -721,8 +714,8 @@ namespace BigTed
 						if (IsiOS7)
 						{
 							var rootController = UIApplication.SharedApplication.KeyWindow.RootViewController;
-                            if (rootController != null)
-							    rootController.SetNeedsStatusBarAppearanceUpdate();
+							if (rootController != null)
+								rootController.SetNeedsStatusBarAppearanceUpdate ();
 						}
 					});
 				}
@@ -738,28 +731,28 @@ namespace BigTed
 
 		void RegisterNotifications ()
 		{
-			if(_eventListeners == null)
+			if (_eventListeners == null)
 			{
-				_eventListeners = new List<NSObject>();
+				_eventListeners = new List<NSObject> ();
 			}
-			_eventListeners.Add(NSNotificationCenter.DefaultCenter.AddObserver (UIApplication.DidChangeStatusBarOrientationNotification,
-			                                                                    PositionHUD));
-			_eventListeners.Add(NSNotificationCenter.DefaultCenter.AddObserver (UIKeyboard.WillHideNotification,
-			                                                                    PositionHUD));
-			_eventListeners.Add(NSNotificationCenter.DefaultCenter.AddObserver (UIKeyboard.DidHideNotification,
-			                                                                    PositionHUD));
-			_eventListeners.Add(NSNotificationCenter.DefaultCenter.AddObserver (UIKeyboard.WillShowNotification,
-			                                                                    PositionHUD));
-			_eventListeners.Add(NSNotificationCenter.DefaultCenter.AddObserver (UIKeyboard.DidShowNotification,
-			                                                                    PositionHUD));
+			_eventListeners.Add (NSNotificationCenter.DefaultCenter.AddObserver (UIApplication.DidChangeStatusBarOrientationNotification,
+				PositionHUD));
+			_eventListeners.Add (NSNotificationCenter.DefaultCenter.AddObserver (UIKeyboard.WillHideNotification,
+				PositionHUD));
+			_eventListeners.Add (NSNotificationCenter.DefaultCenter.AddObserver (UIKeyboard.DidHideNotification,
+				PositionHUD));
+			_eventListeners.Add (NSNotificationCenter.DefaultCenter.AddObserver (UIKeyboard.WillShowNotification,
+				PositionHUD));
+			_eventListeners.Add (NSNotificationCenter.DefaultCenter.AddObserver (UIKeyboard.DidShowNotification,
+				PositionHUD));
 		}
 
 		void UnRegisterNotifications ()
 		{
-			if(_eventListeners != null)
+			if (_eventListeners != null)
 			{
-				NSNotificationCenter.DefaultCenter.RemoveObservers(_eventListeners);
-				_eventListeners.Clear();
+				NSNotificationCenter.DefaultCenter.RemoveObservers (_eventListeners);
+				_eventListeners.Clear ();
 				_eventListeners = null;
 			}
 		}
@@ -791,7 +784,6 @@ namespace BigTed
 					else
 						keyboardHeight = keyboardFrame.Size.Width;
 				} else
-				
 					keyboardHeight = 0;
 
 			} else
@@ -849,7 +841,7 @@ namespace BigTed
 			if (notification != null)
 			{
 				UIView.Animate (animationDuration,
-				                0, UIViewAnimationOptions.AllowUserInteraction, delegate
+					0, UIViewAnimationOptions.AllowUserInteraction, delegate
 				{
 					MoveToPoint (newCenter, rotateAngle);
 				}, null);
