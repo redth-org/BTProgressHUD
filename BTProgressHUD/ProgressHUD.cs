@@ -61,13 +61,13 @@ namespace BigTed
 		public Ring Ring = new Ring ();
 		static NSObject obj = new NSObject ();
 
-		public void Show (string status = null, float progress = -1, MaskType maskType = MaskType.None)
+		public void Show (string status = null, float progress = -1, MaskType maskType = MaskType.None, double timeoutMs = 1000)
 		{
-			obj.InvokeOnMainThread (() => ShowProgressWorker (progress, status, maskType));
+			obj.InvokeOnMainThread (() => ShowProgressWorker (progress, status, maskType, timeoutMs: timeoutMs));
 		}
 
 		public void Show (string cancelCaption, Action cancelCallback, string status = null, 
-		                  float progress = -1, MaskType maskType = MaskType.None)
+			float progress = -1, MaskType maskType = MaskType.None, double timeoutMs = 1000)
 		{
 			// Making cancelCaption optional hides the method via the overload
 			if (string.IsNullOrEmpty (cancelCaption))
@@ -75,12 +75,12 @@ namespace BigTed
 				cancelCaption = "Cancel";
 			}
 			obj.InvokeOnMainThread (() => ShowProgressWorker (progress, status, maskType, 
-				cancelCaption: cancelCaption, cancelCallback: cancelCallback, timeoutMs: 1000));
+				cancelCaption: cancelCaption, cancelCallback: cancelCallback, timeoutMs: timeoutMs));
 		}
 
-		public void ShowContinuousProgress (string status = null, MaskType maskType = MaskType.None)
+		public void ShowContinuousProgress (string status = null, MaskType maskType = MaskType.None, double timeoutMs = 1000)
 		{
-			obj.InvokeOnMainThread (() => ShowProgressWorker (0, status, maskType, false, true, null, null, 1000, true));
+			obj.InvokeOnMainThread (() => ShowProgressWorker (0, status, maskType, false, true, null, null, timeoutMs, true));
 		}
 
 		public void ShowToast (string status, bool showToastCentered = true, double timeoutMs = 1000)
