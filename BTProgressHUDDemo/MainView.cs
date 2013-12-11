@@ -126,6 +126,11 @@ namespace BTProgressHUDDemo
 
 			MakeButton ("Dismiss", () => {
 				ProgressHUD.Shared.Dismiss (); 
+
+				if (timer != null) {
+					timer.Invalidate();
+					timer = null;
+				}
 			});
 
 			//From a bug report from Jose
