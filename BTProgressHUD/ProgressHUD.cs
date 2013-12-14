@@ -36,6 +36,13 @@ namespace BigTed
 			Alpha = 0;
 			AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
 
+			SetOSSpecificLookAndFeel ();
+
+		}
+
+		public void SetOSSpecificLookAndFeel ()
+		{
+
 			if (IsiOS7)
 			{
 				HudBackgroundColour = UIColor.White.ColorWithAlpha (0.8f);
@@ -43,6 +50,12 @@ namespace BigTed
 				HudStatusShadowColor = UIColor.FromWhiteAlpha (200f / 255f, 0.8f);
 				_ringThickness = 1f;
 
+			} else
+			{
+				HudBackgroundColour = UIColor.FromWhiteAlpha (0.0f, 0.8f);
+				HudForegroundColor = UIColor.White;
+				HudStatusShadowColor = UIColor.Black;
+				_ringThickness = 6f;
 			}
 		}
 
@@ -67,7 +80,7 @@ namespace BigTed
 		}
 
 		public void Show (string cancelCaption, Action cancelCallback, string status = null, 
-			float progress = -1, MaskType maskType = MaskType.None, double timeoutMs = 1000)
+		                  float progress = -1, MaskType maskType = MaskType.None, double timeoutMs = 1000)
 		{
 			// Making cancelCaption optional hides the method via the overload
 			if (string.IsNullOrEmpty (cancelCaption))
@@ -321,7 +334,7 @@ namespace BigTed
 					//UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, string);
 
 					if (textOnly)
-							StartDismissTimer (TimeSpan.FromMilliseconds (timeoutMs));
+						StartDismissTimer (TimeSpan.FromMilliseconds (timeoutMs));
 				});
 
 				SetNeedsDisplay ();
@@ -1014,9 +1027,22 @@ namespace BigTed
 		{
 			get
 			{
-				//if you want to default it to the 7 style - or the 6 style - just change it here.
+				if (ForceiOS6LookAndFeel)
+					return false;
 
 				return UIDevice.CurrentDevice.CheckSystemVersion (7, 0);
+			}
+		}
+
+		bool forceiOS6LookAndFeel = false;
+
+		public bool ForceiOS6LookAndFeel
+		{
+			get { return forceiOS6LookAndFeel; }
+			set
+			{
+				forceiOS6LookAndFeel = value;
+				SetOSSpecificLookAndFeel ();
 			}
 		}
 	}

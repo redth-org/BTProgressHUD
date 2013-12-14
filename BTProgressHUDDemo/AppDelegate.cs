@@ -4,6 +4,7 @@ using System.Linq;
 
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
+using BigTed;
 
 namespace BTProgressHUDDemo
 {
@@ -32,6 +33,12 @@ namespace BTProgressHUDDemo
 			
 			// If you have defined a root view controller, set it here:
 			// window.RootViewController = myViewController;
+
+
+			//This is for running on iOS7, but with an app build against the iOS6 SDK.
+			// I dont think I can check the SDK version I'm linking with, sadly.
+			BTProgressHUD.ForceiOS6LookAndFeel = true;
+
 
 			viewController = new UINavigationController(new MainViewController ());
 			window.RootViewController = viewController;
