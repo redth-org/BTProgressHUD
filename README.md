@@ -100,6 +100,6 @@ Thanks to
 * [mloenow](https://github.com/mloenow)
 * [Ramesh Sringeri](https://github.com/idispose) 
 * [Danny Cabrera](https://github.com/dannycabrera)
-* [Gred Shackles](https://github.com/gshackles)
+* [Greg Shackles](https://github.com/gshackles)
 
 for the updates / fixes.
