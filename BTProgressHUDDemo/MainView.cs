@@ -30,6 +30,12 @@ namespace BTProgressHUDDemo
 			var root = new RootElement ("BTProgressHUD");
 			mainSection = new Section ();
 
+			MakeButton ("Masks", () =>
+			{
+					ProgressHUD.Shared.Show("Loading...", -1, ProgressHUD.MaskType.None, 0.75);
+					KillAfter(5);
+			});
+
 			MakeButton ("Async", () =>
 				{
 					AsyncTest();

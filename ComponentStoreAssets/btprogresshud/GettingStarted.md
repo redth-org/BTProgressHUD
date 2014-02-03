@@ -27,6 +27,15 @@ ShowToast, ShowSuccessWithStatus, ShowErrorWithStatus, and ShowImage all auto-di
 
 BTProgressHUD is aware of the thread you are calling from, and ensures that HUDs are always manipulated from the UI thread.
 
+#Using on iOS6
+
+If your app needs to work against the iOS6 SDK, but with the user on iOS7, you can set 
+
+```csharp
+BTProgressHUD.ForceiOS6LookAndFeel = true;
+```
+
+And all the dialog boxes will look like iOS6 (black with white text, not the other way)
 
 #Other Show options
 

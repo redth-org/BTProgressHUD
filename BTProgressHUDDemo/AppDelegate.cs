@@ -37,7 +37,7 @@ namespace BTProgressHUDDemo
 
 			//This is for running on iOS7, but with an app build against the iOS6 SDK.
 			// I dont think I can check the SDK version I'm linking with, sadly.
-			BTProgressHUD.ForceiOS6LookAndFeel = true;
+			//BTProgressHUD.ForceiOS6LookAndFeel = true;
 
 
 			viewController = new UINavigationController(new MainViewController ());

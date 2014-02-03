@@ -28,5 +28,6 @@ There are other forms of HUD:
 * Toast, modelled after the [Android Toast](http://developer.android.com/guide/topics/ui/notifiers/toasts.html) display.
 
 Source code can be found on [GitHub](https://github.com/nicwise/BTProgressHUD/).
+Any bugs, file them on GitHub and [drop me an email](mailto:nicw@fastchicken.co.nz)
 
 Some screenshots assembled with [PlaceIt](http://placeit.breezi.com/).
