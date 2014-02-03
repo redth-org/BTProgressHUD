@@ -30,6 +30,11 @@ namespace BTProgressHUDDemo
 			var root = new RootElement ("BTProgressHUD");
 			mainSection = new Section ();
 
+			MakeButton ("Async", () =>
+				{
+					AsyncTest();
+				});
+
 
 			MakeButton ("Show Continuous Progress", () =>
 			{
@@ -144,6 +149,23 @@ namespace BTProgressHUDDemo
 
 		}
 
+		async void AsyncTest()
+		{
+			ProgressHUD.Shared.Show("Logging in.");
+			var res = await BackgroundSleepOperation();
+			ProgressHUD.Shared.Dismiss();
+		}
+
+		async Task<bool> BackgroundSleepOperation ()
+		{
+			return await Task.Run (() => {
+				Thread.Sleep (1);
+				return true;
+			});
+		}
+
+
+
 		async void ShowWaitDismissWithProperCancelButton ()
 		{
 
@@ -160,13 +182,7 @@ namespace BTProgressHUDDemo
 
 		}
 
-		async Task<bool> BackgroundSleepOperation ()
-		{
-			return await Task.Run (() => {
-				Thread.Sleep (2000);
-				return true;
-			});
-		}
+
 
 		void KillAfter (float timeout = 2)
 		{
