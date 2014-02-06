@@ -67,9 +67,17 @@ namespace BigTed
 			Gradient
 		}
 
+		public enum ToastPosition
+		{
+			Bottom = 1,
+			Center,
+			Top
+		}
+
 		public UIColor HudBackgroundColour = UIColor.FromWhiteAlpha (0.0f, 0.8f);
 		public UIColor HudForegroundColor = UIColor.White;
 		public UIColor HudStatusShadowColor = UIColor.Black;
+		public UIColor HudToastBackgroundColor = UIColor.Clear;
 		public UIFont HudFont = UIFont.BoldSystemFontOfSize (16f);
 		public Ring Ring = new Ring ();
 		static NSObject obj = new NSObject ();
@@ -93,12 +101,12 @@ namespace BigTed
 
 		public void ShowContinuousProgress (string status = null, MaskType maskType = MaskType.None, double timeoutMs = 1000)
 		{
-			obj.InvokeOnMainThread (() => ShowProgressWorker (0, status, maskType, false, true, null, null, timeoutMs, true));
+			obj.InvokeOnMainThread (() => ShowProgressWorker (0, status, maskType, false, ToastPosition.Center, null, null, timeoutMs, true));
 		}
 
-		public void ShowToast (string status, bool showToastCentered = true, double timeoutMs = 1000)
+		public void ShowToast (string status, ToastPosition toastPosition = ToastPosition.Center, double timeoutMs = 1000)
 		{
-			obj.InvokeOnMainThread (() => ShowProgressWorker (status: status, textOnly: true, showToastCentered: showToastCentered, timeoutMs: timeoutMs));
+			obj.InvokeOnMainThread (() => ShowProgressWorker (status: status, textOnly: true, toastPosition: toastPosition, timeoutMs: timeoutMs));
 		}
 
 		public void SetStatus (string status)
@@ -220,7 +228,7 @@ namespace BigTed
 		}
 
 		void ShowProgressWorker (float progress = -1, string status = null, MaskType maskType = MaskType.None, bool textOnly = false, 
-		                         bool showToastCentered = true, string cancelCaption = null, Action cancelCallback = null, 
+								 ToastPosition toastPosition = ToastPosition.Center, string cancelCaption = null, Action cancelCallback = null, 
 		                         double timeoutMs = 1000, bool showContinuousProgress = false)
 		{
 			if (OverlayView.Superview == null)
@@ -302,7 +310,7 @@ namespace BigTed
 			}
 
 			OverlayView.Hidden = false;
-			this.showToastCentered = showToastCentered;
+			this.toastPosition = toastPosition;
 			PositionHUD (null);
 
 		
@@ -552,7 +560,7 @@ namespace BigTed
 				if (_stringLabel == null)
 				{
 					_stringLabel = new UILabel ();
-					_stringLabel.BackgroundColor = UIColor.Clear;
+					_stringLabel.BackgroundColor = HudToastBackgroundColor;
 					_stringLabel.AdjustsFontSizeToFitWidth = true;
 					_stringLabel.TextAlignment = UITextAlignment.Center;
 					_stringLabel.BaselineAdjustment = UIBaselineAdjustment.AlignCenters;
@@ -776,7 +784,7 @@ namespace BigTed
 			HudView.Center = newCenter;
 		}
 
-		bool showToastCentered = true;
+		ToastPosition toastPosition = ToastPosition.Center;
 
 		void PositionHUD (NSNotification notification)
 		{
@@ -823,11 +831,20 @@ namespace BigTed
 			float posY = (float)Math.Floor (activeHeight * 0.45);
 			float posX = orientationFrame.Size.Width / 2;
 
-			if (!showToastCentered)
+			switch (toastPosition)
 			{
-				posY = activeHeight - 40;
+				case ToastPosition.Bottom:
+					posY = activeHeight - 40;
+					break;
+				case ToastPosition.Center:
+					// Already set above
+					break;
+				case ToastPosition.Top:
+					posY = 40;
+				default:
+					break;
 			}
-			
+
 			PointF newCenter;
 			float rotateAngle;
 

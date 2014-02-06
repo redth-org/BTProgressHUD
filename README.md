@@ -71,10 +71,10 @@ public enum MaskType
 ```
 
 ###ShowToast
-The toast can be centered or at the bottom of the screen, like Android. This is controlled by the second parameter.
+The toast can be centered or at the top or bottom of the screen. This is controlled by the second parameter.
 
 ```csharp
-BTProgressHUD.ShowToast("foo", showToastCentered: false);
+BTProgressHUD.ShowToast("foo", toastPosition: ProgressHUD.ToastPosition.Center);
 ```
 
 ###ShowSuccess/Error/ShowImage
