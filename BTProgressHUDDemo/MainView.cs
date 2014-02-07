@@ -105,10 +105,22 @@ namespace BTProgressHUDDemo
 				ProgressHUD.Shared.ShowErrorWithStatus ("Oh, thats bad", timeoutMs: 5000);
 			});
 
-			MakeButton ("Toast", () => {
-				ProgressHUD.Shared.HudForegroundColor = UIColor.White;
-				ProgressHUD.Shared.HudToastBackgroundColor = UIColor.DarkGray;
+			MakeButton ("Toast Top", () => {
+				//ProgressHUD.Shared.HudForegroundColor = UIColor.White;
+				//ProgressHUD.Shared.HudToastBackgroundColor = UIColor.DarkGray;
 				ProgressHUD.Shared.ShowToast ("Hello from the toast\r\nLine 2", toastPosition: ProgressHUD.ToastPosition.Top, timeoutMs: 3000);
+			});
+
+			MakeButton ("Toast Center", () => {
+				//ProgressHUD.Shared.HudForegroundColor = UIColor.White;
+				//ProgressHUD.Shared.HudToastBackgroundColor = UIColor.DarkGray;
+				ProgressHUD.Shared.ShowToast ("Hello from the toast\r\nLine 2", toastPosition: ProgressHUD.ToastPosition.Center, timeoutMs: 3000);
+			});
+
+			MakeButton ("Toast Bottom", () => {
+				//ProgressHUD.Shared.HudForegroundColor = UIColor.White;
+				//ProgressHUD.Shared.HudToastBackgroundColor = UIColor.DarkGray;
+				ProgressHUD.Shared.ShowToast ("Hello from the toast\r\nLine 2", toastPosition: ProgressHUD.ToastPosition.Bottom, timeoutMs: 3000);
 			});
 
 			MakeButton ("Progress", () => {
