@@ -106,8 +106,9 @@ namespace BTProgressHUDDemo
 			});
 
 			MakeButton ("Toast", () => {
-				ProgressHUD.Shared.ShowToast ("Hello from the toast", showToastCentered: false);
-
+				ProgressHUD.Shared.HudForegroundColor = UIColor.White;
+				ProgressHUD.Shared.HudToastBackgroundColor = UIColor.DarkGray;
+				ProgressHUD.Shared.ShowToast ("Hello from the toast\r\nLine 2", toastPosition: ProgressHUD.ToastPosition.Top, timeoutMs: 3000);
 			});
 
 			MakeButton ("Progress", () => {
