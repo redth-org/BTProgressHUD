@@ -20,6 +20,12 @@ namespace BigTed
 			ProgressHUD.Shared.ShowContinuousProgress (status, maskType);
 		}
 
+		public static void ShowToast (string status, bool showToastCentered = false, double timeoutMs = 1000)
+		{
+			ShowToast (status, showToastCentered ? ProgressHUD.ToastPosition.Center : ProgressHUD.ToastPosition.Bottom, timeoutMs);
+		}
+
+
 		public static void ShowToast (string status, ProgressHUD.ToastPosition toastPosition = ProgressHUD.ToastPosition.Center, double timeoutMs = 1000)
 		{
 			ProgressHUD.Shared.ShowToast (status, toastPosition, timeoutMs);
