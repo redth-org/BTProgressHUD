@@ -46,6 +46,7 @@
     <Compile Include="BTProgressHUD.cs" />
     <Compile Include="ProgressHUD.cs" />
     <Compile Include="Ring.cs" />
+    <Compile Include="XHUD.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="success%402x.png">
