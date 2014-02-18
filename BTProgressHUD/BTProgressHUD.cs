@@ -24,6 +24,10 @@ namespace BigTed
 		{
 			ProgressHUD.Shared.ShowToast (status, showToastCentered, timeoutMs);
 		}
+		public static void ShowToast (string status, bool showToastCentered = true, double timeoutMs = 1000, ProgressHUD.MaskType maskType = ProgressHUD.MaskType.None)
+		{
+			ProgressHUD.Shared.ShowToast (status, maskType, showToastCentered, timeoutMs);
+		}
 
 		public static void SetStatus (string status)
 		{

@@ -96,9 +96,11 @@ namespace BigTed
 			obj.InvokeOnMainThread (() => ShowProgressWorker (0, status, maskType, false, true, null, null, timeoutMs, true));
 		}
 
-		public void ShowToast (string status, bool showToastCentered = true, double timeoutMs = 1000)
+		public void ShowToast (string status, bool showToastCentered = true, double timeoutMs = 1000) { ShowToast(status, MaskType.None, showToastCentered, timeoutMs); }
+
+		public void ShowToast (string status, MaskType maskType, bool showToastCentered = true, double timeoutMs = 1000)
 		{
-			obj.InvokeOnMainThread (() => ShowProgressWorker (status: status, textOnly: true, showToastCentered: showToastCentered, timeoutMs: timeoutMs));
+			obj.InvokeOnMainThread (() => ShowProgressWorker (status: status, textOnly: true, maskType: maskType, showToastCentered: showToastCentered, timeoutMs: timeoutMs));
 		}
 
 		public void SetStatus (string status)
