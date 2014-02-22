@@ -79,6 +79,7 @@ namespace BigTed
 		public UIColor HudStatusShadowColor = UIColor.Black;
 		public UIColor HudToastBackgroundColor = UIColor.Clear;
 		public UIFont HudFont = UIFont.BoldSystemFontOfSize (16f);
+		public UITextAlignment HudTextAlignment = UITextAlignment.Center;
 		public Ring Ring = new Ring ();
 		static NSObject obj = new NSObject ();
 
@@ -562,7 +563,7 @@ namespace BigTed
 					_stringLabel = new UILabel ();
 					_stringLabel.BackgroundColor = HudToastBackgroundColor;
 					_stringLabel.AdjustsFontSizeToFitWidth = true;
-					_stringLabel.TextAlignment = UITextAlignment.Center;
+					_stringLabel.TextAlignment = HudTextAlignment;
 					_stringLabel.BaselineAdjustment = UIBaselineAdjustment.AlignCenters;
 					_stringLabel.TextColor = HudForegroundColor;
 					_stringLabel.Font = HudFont;
@@ -830,17 +831,19 @@ namespace BigTed
 			activeHeight -= keyboardHeight;
 			float posY = (float)Math.Floor (activeHeight * 0.45);
 			float posX = orientationFrame.Size.Width / 2;
+			var textHeight = _stringLabel.Frame.Height / 2 + 40;
 
 			switch (toastPosition)
 			{
 				case ToastPosition.Bottom:
-					posY = activeHeight - 40;
+					posY = activeHeight - textHeight;
 					break;
 				case ToastPosition.Center:
 					// Already set above
 					break;
 				case ToastPosition.Top:
-					posY = 40;
+					posY = textHeight;
+					break;
 				default:
 					break;
 			}
@@ -940,7 +943,8 @@ namespace BigTed
 
 			if (!string.IsNullOrEmpty (@string))
 			{
-				SizeF stringSize = new NSString (@string).StringSize (StringLabel.Font, new SizeF (200, 300));
+				int lineCount = Math.Min(10, @string.Split('\n').Length + 1);
+				SizeF stringSize = new NSString (@string).StringSize (StringLabel.Font, new SizeF (200, 30 * lineCount));
 				stringWidth = stringSize.Width;
 				stringHeight = stringSize.Height;
 
