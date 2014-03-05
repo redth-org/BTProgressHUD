@@ -31,7 +31,7 @@ namespace XHUD
 			BTProgressHUD.ShowToast(message, showToastCentered, timeoutMs);
 		}
 
-		public static void ShowToast (string message, MaskType maskType, bool showToastCentered = true, double timeoutMs = 1000)
+		public static void ShowToast(string message, MaskType maskType, bool showToastCentered = true, double timeoutMs = 1000)
 		{
 			BTProgressHUD.ShowToast(message, showToastCentered, timeoutMs, (ProgressHUD.MaskType)maskType);
 		}
