@@ -101,10 +101,15 @@ namespace BigTed
 				cancelCaption: cancelCaption, cancelCallback: cancelCallback, timeoutMs: timeoutMs));
 		}
 
-		public void ShowContinuousProgress(string status = null, MaskType maskType = MaskType.None, double timeoutMs = 1000)
+		public void ShowContinuousProgress(string status = null, MaskType maskType = MaskType.None, double timeoutMs = 1000, UIImage img = null)
 		{
-			obj.InvokeOnMainThread(() => ShowProgressWorker(0, status, maskType, false, ToastPosition.Center, null, null, timeoutMs, true));
+			obj.InvokeOnMainThread(() => ShowProgressWorker(0, status, maskType, false, ToastPosition.Center, null, null, timeoutMs, true, img));
 		}
+
+        public void ShowContinuousProgressTest(string status = null, MaskType maskType = MaskType.None, double timeoutMs = 1000)
+        {
+            obj.InvokeOnMainThread(() => ShowProgressWorker(0, status, maskType, false, ToastPosition.Center, null, null, timeoutMs, true));
+        }
 
 		public void ShowToast(string status, MaskType maskType = MaskType.None, ToastPosition toastPosition = ToastPosition.Center, double timeoutMs = 1000)
 		{
@@ -188,6 +193,7 @@ namespace BigTed
 		CAShapeLayer _backgroundRingLayer;
 		CAShapeLayer _ringLayer;
 		List<NSObject> _eventListeners;
+        bool _displayContinuousImage;
 
 		public float RingRadius
 		{
@@ -231,7 +237,7 @@ namespace BigTed
 
 		void ShowProgressWorker(float progress = -1, string status = null, MaskType maskType = MaskType.None, bool textOnly = false, 
 		                        ToastPosition toastPosition = ToastPosition.Center, string cancelCaption = null, Action cancelCallback = null, 
-		                        double timeoutMs = 1000, bool showContinuousProgress = false)
+		                        double timeoutMs = 1000, bool showContinuousProgress = false, UIImage displayContinuousImage = null)
 		{
 			if (OverlayView.Superview == null)
 			{
@@ -276,6 +282,13 @@ namespace BigTed
 
 			if (showContinuousProgress)
 			{
+                if (displayContinuousImage != null)
+                {
+                    _displayContinuousImage = true;
+                    ImageView.Image = displayContinuousImage;
+                    ImageView.Hidden = false;
+                }
+
 				RingLayer.StrokeEnd = 0.0f;
 				StartProgressTimer(TimeSpan.FromMilliseconds(Ring.ProgressUpdateInterval));
 			}
@@ -285,6 +298,7 @@ namespace BigTed
 				{
 					ImageView.Image = null;
 					ImageView.Hidden = false;
+
 					SpinnerView.StopAnimating();
 					RingLayer.StrokeEnd = progress;
 				}
@@ -400,9 +414,13 @@ namespace BigTed
 		{
 			obj.InvokeOnMainThread(delegate
 			{
-				ImageView.Image = null;
-				ImageView.Hidden = false;
-				SpinnerView.StopAnimating();
+                if (!_displayContinuousImage)
+                {
+                    ImageView.Image = null;
+                    ImageView.Hidden = false;
+                }
+				
+                SpinnerView.StopAnimating();
 		
 				if (RingLayer.StrokeEnd > 1)
 				{
