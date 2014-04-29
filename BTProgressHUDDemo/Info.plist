@@ -14,12 +14,7 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
+	<array/>
 	<key>MinimumOSVersion</key>
 	<string>7.0</string>
 	<key>UIStatusBarTintParameters</key>
@@ -35,11 +30,25 @@
 				<key>Red</key>
 				<real>0</real>
 				<key>Green</key>
-				<real>0.8480354009308</real>
+				<real>0.847058823529412</real>
 				<key>Blue</key>
 				<real>1</real>
 			</dict>
 		</dict>
 	</dict>
+	<key>CFBundleDisplayName</key>
+	<string>BTProgressHUDDemo</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.nicewise.btprogresshuddemo</string>
+	<key>CFBundleVersion</key>
+	<string></string>
+	<key>NSMainNibFile</key>
+	<string></string>
+	<key>NSMainNibFile~ipad</key>
+	<string></string>
+	<key>CFBundleIconFiles</key>
+	<array>
+		<string>Default-568h@2x.png</string>
+	</array>
 </dict>
 </plist>

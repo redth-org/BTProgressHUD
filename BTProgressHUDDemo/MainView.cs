@@ -45,9 +45,16 @@ namespace BTProgressHUDDemo
 			MakeButton ("Show Continuous Progress", () =>
 			{
 				ProgressHUD.Shared.Ring.Color = UIColor.Green;
-				ProgressHUD.Shared.ShowContinuousProgress ("Continuous progress...");
+                ProgressHUD.Shared.ShowContinuousProgress("Continuous progress...", ProgressHUD.MaskType.None, 1000);
 				KillAfter (3);
 			});
+
+            MakeButton("Show Continuous Progress with Image", () =>
+            {
+                ProgressHUD.Shared.Ring.Color = UIColor.Green;
+                ProgressHUD.Shared.ShowContinuousProgress("Continuous progress...", ProgressHUD.MaskType.None, 1000, UIImage.FromBundle("xamarin@2x.png"));
+                KillAfter(3);
+            });
 
 			MakeButton ("Show", () => {
 				ProgressHUD.Shared.Show (); 
