@@ -47,7 +47,7 @@ namespace BTProgressHUDDemo
 			});
 
 			MakeButton ("Toast", () => {
-				BTProgressHUD.ShowToast("Hello from the toast", showToastCentered: false) ;
+				BTProgressHUD.ShowToast("Hello from the toast", showToastCentered: false, timeoutMs:1000) ;
 
 			});
 
