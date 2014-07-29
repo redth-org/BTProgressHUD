@@ -682,32 +682,26 @@ namespace BigTed
 
 		float VisibleKeyboardHeight
 		{
-			get
-			{
-				UIWindow keyboardWindow = null;
-				foreach (var testWindow in UIApplication.SharedApplication.Windows)
-				{
-					if (!(testWindow is UIWindow))
-					{
-						keyboardWindow = testWindow;
-						break;
-					}
-				}
+            get
+            {
+                foreach (var testWindow in UIApplication.SharedApplication.Windows)
+                {
+                    if (testWindow.GetClassName() != typeof(UIWindow).Name)
+                    {
+                        foreach (var possibleKeyboard in testWindow.Subviews)
+                        {
+                            var nativeViewName = possibleKeyboard.GetClassName();
+                            if (nativeViewName == "UIPeripheralHostView" ||
+                                nativeViewName == "UIKeyboard")
+                            {
+                                return possibleKeyboard.Bounds.Size.Height;
+                            }
+                        }
+                    }
+                }
 
-				if (keyboardWindow == null)
-					return 0;
-
-				foreach (var possibleKeyboard in keyboardWindow.Subviews)
-				{
-					if (possibleKeyboard.GetType().Name == "UIPeripheralHostView" ||
-					    possibleKeyboard.GetType().Name == "UIKeyboard")
-					{
-						return possibleKeyboard.Bounds.Size.Height;
-					}
-				}
-
-				return 0;
-			}
+                return 0;
+            }
 		}
 
 		void DismissWorker()
