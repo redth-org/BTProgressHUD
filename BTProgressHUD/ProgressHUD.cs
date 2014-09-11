@@ -814,7 +814,8 @@ namespace BigTed
 			double animationDuration = 0;
 
 			UIInterfaceOrientation orientation = UIApplication.SharedApplication.StatusBarOrientation;
-			
+			bool ignoreOrientation = Convert.ToDouble(UIDevice.CurrentDevice.SystemVersion) >= 8.0;
+
 			if (notification != null)
 			{
 				RectangleF keyboardFrame = UIKeyboard.FrameEndFromNotification(notification);
@@ -822,7 +823,7 @@ namespace BigTed
 				
 				if (notification.Name == UIKeyboard.WillShowNotification || notification.Name == UIKeyboard.DidShowNotification)
 				{
-					if (IsPortrait(orientation))
+					if (ignoreOrientation || IsPortrait(orientation))
 						keyboardHeight = keyboardFrame.Size.Height;
 					else
 						keyboardHeight = keyboardFrame.Size.Width;
@@ -836,10 +837,10 @@ namespace BigTed
 				keyboardHeight = VisibleKeyboardHeight;
 			}
 			
-			RectangleF orientationFrame = UIScreen.MainScreen.Bounds;
+			RectangleF orientationFrame = this.Window.Bounds;
 			RectangleF statusBarFrame = UIApplication.SharedApplication.StatusBarFrame;
 			
-			if (IsLandscape(orientation))
+			if (!ignoreOrientation && IsLandscape(orientation))
 			{
 				orientationFrame.Size = new SizeF(orientationFrame.Size.Height, orientationFrame.Size.Width);
 				statusBarFrame.Size = new SizeF(statusBarFrame.Size.Height, statusBarFrame.Size.Width);
@@ -874,25 +875,33 @@ namespace BigTed
 			PointF newCenter;
 			float rotateAngle;
 
-			switch (orientation)
-			{ 
-				case UIInterfaceOrientation.PortraitUpsideDown:
-					rotateAngle = (float)Math.PI; 
-					newCenter = new PointF(posX, orientationFrame.Size.Height - posY);
-					break;
-				case UIInterfaceOrientation.LandscapeLeft:
-					rotateAngle = (float)(-Math.PI / 2.0f);
-					newCenter = new PointF(posY, posX);
-					break;
-				case UIInterfaceOrientation.LandscapeRight:
-					rotateAngle = (float)(Math.PI / 2.0f);
-					newCenter = new PointF(orientationFrame.Size.Height - posY, posX);
-					break;
-				default: // as UIInterfaceOrientationPortrait
-					rotateAngle = 0.0f;
-					newCenter = new PointF(posX, posY);
-					break;
-			} 
+			if (ignoreOrientation)
+			{
+				rotateAngle = 0.0f;
+				newCenter = new PointF(posX, posY);
+			}
+			else
+			{
+				switch (orientation)
+				{ 
+					case UIInterfaceOrientation.PortraitUpsideDown:
+						rotateAngle = (float)Math.PI; 
+						newCenter = new PointF(posX, orientationFrame.Size.Height - posY);
+						break;
+					case UIInterfaceOrientation.LandscapeLeft:
+						rotateAngle = (float)(-Math.PI / 2.0f);
+						newCenter = new PointF(posY, posX);
+						break;
+					case UIInterfaceOrientation.LandscapeRight:
+						rotateAngle = (float)(Math.PI / 2.0f);
+						newCenter = new PointF(orientationFrame.Size.Height - posY, posX);
+						break;
+					default: // as UIInterfaceOrientationPortrait
+						rotateAngle = 0.0f;
+						newCenter = new PointF(posX, posY);
+						break;
+				} 
+			}
 			
 			if (notification != null)
 			{
