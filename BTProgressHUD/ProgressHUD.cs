@@ -814,7 +814,7 @@ namespace BigTed
 			double animationDuration = 0;
 
 			UIInterfaceOrientation orientation = UIApplication.SharedApplication.StatusBarOrientation;
-			bool ignoreOrientation = Convert.ToDouble(UIDevice.CurrentDevice.SystemVersion) >= 8.0;
+			bool ignoreOrientation = UIDevice.CurrentDevice.CheckSystemVersion(8, 0);
 
 			if (notification != null)
 			{
