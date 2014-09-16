@@ -14,12 +14,25 @@
 //
 //  Version 1.6.1
 using System;
+using System.Collections.Generic;
+
+#if __UNIFIED__
+using UIKit;
+using Foundation;
+using CoreAnimation;
+using CoreGraphics;
+#else
 using MonoTouch.UIKit;
 using MonoTouch.Foundation;
 using MonoTouch.CoreAnimation;
-using System.Drawing;
 using MonoTouch.CoreGraphics;
-using System.Collections.Generic;
+
+using nfloat = System.Single;
+using System.Drawing;
+using CGRect = global::System.Drawing.RectangleF;
+using CGPoint = global::System.Drawing.PointF;
+using CGSize = global::System.Drawing.SizeF;
+#endif
 
 namespace BigTed
 {
@@ -29,7 +42,7 @@ namespace BigTed
 		{
 		}
 
-		public ProgressHUD(RectangleF frame) : base(frame)
+		public ProgressHUD(CGRect frame) : base(frame)
 		{
 			UserInteractionEnabled = false;
 			BackgroundColor = UIColor.Clear;
@@ -207,7 +220,7 @@ namespace BigTed
 			set { _ringThickness = value; }
 		}
 
-		public override void Draw(RectangleF rect)
+		public override void Draw(CGRect rect)
 		{
 			using (var context = UIGraphics.GetCurrentContext())
 			{
@@ -218,14 +231,14 @@ namespace BigTed
 						context.FillRect(Bounds);
 						break;
 					case MaskType.Gradient:
-						float[] colors = new float[] { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.75f };
-						float[] locations = new float[] { 0.0f, 1.0f };
+						nfloat[] colors = new nfloat[] { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.75f };
+						nfloat[] locations = new nfloat[] { 0.0f, 1.0f };
 						using (var colorSpace = CGColorSpace.CreateDeviceRGB())
 						{
 							using (var gradient = new CGGradient(colorSpace, colors, locations))
 							{
-								var center = new PointF(Bounds.Size.Width / 2, Bounds.Size.Height / 2);
-								float radius = Math.Min(Bounds.Size.Width, Bounds.Size.Height);
+								var center = new CGPoint(Bounds.Size.Width / 2, Bounds.Size.Height / 2);
+								float radius = Math.Min((float)Bounds.Size.Width, (float)Bounds.Size.Height);
 								context.DrawRadialGradient(gradient, center, 0, center, radius, CGGradientDrawingOptions.DrawsAfterEndLocation);
 							}
 						}
@@ -245,7 +258,7 @@ namespace BigTed
 				Array.Reverse(windows);
 				foreach (UIWindow window in windows)
 				{
-					if (window.WindowLevel == UIWindow.LevelNormal && !window.Hidden)
+					if (window.WindowLevel == UIWindowLevel.Normal && !window.Hidden)
 					{
 						window.AddSubview(OverlayView);
 						break;
@@ -399,14 +412,21 @@ namespace BigTed
 
 		void StartDismissTimer(TimeSpan duration)
 		{
-
+			#if __UNIFIED__
+			_fadeoutTimer = NSTimer.CreateTimer(duration, timer => DismissWorker ());
+			#else
 			_fadeoutTimer = NSTimer.CreateTimer(duration, DismissWorker);
+			#endif
 			NSRunLoop.Main.AddTimer(_fadeoutTimer, NSRunLoopMode.Common);
 		}
 
 		void StartProgressTimer(TimeSpan duration)
 		{
+			#if __UNIFIED__
+			_progressTimer = NSTimer.CreateRepeatingTimer(duration, timer => UpdateProgress ());
+			#else
 			_progressTimer = NSTimer.CreateRepeatingTimer(duration, UpdateProgress);
+			#endif
 			NSRunLoop.Current.AddTimer(_progressTimer, NSRunLoopMode.Common);
 		}
 
@@ -461,7 +481,7 @@ namespace BigTed
 			{
 				if (_ringLayer == null)
 				{
-					var center = new PointF(HudView.Frame.Width / 2, HudView.Frame.Height / 2);
+					var center = new CGPoint(HudView.Frame.Width / 2, HudView.Frame.Height / 2);
 					_ringLayer = CreateRingLayer(center, _ringRadius, _ringThickness, Ring.Color);
 					HudView.Layer.AddSublayer(_ringLayer);
 				}
@@ -476,7 +496,7 @@ namespace BigTed
 			{
 				if (_backgroundRingLayer == null)
 				{
-					var center = new PointF(HudView.Frame.Width / 2, HudView.Frame.Height / 2);
+					var center = new CGPoint(HudView.Frame.Width / 2, HudView.Frame.Height / 2);
 					_backgroundRingLayer = CreateRingLayer(center, _ringRadius, _ringThickness, Ring.BackgroundColor);
 					_backgroundRingLayer.StrokeEnd = 1;
 					HudView.Layer.AddSublayer(_backgroundRingLayer);
@@ -486,17 +506,17 @@ namespace BigTed
 			set { _backgroundRingLayer = value; }
 		}
 
-		PointF PointOnCircle(PointF center, float radius, float angleInDegrees)
+		CGPoint PointOnCircle(CGPoint center, float radius, float angleInDegrees)
 		{
 			float x = radius * (float)Math.Cos(angleInDegrees * Math.PI / 180) + radius;
 			float y = radius * (float)Math.Sin(angleInDegrees * Math.PI / 180) + radius;
-			return new PointF(x, y);
+			return new CGPoint(x, y);
 		}
 
-		UIBezierPath CreateCirclePath(PointF center, float radius, int sampleCount)
+		UIBezierPath CreateCirclePath(CGPoint center, float radius, int sampleCount)
 		{
 			var smoothedPath = new UIBezierPath();
-			PointF startPoint = PointOnCircle(center, radius, -90);
+			CGPoint startPoint = PointOnCircle(center, radius, -90);
 
 			smoothedPath.MoveTo(startPoint);
 
@@ -512,11 +532,11 @@ namespace BigTed
 			return smoothedPath;
 		}
 
-		CAShapeLayer CreateRingLayer(PointF center, float radius, float lineWidth, UIColor color)
+		CAShapeLayer CreateRingLayer(CGPoint center, float radius, float lineWidth, UIColor color)
 		{
 			var smoothedPath = CreateCirclePath(center, radius, 72);
 			var slice = new CAShapeLayer();
-			slice.Frame = new RectangleF(center.X - radius, center.Y - radius, radius * 2, radius * 2);
+			slice.Frame = new CGRect(center.X - radius, center.Y - radius, radius * 2, radius * 2);
 			slice.FillColor = UIColor.Clear.CGColor;
 			slice.StrokeColor = color.CGColor;
 			slice.LineWidth = lineWidth;
@@ -596,7 +616,7 @@ namespace BigTed
 					if (!IsiOS7)
 					{
 						_stringLabel.ShadowColor = HudStatusShadowColor;
-						_stringLabel.ShadowOffset = new SizeF(0, -1);
+						_stringLabel.ShadowOffset = new CGSize(0, -1);
 					} 
 					_stringLabel.Lines = 0;
 				}
@@ -649,7 +669,7 @@ namespace BigTed
 			{
 				if (_imageView == null)
 				{
-					_imageView = new UIImageView(new RectangleF(0, 0, 28, 28));
+					_imageView = new UIImageView(new CGRect(0, 0, 28, 28));
 				}
 				if (_imageView.Superview == null)
 				{
@@ -668,7 +688,7 @@ namespace BigTed
 				{
 					_spinnerView = new UIActivityIndicatorView(UIActivityIndicatorViewStyle.WhiteLarge);
 					_spinnerView.HidesWhenStopped = true;
-					_spinnerView.Bounds = new RectangleF(0, 0, 37, 37);
+					_spinnerView.Bounds = new CGRect(0, 0, 37, 37);
 					_spinnerView.Color = HudForegroundColor;
 				}
 
@@ -694,7 +714,7 @@ namespace BigTed
                             if (nativeViewName == "UIPeripheralHostView" ||
                                 nativeViewName == "UIKeyboard")
                             {
-                                return possibleKeyboard.Bounds.Size.Height;
+								return (float)possibleKeyboard.Bounds.Size.Height;
                             }
                         }
                     }
@@ -800,7 +820,7 @@ namespace BigTed
 			}
 		}
 
-		void MoveToPoint(PointF newCenter, float angle)
+		void MoveToPoint(CGPoint newCenter, float angle)
 		{
 			HudView.Transform = CGAffineTransform.MakeRotation(angle); 
 			HudView.Center = newCenter;
@@ -810,7 +830,7 @@ namespace BigTed
 
 		void PositionHUD(NSNotification notification)
 		{
-			float keyboardHeight = 0;
+			nfloat keyboardHeight = 0;
 			double animationDuration = 0;
 
 			UIInterfaceOrientation orientation = UIApplication.SharedApplication.StatusBarOrientation;
@@ -818,7 +838,7 @@ namespace BigTed
 
 			if (notification != null)
 			{
-				RectangleF keyboardFrame = UIKeyboard.FrameEndFromNotification(notification);
+				var keyboardFrame = UIKeyboard.FrameEndFromNotification(notification);
 				animationDuration = UIKeyboard.AnimationDurationFromNotification(notification);
 				
 				if (notification.Name == UIKeyboard.WillShowNotification || notification.Name == UIKeyboard.DidShowNotification)
@@ -837,25 +857,25 @@ namespace BigTed
 				keyboardHeight = VisibleKeyboardHeight;
 			}
 			
-			RectangleF orientationFrame = this.Window.Bounds;
-			RectangleF statusBarFrame = UIApplication.SharedApplication.StatusBarFrame;
+			CGRect orientationFrame = this.Window.Bounds;
+			CGRect statusBarFrame = UIApplication.SharedApplication.StatusBarFrame;
 			
 			if (!ignoreOrientation && IsLandscape(orientation))
 			{
-				orientationFrame.Size = new SizeF(orientationFrame.Size.Height, orientationFrame.Size.Width);
-				statusBarFrame.Size = new SizeF(statusBarFrame.Size.Height, statusBarFrame.Size.Width);
+				orientationFrame.Size = new CGSize(orientationFrame.Size.Height, orientationFrame.Size.Width);
+				statusBarFrame.Size = new CGSize(statusBarFrame.Size.Height, statusBarFrame.Size.Width);
 
 			}
 			
-			float activeHeight = orientationFrame.Size.Height;
+			var activeHeight = orientationFrame.Size.Height;
 			
 			if (keyboardHeight > 0)
 				activeHeight += statusBarFrame.Size.Height * 2;
 			
 			activeHeight -= keyboardHeight;
-			float posY = (float)Math.Floor(activeHeight * 0.45);
-			float posX = orientationFrame.Size.Width / 2;
-			var textHeight = _stringLabel.Frame.Height / 2 + 40;
+			nfloat posY = (float)Math.Floor(activeHeight * 0.45);
+			nfloat posX = orientationFrame.Size.Width / 2;
+			nfloat textHeight = _stringLabel.Frame.Height / 2 + 40;
 
 			switch (toastPosition)
 			{
@@ -872,13 +892,13 @@ namespace BigTed
 					break;
 			}
 
-			PointF newCenter;
+			CGPoint newCenter;
 			float rotateAngle;
 
 			if (ignoreOrientation)
 			{
 				rotateAngle = 0.0f;
-				newCenter = new PointF(posX, posY);
+				newCenter = new CGPoint(posX, posY);
 			}
 			else
 			{
@@ -886,19 +906,19 @@ namespace BigTed
 				{ 
 					case UIInterfaceOrientation.PortraitUpsideDown:
 						rotateAngle = (float)Math.PI; 
-						newCenter = new PointF(posX, orientationFrame.Size.Height - posY);
+						newCenter = new CGPoint(posX, orientationFrame.Size.Height - posY);
 						break;
 					case UIInterfaceOrientation.LandscapeLeft:
 						rotateAngle = (float)(-Math.PI / 2.0f);
-						newCenter = new PointF(posY, posX);
+						newCenter = new CGPoint(posY, posX);
 						break;
 					case UIInterfaceOrientation.LandscapeRight:
 						rotateAngle = (float)(Math.PI / 2.0f);
-						newCenter = new PointF(orientationFrame.Size.Height - posY, posX);
+						newCenter = new CGPoint(orientationFrame.Size.Height - posY, posX);
 						break;
 					default: // as UIInterfaceOrientationPortrait
 						rotateAngle = 0.0f;
-						newCenter = new PointF(posX, posY);
+						newCenter = new CGPoint(posX, posY);
 						break;
 				} 
 			}
@@ -944,12 +964,12 @@ namespace BigTed
 
 		void UpdatePosition(bool textOnly = false)
 		{
-			float hudWidth = 100f;
-			float hudHeight = 100f;
-			float stringWidth = 0f;
-			float stringHeight = 0f;
-			float stringHeightBuffer = 20f;
-			float stringAndImageHeightBuffer = 80f;
+			nfloat hudWidth = 100f;
+			nfloat hudHeight = 100f;
+			nfloat stringWidth = 0f;
+			nfloat stringHeight = 0f;
+			nfloat stringHeightBuffer = 20f;
+			nfloat stringAndImageHeightBuffer = 80f;
 
 			/*if (IsiOS7)
 			{
@@ -960,7 +980,7 @@ namespace BigTed
 			}*/
 
 
-			RectangleF labelRect = new RectangleF();
+			CGRect labelRect = new CGRect();
 			
 			string @string = StringLabel.Text;
 
@@ -977,7 +997,7 @@ namespace BigTed
 			if (!string.IsNullOrEmpty(@string))
 			{
 				int lineCount = Math.Min(10, @string.Split('\n').Length + 1);
-				SizeF stringSize = new NSString(@string).StringSize(StringLabel.Font, new SizeF(200, 30 * lineCount));
+				var stringSize = new NSString(@string).StringSize(StringLabel.Font, new CGSize(200, 30 * lineCount));
 				stringWidth = stringSize.Width;
 				stringHeight = stringSize.Height;
 
@@ -990,23 +1010,23 @@ namespace BigTed
 				
 				if (hudHeight > 100)
 				{
-					labelRect = new RectangleF(12, labelRectY, hudWidth, stringHeight);
+					labelRect = new CGRect(12, labelRectY, hudWidth, stringHeight);
 					hudWidth += 24;
 				}
 				else
 				{
 					hudWidth += 24;
-					labelRect = new RectangleF(0, labelRectY, hudWidth, stringHeight);
+					labelRect = new CGRect(0, labelRectY, hudWidth, stringHeight);
 				}
 			}
 
 			// Adjust for Cancel Button
-			var cancelRect = new RectangleF();
+			var cancelRect = new CGRect();
 			string @cancelCaption = _cancelHud == null ? null : CancelHudButton.Title(UIControlState.Normal);
 			if (!string.IsNullOrEmpty(@cancelCaption))
 			{
 				const int gap = 20;
-				SizeF stringSize = new NSString(@cancelCaption).StringSize(StringLabel.Font, new SizeF(200, 300));
+				var stringSize = new NSString(@cancelCaption).StringSize(StringLabel.Font, new CGSize(200, 300));
 				stringWidth = stringSize.Width;
 				stringHeight = stringSize.Height;
 
@@ -1014,10 +1034,10 @@ namespace BigTed
 					hudWidth = (float)Math.Ceiling(stringWidth / 2) * 2;
 
 				// Adjust for label
-				float cancelRectY = 0f;
+				nfloat cancelRectY = 0f;
 				if (labelRect.Height > 0)
 				{
-					cancelRectY = labelRect.Y + labelRect.Height + gap;
+					cancelRectY = labelRect.Y + labelRect.Height + (nfloat)gap;
 				}
 				else
 				{
@@ -1026,25 +1046,25 @@ namespace BigTed
 
 				if (hudHeight > 100)
 				{
-					cancelRect = new RectangleF(12, cancelRectY, hudWidth, stringHeight);
-					labelRect = new RectangleF(12, labelRect.Y, hudWidth, stringHeight);
+					cancelRect = new CGRect(12, cancelRectY, hudWidth, stringHeight);
+					labelRect = new CGRect(12, labelRect.Y, hudWidth, stringHeight);
 					hudWidth += 24;
 				}
 				else
 				{
 					hudWidth += 24;
-					cancelRect = new RectangleF(0, cancelRectY, hudWidth, stringHeight);
-					labelRect = new RectangleF(0, labelRect.Y, hudWidth, stringHeight);
+					cancelRect = new CGRect(0, cancelRectY, hudWidth, stringHeight);
+					labelRect = new CGRect(0, labelRect.Y, hudWidth, stringHeight);
 				}
 				CancelHudButton.Frame = cancelRect;
 				hudHeight += (cancelRect.Height + gap);
 			}
 
-			HudView.Bounds = new RectangleF(0, 0, hudWidth, hudHeight);
+			HudView.Bounds = new CGRect(0, 0, hudWidth, hudHeight);
 			if (!string.IsNullOrEmpty(@string))
-				ImageView.Center = new PointF(HudView.Bounds.Width / 2, 36);
+				ImageView.Center = new CGPoint(HudView.Bounds.Width / 2, 36);
 			else
-				ImageView.Center = new PointF(HudView.Bounds.Width / 2, HudView.Bounds.Height / 2);
+				ImageView.Center = new CGPoint(HudView.Bounds.Width / 2, HudView.Bounds.Height / 2);
 
 
 			StringLabel.Hidden = false;
@@ -1054,18 +1074,18 @@ namespace BigTed
 			{
 				if (!string.IsNullOrEmpty(@string))
 				{
-					SpinnerView.Center = new PointF((float)Math.Ceiling(HudView.Bounds.Width / 2.0f) + 0.5f, 40.5f);
+					SpinnerView.Center = new CGPoint((float)Math.Ceiling(HudView.Bounds.Width / 2.0f) + 0.5f, 40.5f);
 					if (_progress != -1)
 					{
-						BackgroundRingLayer.Position = RingLayer.Position = new PointF(HudView.Bounds.Width / 2, 36f);
+						BackgroundRingLayer.Position = RingLayer.Position = new CGPoint(HudView.Bounds.Width / 2, 36f);
 					}
 				}
 				else
 				{
-					SpinnerView.Center = new PointF((float)Math.Ceiling(HudView.Bounds.Width / 2.0f) + 0.5f, (float)Math.Ceiling(HudView.Bounds.Height / 2.0f) + 0.5f);
+					SpinnerView.Center = new CGPoint((float)Math.Ceiling(HudView.Bounds.Width / 2.0f) + 0.5f, (float)Math.Ceiling(HudView.Bounds.Height / 2.0f) + 0.5f);
 					if (_progress != -1)
 					{
-						BackgroundRingLayer.Position = RingLayer.Position = new PointF(HudView.Bounds.Width / 2, HudView.Bounds.Height / 2.0f + 0.5f);
+						BackgroundRingLayer.Position = RingLayer.Position = new CGPoint(HudView.Bounds.Width / 2, HudView.Bounds.Height / 2.0f + 0.5f);
 					}
 				}
 			}
