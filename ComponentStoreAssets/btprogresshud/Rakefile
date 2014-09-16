@@ -3,7 +3,7 @@ require "rake/clean"
 CLEAN.include "*.xam"
 CLEAN.include "xamarin-component"
 
-COMPONENT = "btprogresshud-1.10.xam"
+#COMPONENT = "btprogresshud-1.12.xam"
 
 file "xamarin-component/xamarin-component.exe" do
 	puts "* Downloading xamarin-component..."
@@ -14,22 +14,11 @@ file "xamarin-component/xamarin-component.exe" do
 end
 
 task :default => "xamarin-component/xamarin-component.exe" do
-	line = <<-END
-	mono xamarin-component/xamarin-component.exe create-manually #{COMPONENT} \
-		--name="BTProgressHUD" \
-		--summary="Add awesome HUDs to your iOS apps." \
-		--publisher="Nic Wise / Big Ted Ltd" \
-		--website="http://fastchicken.co.nz/" \
-		--details="Details.md" \
-		--license="License.md" \
-		--getting-started="GettingStarted.md" \
-		--icon="icons/btprogresshud_128x128.png" \
-		--icon="icons/btprogresshud_512x512.png" \
-		--library="ios":"bin/BTProgressHUD.dll" \
-		--sample="iOS Sample. Demonstrates how to use the component on iOS.":"samples/BTProgressHUDSample.sln" 
-    END
-	puts "* Creating #{COMPONENT}..."
+	 line = <<-END
+	 mono ./xamarin-component/xamarin-component.exe package ./
+	 END
+	puts "* Creating Component..."
 	puts line.strip.gsub "\t\t", "\\\n    "
 	sh line, :verbose => false
-	puts "* Created #{COMPONENT}"
+	puts "* Created"
 end
