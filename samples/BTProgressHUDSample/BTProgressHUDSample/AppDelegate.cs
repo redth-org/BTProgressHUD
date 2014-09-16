@@ -2,9 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
-using BigTed;
+using Foundation;
+using UIKit;
 
 namespace BTProgressHUDDemo
 {
@@ -25,7 +24,7 @@ namespace BTProgressHUDDemo
 		// You have 17 seconds to return from this method, or iOS will terminate your application.
 		//
 
-		UINavigationController viewController;
+		MainViewController viewController;
 		public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 		{
 			// create a new window instance based on the screen size
@@ -34,13 +33,7 @@ namespace BTProgressHUDDemo
 			// If you have defined a root view controller, set it here:
 			// window.RootViewController = myViewController;
 
-
-			//This is for running on iOS7, but with an app build against the iOS6 SDK.
-			// I dont think I can check the SDK version I'm linking with, sadly.
-			//BTProgressHUD.ForceiOS6LookAndFeel = true;
-
-
-			viewController = new UINavigationController(new MainViewController ());
+			viewController = new MainViewController ();
 			window.RootViewController = viewController;
 
 
