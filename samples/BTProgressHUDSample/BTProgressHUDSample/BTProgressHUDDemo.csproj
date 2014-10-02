@@ -94,14 +94,16 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
-    <BundleResource Include="Default.png" />
-    <BundleResource Include="Default%402x.png" />
-    <BundleResource Include="Default-568h%402x.png" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\..\BTProgressHUD\BTProgressHUD.csproj">
       <Project>{8ECDFDC5-42D0-4540-9691-830EEB2ED874}</Project>
       <Name>BTProgressHUD</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\LaunchImage.launchimage\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\LaunchImage.launchimage\Default.png" />
+    <ImageAsset Include="Resources\Images.xcassets\LaunchImage.launchimage\Default%402x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\LaunchImage.launchimage\Default-568h%402x.png" />
   </ItemGroup>
 </Project>
