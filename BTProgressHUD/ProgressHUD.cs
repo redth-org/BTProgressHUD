@@ -252,6 +252,7 @@ namespace BigTed
 		                        ToastPosition toastPosition = ToastPosition.Center, string cancelCaption = null, Action cancelCallback = null, 
 		                        double timeoutMs = 1000, bool showContinuousProgress = false, UIImage displayContinuousImage = null)
 		{
+			this.Frame = UIScreen.MainScreen.Bounds;
 			if (OverlayView.Superview == null)
 			{
 				var windows = UIApplication.SharedApplication.Windows;
