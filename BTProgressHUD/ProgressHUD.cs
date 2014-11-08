@@ -417,6 +417,9 @@ namespace BigTed
 
 		void StartProgressTimer (TimeSpan duration)
 		{
+
+			StopProgressTimer ();
+
 			#if __UNIFIED__
 			_progressTimer = NSTimer.CreateRepeatingTimer(duration, timer => UpdateProgress ());
 			#else
@@ -424,6 +427,16 @@ namespace BigTed
 			#endif
 			NSRunLoop.Current.AddTimer (_progressTimer, NSRunLoopMode.Common);
 		}
+
+		void StopProgressTimer() 
+		{
+			if (_progressTimer != null)
+			{
+				_progressTimer.Invalidate ();
+				_progressTimer = null;
+			}
+		}
+
 
 		void UpdateProgress ()
 		{
@@ -941,14 +954,12 @@ namespace BigTed
 				_fadeoutTimer = newtimer;
 		}
 
+
 		void SetProgressTimer (NSTimer newtimer)
 		{
-			if (_progressTimer != null)
-			{
-				_progressTimer.Invalidate ();
-				_progressTimer = null;
-			}
-		
+
+			StopProgressTimer ();
+
 			if (newtimer != null)
 				_progressTimer = newtimer;
 		}
