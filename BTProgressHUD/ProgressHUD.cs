@@ -159,7 +159,7 @@ namespace BigTed
 		{
 			get
 			{
-				return (IsiOS7 ? UIImage.FromBundle ("error_7.png") : UIImage.FromBundle ("error.png"));
+				return (IsiOS7 ? UIImage.FromBundle ("error_7_1.png") : UIImage.FromBundle ("error_1.png"));
 			}
 		}
 
@@ -167,7 +167,7 @@ namespace BigTed
 		{
 			get
 			{
-				return (IsiOS7 ? UIImage.FromBundle ("success_7.png") : UIImage.FromBundle ("success.png"));
+				return (IsiOS7 ? UIImage.FromBundle ("success_7_1.png") : UIImage.FromBundle ("success_1.png"));
 			}
 		}
 

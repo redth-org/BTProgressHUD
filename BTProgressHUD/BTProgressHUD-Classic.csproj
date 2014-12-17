@@ -50,18 +50,29 @@
     <Compile Include="ProgressHUD.cs" />
     <Compile Include="Ring.cs" />
     <Compile Include="XHUD.cs" />
+    <Compile Include="ProgressHUDV2.cs" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="success%402x.png">
-      <DependentUpon>BTProgressHUD.cs</DependentUpon>
-    </BundleResource>
-    <BundleResource Include="error.png" />
-    <BundleResource Include="error%402x.png" />
-    <BundleResource Include="success.png" />
-    <BundleResource Include="error_7.png" />
-    <BundleResource Include="error_7%402x.png" />
-    <BundleResource Include="success_7.png" />
-    <BundleResource Include="success_7%402x.png" />
+    <BundleResource Include="BTProgressHUD.bundle\angle-mask.png" />
+    <BundleResource Include="BTProgressHUD.bundle\angle-mask%402x.png" />
+    <BundleResource Include="BTProgressHUD.bundle\angle-mask%403x.png" />
+    <BundleResource Include="BTProgressHUD.bundle\error.png" />
+    <BundleResource Include="BTProgressHUD.bundle\error%402x.png" />
+    <BundleResource Include="BTProgressHUD.bundle\error%403x.png" />
+    <BundleResource Include="BTProgressHUD.bundle\info.png" />
+    <BundleResource Include="BTProgressHUD.bundle\info%402x.png" />
+    <BundleResource Include="BTProgressHUD.bundle\info%403x.png" />
+    <BundleResource Include="BTProgressHUD.bundle\success.png" />
+    <BundleResource Include="BTProgressHUD.bundle\success%402x.png" />
+    <BundleResource Include="BTProgressHUD.bundle\success%403x.png" />
+    <BundleResource Include="success_1%402x.png" />
+    <BundleResource Include="error_1.png" />
+    <BundleResource Include="error_1%402x.png" />
+    <BundleResource Include="success_1.png" />
+    <BundleResource Include="error_7_1.png" />
+    <BundleResource Include="error_7_1%402x.png" />
+    <BundleResource Include="success_7_1.png" />
+    <BundleResource Include="success_7_1%402x.png" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="xamarin%402x.png" />
