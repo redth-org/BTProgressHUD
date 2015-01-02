@@ -85,7 +85,13 @@ namespace BigTed
 		{
 			Bottom = 1,
 			Center,
-			Top
+			Top,
+			BottomRight,
+			BottomLeft,
+			CenterRight,
+			CenterLeft,
+			TopRight,
+			TopLeft
 		}
 
 		public UIColor HudBackgroundColour = UIColor.FromWhiteAlpha (0.0f, 0.8f);
@@ -883,6 +889,7 @@ namespace BigTed
 			nfloat posY = (float)Math.Floor (activeHeight * 0.45);
 			nfloat posX = orientationFrame.Size.Width / 2;
 			nfloat textHeight = _stringLabel.Frame.Height / 2 + 40;
+			nfloat textWidth = _stringLabel.Frame.Width  / 2 + 40;;
 
 			switch (toastPosition)
 			{
@@ -894,6 +901,28 @@ namespace BigTed
 					break;
 				case ToastPosition.Top:
 					posY = textHeight;
+					break;
+				case ToastPosition.BottomLeft:
+					posY = activeHeight - textHeight;
+					posX = 0 + textWidth;
+					break;
+				case ToastPosition.BottomRight:
+					posY = activeHeight - textHeight;
+					posX = orientationFrame.Size.Width - textWidth;
+					break;
+				case ToastPosition.CenterLeft:
+					posX = textWidth;
+					break;
+				case ToastPosition.CenterRight:
+					posX = orientationFrame.Size.Width - textWidth;
+					break;
+				case ToastPosition.TopLeft:
+					posY = textHeight;
+					posX = textWidth;
+					break;
+				case ToastPosition.TopRight:
+					posY = textHeight;
+					posX = orientationFrame.Size.Width - textWidth;
 					break;
 				default:
 					break;
