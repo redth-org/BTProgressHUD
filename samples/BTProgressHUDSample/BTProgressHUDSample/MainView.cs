@@ -51,6 +51,35 @@ namespace BTProgressHUDDemo
 
 			});
 
+			MakeButton("Toast bottom left", () =>
+			{	
+				BTProgressHUD.ShowToast("Hello from the toast bottom left", BigTed.ProgressHUD.ToastPosition.BottomLeft, timeoutMs: 1000);
+			});
+
+			MakeButton("Toast bottom right", () =>
+			{
+				BTProgressHUD.ShowToast("Hello from the toast bottom right", BigTed.ProgressHUD.ToastPosition.BottomRight, timeoutMs: 1000);
+			});
+
+			MakeButton("Toast center left", () =>
+			{
+				BTProgressHUD.ShowToast("Hello from the toast center left", BigTed.ProgressHUD.ToastPosition.CenterLeft, timeoutMs: 1000);
+			});
+
+			MakeButton("Toast center right", () =>
+			{
+				BTProgressHUD.ShowToast("Hello from the toast center right", BigTed.ProgressHUD.ToastPosition.CenterRight, timeoutMs: 1000);
+			});
+
+			MakeButton("Toast top left", () =>
+			{
+				BTProgressHUD.ShowToast("Hello from the toast top left", BigTed.ProgressHUD.ToastPosition.TopLeft, timeoutMs: 1000);
+			});
+
+			MakeButton("Toast top right", () =>
+			{
+				BTProgressHUD.ShowToast("Hello from the toast top right", BigTed.ProgressHUD.ToastPosition.TopRight, timeoutMs: 1000);
+			});
 
 			MakeButton ("Dismiss", () => {
 				BTProgressHUD.Dismiss (); 
