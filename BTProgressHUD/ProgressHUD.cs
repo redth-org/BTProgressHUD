@@ -999,8 +999,8 @@ namespace BigTed
 
 			if (!string.IsNullOrEmpty (@string))
 			{
-				int lineCount = Math.Min (10, @string.Split ('\n').Length + 1);
-				var stringSize = new NSString (@string).StringSize (StringLabel.Font, new CGSize (200, 30 * lineCount));
+                int lineCount = Math.Min (10, @string.Split ('\n').Length + 1);
+                var stringSize = new NSString (@string).GetSizeUsingAttributes (new UIStringAttributes{Font = StringLabel.Font});
 				stringWidth = stringSize.Width;
 				stringHeight = stringSize.Height;
 
