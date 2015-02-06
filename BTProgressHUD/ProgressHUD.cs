@@ -304,6 +304,9 @@ namespace BigTed
 				};
 			}
 
+			if (ParentContainer != null) {
+				Frame = ParentContainer.Bounds;
+			}
 			UpdatePosition (textOnly);
 
 			if (showContinuousProgress)
@@ -581,7 +584,8 @@ namespace BigTed
 			{
 				if (_overlayView == null)
 				{
-					_overlayView = new UIView (UIScreen.MainScreen.Bounds);
+					var overlayBounds = ParentContainer != null ? ParentContainer.Bounds : UIScreen.MainScreen.Bounds;
+					_overlayView = new UIView (overlayBounds);
 					_overlayView.AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
 					_overlayView.BackgroundColor = UIColor.Clear;
 					_overlayView.UserInteractionEnabled = false;
@@ -852,7 +856,9 @@ namespace BigTed
 			nfloat keyboardHeight = 0;
 			double animationDuration = 0;
 
-			Frame = UIScreen.MainScreen.Bounds;
+			// Make sure we account for parent size changing (e.g., TabBar/StatusBar auto-adjustments).
+			var frame = ParentContainer != null ? ParentContainer.Bounds : UIScreen.MainScreen.Bounds;
+			Frame = frame;
 
 			UIInterfaceOrientation orientation = UIApplication.SharedApplication.StatusBarOrientation;
 			bool ignoreOrientation = UIDevice.CurrentDevice.CheckSystemVersion (8, 0);
