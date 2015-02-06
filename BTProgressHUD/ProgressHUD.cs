@@ -39,10 +39,9 @@ namespace BigTed
 {
 	public class ProgressHUD : UIView
 	{
-		public ProgressHUD (UIView parentContainer)
+		public ProgressHUD (UIView parentContainer) : this (parentContainer.Bounds)
 		{
 			ParentContainer = parentContainer;
-			Initialize ();
 		}
 
 		public ProgressHUD () : this (UIScreen.MainScreen.Bounds)
@@ -50,11 +49,6 @@ namespace BigTed
 		}
 
 		public ProgressHUD (CGRect frame) : base (frame)
-		{
-			Initialize ();
-		}
-
-		void Initialize ()
 		{
 			UserInteractionEnabled = false;
 			BackgroundColor = UIColor.Clear;
