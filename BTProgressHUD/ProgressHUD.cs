@@ -882,7 +882,7 @@ namespace BigTed
 				keyboardHeight = VisibleKeyboardHeight;
 			}
 			
-			CGRect orientationFrame = this.Window.Bounds;
+			CGRect orientationFrame = ParentContainer != null ? ParentContainer.Bounds : this.Window.Bounds;
 			CGRect statusBarFrame = UIApplication.SharedApplication.StatusBarFrame;
 			
 			if (!ignoreOrientation && IsLandscape (orientation))
