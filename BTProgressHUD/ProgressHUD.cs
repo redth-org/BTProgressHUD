@@ -39,11 +39,22 @@ namespace BigTed
 {
 	public class ProgressHUD : UIView
 	{
+		public ProgressHUD (UIView parentContainer)
+		{
+			ParentContainer = parentContainer;
+			Initialize ();
+		}
+
 		public ProgressHUD () : this (UIScreen.MainScreen.Bounds)
 		{
 		}
 
 		public ProgressHUD (CGRect frame) : base (frame)
+		{
+			Initialize ();
+		}
+
+		void Initialize ()
 		{
 			UserInteractionEnabled = false;
 			BackgroundColor = UIColor.Clear;
@@ -96,6 +107,7 @@ namespace BigTed
 		public UITextAlignment HudTextAlignment = UITextAlignment.Center;
 		public Ring Ring = new Ring ();
 		static NSObject obj = new NSObject ();
+		public UIView ParentContainer;
 
 		public void Show (string status = null, float progress = -1, MaskType maskType = MaskType.None, double timeoutMs = 1000)
 		{
@@ -255,14 +267,20 @@ namespace BigTed
 
 			if (OverlayView.Superview == null)
 			{
-				var windows = UIApplication.SharedApplication.Windows;
-				Array.Reverse (windows);
-				foreach (UIWindow window in windows)
+				if (ParentContainer != null)
 				{
-					if (window.WindowLevel == UIWindowLevel.Normal && !window.Hidden)
+					ParentContainer.AddSubview (OverlayView);
+				}
+				else {
+					var windows = UIApplication.SharedApplication.Windows;
+					Array.Reverse (windows);
+					foreach (UIWindow window in windows)
 					{
-						window.AddSubview (OverlayView);
-						break;
+						if (window.WindowLevel == UIWindowLevel.Normal && !window.Hidden)
+						{
+							window.AddSubview (OverlayView);
+							break;
+						}
 					}
 				}
 			}
