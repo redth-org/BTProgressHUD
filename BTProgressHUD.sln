@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
+# Visual Studio 2012
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BTProgressHUD-Classic", "BTProgressHUD\BTProgressHUD-Classic.csproj", "{173ADCB0-C964-48D2-99C1-E928469F7C53}"
@@ -37,6 +37,22 @@ Global
 		{173ADCB0-C964-48D2-99C1-E928469F7C53}.Release|iPhone.Build.0 = Release|Any CPU
 		{173ADCB0-C964-48D2-99C1-E928469F7C53}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{173ADCB0-C964-48D2-99C1-E928469F7C53}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.Ad-Hoc|iPhone.ActiveCfg = Ad-Hoc|iPhone
+		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.Ad-Hoc|iPhone.Build.0 = Ad-Hoc|iPhone
+		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.Ad-Hoc|iPhoneSimulator.ActiveCfg = Ad-Hoc|iPhoneSimulator
+		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.Ad-Hoc|iPhoneSimulator.Build.0 = Ad-Hoc|iPhoneSimulator
+		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.AppStore|iPhone.ActiveCfg = AppStore|iPhone
+		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.AppStore|iPhone.Build.0 = AppStore|iPhone
+		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.AppStore|iPhoneSimulator.ActiveCfg = AppStore|iPhoneSimulator
+		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.AppStore|iPhoneSimulator.Build.0 = AppStore|iPhoneSimulator
+		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.Debug|iPhone.Build.0 = Debug|iPhone
+		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.Release|iPhone.ActiveCfg = Release|iPhone
+		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.Release|iPhone.Build.0 = Release|iPhone
+		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
+		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
 		{8ECDFDC5-42D0-4540-9691-830EEB2ED874}.Ad-Hoc|iPhone.ActiveCfg = Release|Any CPU
 		{8ECDFDC5-42D0-4540-9691-830EEB2ED874}.Ad-Hoc|iPhone.Build.0 = Release|Any CPU
 		{8ECDFDC5-42D0-4540-9691-830EEB2ED874}.Ad-Hoc|iPhoneSimulator.ActiveCfg = Debug|Any CPU
@@ -67,27 +83,8 @@ Global
 		{E6E84D09-BE15-460D-A317-45248BE1C56F}.Release|iPhone.Build.0 = Release|iPhone
 		{E6E84D09-BE15-460D-A317-45248BE1C56F}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
 		{E6E84D09-BE15-460D-A317-45248BE1C56F}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
-		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.Ad-Hoc|iPhone.ActiveCfg = Ad-Hoc|iPhone
-		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.Ad-Hoc|iPhone.Build.0 = Ad-Hoc|iPhone
-		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.Ad-Hoc|iPhoneSimulator.ActiveCfg = Ad-Hoc|iPhoneSimulator
-		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.Ad-Hoc|iPhoneSimulator.Build.0 = Ad-Hoc|iPhoneSimulator
-		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.AppStore|iPhone.ActiveCfg = AppStore|iPhone
-		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.AppStore|iPhone.Build.0 = AppStore|iPhone
-		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.AppStore|iPhoneSimulator.ActiveCfg = AppStore|iPhoneSimulator
-		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.AppStore|iPhoneSimulator.Build.0 = AppStore|iPhoneSimulator
-		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.Debug|iPhone.ActiveCfg = Debug|iPhone
-		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.Debug|iPhone.Build.0 = Debug|iPhone
-		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
-		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
-		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.Release|iPhone.ActiveCfg = Release|iPhone
-		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.Release|iPhone.Build.0 = Release|iPhone
-		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
-		{620134FD-4E54-4459-8E18-8B6E1C8A2274}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = BTProgressHUDDemo\BTProgressHUDDemo.csproj
 	EndGlobalSection
 EndGlobal

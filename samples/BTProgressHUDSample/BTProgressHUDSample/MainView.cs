@@ -16,62 +16,78 @@ namespace BTProgressHUDDemo
 {
 	public class MainViewController : UIViewController
 	{
-		public MainViewController ()
+		public MainViewController()
 		{
 
 		}
+
 		UITextView text;
 		float progress = -1;
 		NSTimer timer;
-		public override void LoadView ()
+
+		public override void LoadView()
 		{
-			base.LoadView ();
+			base.LoadView();
 			View.BackgroundColor = UIColor.LightGray;
 
-			MakeButton ("Show", () => {
-				BTProgressHUD.Show (); 
-				KillAfter ();
+			MakeButton("Show", () =>
+			{
+				BTProgressHUD.Show(); 
+				KillAfter();
 			});
 
-			MakeButton ("Show Message", () => {
-				BTProgressHUD.Show ("Processing your image", -1, ProgressHUD.MaskType.Black); 
-				KillAfter ();
+			MakeButton("Cancel problem", () =>
+				BTProgressHUD.Show("Cancel", () => KillAfter(), "This is a multilinetext\nSome more text\n more text\n and again more text")
+			);
+
+			MakeButton("Show Message", () =>
+			{
+				BTProgressHUD.Show("Processing your image", -1, ProgressHUD.MaskType.Black); 
+				KillAfter();
 			});
 
-			MakeButton ("Show Success", () => {
-				BTProgressHUD.ShowSuccessWithStatus("Great success!") ;
+			MakeButton("Show Success", () =>
+			{
+				BTProgressHUD.ShowSuccessWithStatus("Great success!");
 			});
 
-			MakeButton ("Show Fail", () => {
-				BTProgressHUD.ShowErrorWithStatus("Oh, thats bad") ;
+			MakeButton("Show Fail", () =>
+			{
+				BTProgressHUD.ShowErrorWithStatus("Oh, thats bad");
 			});
 
-			MakeButton ("Toast", () => {
-				BTProgressHUD.ShowToast("Hello from the toast", showToastCentered: false, timeoutMs:1000) ;
+			MakeButton("Toast", () =>
+			{
+				BTProgressHUD.ShowToast("Hello from the toast", showToastCentered: false, timeoutMs: 1000);
 
 			});
 
 
-			MakeButton ("Dismiss", () => {
-				BTProgressHUD.Dismiss (); 
+			MakeButton("Dismiss", () =>
+			{
+				BTProgressHUD.Dismiss(); 
 			});
 
-			MakeButton ("Progress", () => {
+			MakeButton("Progress", () =>
+			{
 				progress = 0;
 				BTProgressHUD.Show("Hello!", progress);
-				if (timer != null) 
+				if (timer != null)
 				{
 					timer.Invalidate();
 				}
-				timer = NSTimer.CreateRepeatingTimer(0.5f, delegate {
+				timer = NSTimer.CreateRepeatingTimer(0.5f, delegate
+				{
 					progress += 0.1f;
 					if (progress > 1)
 					{
 						timer.Invalidate();
 						timer = null;
 						BTProgressHUD.Dismiss();
-					} else {
-						BTProgressHUD.Show ("Hello!", progress);
+					}
+					else
+					{
+						BTProgressHUD.Show("Hello!", progress);
 					}
 
 
@@ -79,50 +95,55 @@ namespace BTProgressHUDDemo
 				NSRunLoop.Current.AddTimer(timer, NSRunLoopMode.Common);
 			});
 
-			MakeButton ("Dismiss", () => {
-				BTProgressHUD.Dismiss (); 
+			MakeButton("Dismiss", () =>
+			{
+				BTProgressHUD.Dismiss(); 
 			});
 
 		}
 
-		void KillAfter (float timeout = 1)
+		void KillAfter(float timeout = 1)
 		{
-			if (timer != null) 
+			if (timer != null)
 			{
 				timer.Invalidate();
 			}
-			timer = NSTimer.CreateRepeatingTimer(timeout, delegate {
+			timer = NSTimer.CreateRepeatingTimer(timeout, delegate
+			{
 				BTProgressHUD.Dismiss();
 			});
 			NSRunLoop.Current.AddTimer(timer, NSRunLoopMode.Common);
 		}
+
 		float y = 20;
+
 		void MakeButton(string text, Action del)
 		{
 			float x = 20;
 
-			var button = new UIButton (UIButtonType.RoundedRect);
-			button.Frame = new RectangleF (x, y, 280, 40);
-			button.SetTitle (text, UIControlState.Normal);
-			button.TouchUpInside += (o,e) => {
-				del() ;
+			var button = new UIButton(UIButtonType.RoundedRect);
+			button.Frame = new RectangleF(x, y, 280, 40);
+			button.SetTitle(text, UIControlState.Normal);
+			button.TouchUpInside += (o, e) =>
+			{
+				del();
 			};
-			View.Add (button);
+			View.Add(button);
 		
 			
 			y += 45;
 
 		}
 
-		public override void ViewDidLoad ()
+		public override void ViewDidLoad()
 		{
-			base.ViewDidLoad ();
+			base.ViewDidLoad();
 		
 		}
 
-		public override void ViewDidAppear (bool animated)
+		public override void ViewDidAppear(bool animated)
 		{
-			base.ViewDidAppear (animated);
+			base.ViewDidAppear(animated);
 
 		}
 	}

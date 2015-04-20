@@ -26,6 +26,7 @@ using CoreGraphics;
 
 
 
+
 #else
 using MonoTouch.UIKit;
 using MonoTouch.Foundation;
@@ -190,6 +191,8 @@ namespace BigTed
 		{
 			get
 			{
+				
+
 				if (sharedHUD == null)
 					sharedHUD = new ProgressHUD(UIScreen.MainScreen.Bounds);
 				return sharedHUD;
@@ -418,7 +421,7 @@ namespace BigTed
 		void StartDismissTimer(TimeSpan duration)
 		{
 			#if __UNIFIED__
-			_fadeoutTimer = NSTimer.CreateTimer(duration, timer => DismissWorker ());
+			_fadeoutTimer = NSTimer.CreateTimer(duration, timer => DismissWorker());
 			#else
 			_fadeoutTimer = NSTimer.CreateTimer(duration, DismissWorker);
 			#endif
@@ -431,7 +434,7 @@ namespace BigTed
 			if (_progressTimer == null)
 			{
 				#if __UNIFIED__
-				_progressTimer = NSTimer.CreateRepeatingTimer (duration, timer => UpdateProgress ());
+				_progressTimer = NSTimer.CreateRepeatingTimer(duration, timer => UpdateProgress());
 				#else
 				_progressTimer = NSTimer.CreateRepeatingTimer(duration, UpdateProgress);
 				#endif
@@ -991,15 +994,6 @@ namespace BigTed
 			nfloat stringHeightBuffer = 20f;
 			nfloat stringAndImageHeightBuffer = 80f;
 
-			/*if (IsiOS7)
-			{
-				hudHeight += 50;
-				hudWidth += 50f;
-				stringHeightBuffer += 50f;
-				stringAndImageHeightBuffer += 50f;
-			}*/
-
-
 			CGRect labelRect = new CGRect();
 			
 			string @string = StringLabel.Text;
@@ -1007,12 +1001,18 @@ namespace BigTed
 			// False if it's text-only
 			bool imageUsed = (ImageView.Image != null) || (ImageView.Hidden);
 			if (textOnly)
+			{
 				imageUsed = false;
+			}
 
 			if (imageUsed)
+			{
 				hudHeight = stringAndImageHeightBuffer + stringHeight;
+			}
 			else
+			{
 				hudHeight = (textOnly ? stringHeightBuffer : stringHeightBuffer + 40);
+			}
 
 			if (!string.IsNullOrEmpty(@string))
 			{
@@ -1020,7 +1020,9 @@ namespace BigTed
 
 				if (IsIOS7OrNewer)
 				{
-					var stringSize = new NSString(@string).GetSizeUsingAttributes(new UIStringAttributes{ Font = StringLabel.Font });
+					var stringSize = new NSString(@string).GetBoundingRect(new CGSize(200, 30 * lineCount), NSStringDrawingOptions.UsesLineFragmentOrigin,
+						                 new UIStringAttributes{ Font = StringLabel.Font },
+						                 null);
 					stringWidth = stringSize.Width;
 					stringHeight = stringSize.Height;
 				}
@@ -1047,7 +1049,7 @@ namespace BigTed
 					hudWidth += 24;
 				}
 				else
-				{
+				{	
 					hudWidth += 24;
 					labelRect = new CGRect(0, labelRectY, hudWidth, stringHeight);
 				}
@@ -1062,7 +1064,9 @@ namespace BigTed
 
 				if (IsIOS7OrNewer)
 				{
-					var stringSize = new NSString(@cancelCaption).GetSizeUsingAttributes(new UIStringAttributes{ Font = StringLabel.Font });
+					var stringSize = new NSString(@cancelCaption).GetBoundingRect(new CGSize(200, 300), NSStringDrawingOptions.UsesLineFragmentOrigin,
+						                 new UIStringAttributes{ Font = StringLabel.Font },
+						                 null);
 					stringWidth = stringSize.Width;
 					stringHeight = stringSize.Height;
 				}
@@ -1090,14 +1094,14 @@ namespace BigTed
 				if (hudHeight > 100)
 				{
 					cancelRect = new CGRect(12, cancelRectY, hudWidth, stringHeight);
-					labelRect = new CGRect(12, labelRect.Y, hudWidth, stringHeight);
+					labelRect = new CGRect(12, labelRect.Y, hudWidth, labelRect.Height);
 					hudWidth += 24;
 				}
 				else
 				{
 					hudWidth += 24;
 					cancelRect = new CGRect(0, cancelRectY, hudWidth, stringHeight);
-					labelRect = new CGRect(0, labelRect.Y, hudWidth, stringHeight);
+					labelRect = new CGRect(0, labelRect.Y, hudWidth, labelRect.Height);
 				}
 				CancelHudButton.Frame = cancelRect;
 				hudHeight += (cancelRect.Height + gap);
