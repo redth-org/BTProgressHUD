@@ -1,7 +1,7 @@
-version: "1.15"
+version: "1.16"
 name: BTProgressHUD
 id: btprogresshud
-publisher: Nic Wise / Big Ted Ltd
+publisher: Nic Wise
 publisher-url: http://fastchicken.co.nz
 license: License.md
 icons: 
