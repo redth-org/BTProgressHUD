@@ -191,10 +191,11 @@ namespace BigTed
 		{
 			get
 			{
-				
-
 				if (sharedHUD == null)
+				{
+					UIApplication.EnsureUIThread();
 					sharedHUD = new ProgressHUD(UIScreen.MainScreen.Bounds);
+				}
 				return sharedHUD;
 			}
 		}

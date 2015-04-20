@@ -11,6 +11,7 @@ using Foundation;
  * The source for this is on
  * https://github.com/nicwise/BTProgressHUD
  */
+using System.Threading.Tasks;
 
 namespace BTProgressHUDDemo
 {
@@ -29,6 +30,26 @@ namespace BTProgressHUDDemo
 		{
 			base.LoadView();
 			View.BackgroundColor = UIColor.LightGray;
+
+			MakeButton("Run first - off main thread", () =>
+			{
+				//this must be the first one to run.
+				// once BTProgressHUD.ANTYTHING has been called once on the UI thread, 
+				// it'll be setup. So this is an initial call OFF the main thread.
+				// Should except in debug.
+				var task = Task.Factory.StartNew(() =>
+				{
+					try
+					{
+						BTProgressHUD.Show(); 
+						KillAfter();
+					}
+					catch (Exception ex)
+					{
+						Console.WriteLine(ex.ToString());
+					}
+				});
+			});
 
 			MakeButton("Show", () =>
 			{
