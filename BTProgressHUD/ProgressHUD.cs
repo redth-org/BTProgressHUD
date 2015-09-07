@@ -106,7 +106,7 @@ namespace BigTed
 		}
 
 		public void Show (string cancelCaption, Action cancelCallback, string status = null, 
-		                 float progress = -1, MaskType maskType = MaskType.None, double timeoutMs = 1000)
+		                  float progress = -1, MaskType maskType = MaskType.None, double timeoutMs = 1000)
 		{
 			// Making cancelCaption optional hides the method via the overload
 			if (string.IsNullOrEmpty (cancelCaption)) {
@@ -239,8 +239,8 @@ namespace BigTed
 		}
 
 		void ShowProgressWorker (float progress = -1, string status = null, MaskType maskType = MaskType.None, bool textOnly = false, 
-		                        ToastPosition toastPosition = ToastPosition.Center, string cancelCaption = null, Action cancelCallback = null, 
-		                        double timeoutMs = 1000, bool showContinuousProgress = false, UIImage displayContinuousImage = null)
+		                         ToastPosition toastPosition = ToastPosition.Center, string cancelCaption = null, Action cancelCallback = null, 
+		                         double timeoutMs = 1000, bool showContinuousProgress = false, UIImage displayContinuousImage = null)
 		{
 
 			if (OverlayView.Superview == null) {
@@ -922,7 +922,7 @@ namespace BigTed
 					hudWidth += 24;
 					labelRect = new CGRect (0, labelRectY, hudWidth, stringHeight);
 				}
-			}
+			} 
 
 			// Adjust for Cancel Button
 			var cancelRect = new CGRect ();
@@ -950,7 +950,12 @@ namespace BigTed
 				if (labelRect.Height > 0) {
 					cancelRectY = labelRect.Y + labelRect.Height + (nfloat)gap;
 				} else {
-					cancelRectY = (imageUsed ? 66 : 9);
+					if (string.IsNullOrEmpty (@string)) {
+						cancelRectY = 76;
+					} else {
+						cancelRectY = (imageUsed ? 66 : 9);
+					}
+
 				}
 
 				if (hudHeight > 100) {
@@ -963,7 +968,7 @@ namespace BigTed
 					labelRect = new CGRect (0, labelRect.Y, hudWidth, labelRect.Height);
 				}
 				CancelHudButton.Frame = cancelRect;
-				hudHeight += (cancelRect.Height + gap);
+				hudHeight += (cancelRect.Height + (string.IsNullOrEmpty (@string) ? 10 : gap));
 			}
 
 			HudView.Bounds = new CGRect (0, 0, hudWidth, hudHeight);
@@ -977,7 +982,7 @@ namespace BigTed
 			StringLabel.Frame = labelRect;
 
 			if (!textOnly) {
-				if (!string.IsNullOrEmpty (@string)) {
+				if (!string.IsNullOrEmpty (@string) || !string.IsNullOrEmpty(@cancelCaption)) {
 					SpinnerView.Center = new CGPoint ((float)Math.Ceiling (HudView.Bounds.Width / 2.0f) + 0.5f, 40.5f);
 					if (_progress != -1) {
 						BackgroundRingLayer.Position = RingLayer.Position = new CGPoint (HudView.Bounds.Width / 2, 36f);
