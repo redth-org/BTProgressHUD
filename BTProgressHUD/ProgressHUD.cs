@@ -21,6 +21,7 @@ using UIKit;
 using Foundation;
 using CoreAnimation;
 using CoreGraphics;
+using ObjCRuntime;
 
 
 
@@ -32,6 +33,7 @@ using MonoTouch.UIKit;
 using MonoTouch.Foundation;
 using MonoTouch.CoreAnimation;
 using MonoTouch.CoreGraphics;
+using MonoTouch.ObjCRuntime;
 
 using nfloat = System.Single;
 using System.Drawing;
@@ -634,15 +636,26 @@ namespace BigTed
 			set { _spinnerView = value; }
 		}
 
+		static Class clsUIPeripheralHostView = new Class("UIPeripheralHostView");
+		static Class clsUIKeyboardClass = new Class("UIKeyboard");
+		static Class clsUIInputSetContainerView = new Class("UIInputSetContainerView");
+		static Class clsUIInputSetHostView = new Class("UIInputSetHostView");
+
 		float VisibleKeyboardHeight {
 			get {
 				foreach (var testWindow in UIApplication.SharedApplication.Windows) {
 					if (testWindow.GetClassName () != typeof(UIWindow).Name) {
 						foreach (var possibleKeyboard in testWindow.Subviews) {
-							var nativeViewName = possibleKeyboard.GetClassName ();
-							if (nativeViewName == "UIPeripheralHostView" ||
-							    nativeViewName == "UIKeyboard") {
+							if (possibleKeyboard.IsKindOfClass(clsUIPeripheralHostView) ||
+								possibleKeyboard.IsKindOfClass(clsUIKeyboardClass)) {
 								return (float)possibleKeyboard.Bounds.Size.Height;
+							}
+							else if (possibleKeyboard.IsKindOfClass(clsUIInputSetContainerView)) {
+								foreach (var possibleKeyboardSubview in possibleKeyboard.Subviews)
+								{
+									if (possibleKeyboardSubview.IsKindOfClass(clsUIInputSetHostView))
+										return (float)possibleKeyboardSubview.Bounds.Size.Height;
+								}
 							}
 						}
 					}
