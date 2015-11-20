@@ -46,6 +46,28 @@ namespace BigTed
 {
 	public class ProgressHUD : UIView
 	{
+		static Class clsUIPeripheralHostView = null;
+		static Class clsUIKeyboard = null;
+		static Class clsUIInputSetContainerView = null;
+		static Class clsUIInputSetHostView = null;
+
+		static ProgressHUD ()
+		{
+			//initialize static fields used for input view detection
+			var ptrUIPeripheralHostView = Class.GetHandle("UIPeripheralHostView");
+			if (ptrUIPeripheralHostView != IntPtr.Zero)
+				clsUIPeripheralHostView = new Class (ptrUIPeripheralHostView);
+			var ptrUIKeyboard = Class.GetHandle("UIKeyboard");
+			if (ptrUIKeyboard != IntPtr.Zero)
+				clsUIKeyboard = new Class (ptrUIKeyboard);
+			var ptrUIInputSetContainerView = Class.GetHandle("UIInputSetContainerView");
+			if (ptrUIInputSetContainerView != IntPtr.Zero)
+				clsUIInputSetContainerView = new Class (ptrUIInputSetContainerView);
+			var ptrUIInputSetHostView = Class.GetHandle("UIInputSetHostView");
+			if (ptrUIInputSetHostView != IntPtr.Zero)
+				clsUIInputSetHostView = new Class (ptrUIInputSetHostView);
+		}
+
 		public ProgressHUD () : this (UIScreen.MainScreen.Bounds)
 		{
 		}
@@ -636,24 +658,19 @@ namespace BigTed
 			set { _spinnerView = value; }
 		}
 
-		static Class clsUIPeripheralHostView = new Class("UIPeripheralHostView");
-		static Class clsUIKeyboardClass = new Class("UIKeyboard");
-		static Class clsUIInputSetContainerView = new Class("UIInputSetContainerView");
-		static Class clsUIInputSetHostView = new Class("UIInputSetHostView");
-
 		float VisibleKeyboardHeight {
 			get {
 				foreach (var testWindow in UIApplication.SharedApplication.Windows) {
-					if (testWindow.GetClassName () != typeof(UIWindow).Name) {
+					if (testWindow.Class.Handle != Class.GetHandle("UIWindow")) {
 						foreach (var possibleKeyboard in testWindow.Subviews) {
-							if (possibleKeyboard.IsKindOfClass(clsUIPeripheralHostView) ||
-								possibleKeyboard.IsKindOfClass(clsUIKeyboardClass)) {
+							if ((clsUIPeripheralHostView != null && possibleKeyboard.IsKindOfClass(clsUIPeripheralHostView)) ||
+								(clsUIKeyboard != null && possibleKeyboard.IsKindOfClass(clsUIKeyboard))) {
 								return (float)possibleKeyboard.Bounds.Size.Height;
 							}
-							else if (possibleKeyboard.IsKindOfClass(clsUIInputSetContainerView)) {
+							else if (clsUIInputSetContainerView != null && possibleKeyboard.IsKindOfClass(clsUIInputSetContainerView)) {
 								foreach (var possibleKeyboardSubview in possibleKeyboard.Subviews)
 								{
-									if (possibleKeyboardSubview.IsKindOfClass(clsUIInputSetHostView))
+									if (clsUIInputSetHostView != null && possibleKeyboardSubview.IsKindOfClass(clsUIInputSetHostView))
 										return (float)possibleKeyboardSubview.Bounds.Size.Height;
 								}
 							}
