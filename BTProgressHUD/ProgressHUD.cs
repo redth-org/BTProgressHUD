@@ -267,6 +267,9 @@ namespace BigTed
 		                         double timeoutMs = 1000, bool showContinuousProgress = false, UIImage displayContinuousImage = null)
 		{
 
+			Ring.ResetStyle(IsiOS7ForLookAndFeel, (IsiOS7ForLookAndFeel ? TintColor : UIColor.White));
+
+
 			if (OverlayView.Superview == null) {
 				var windows = UIApplication.SharedApplication.Windows;
 				Array.Reverse (windows);
