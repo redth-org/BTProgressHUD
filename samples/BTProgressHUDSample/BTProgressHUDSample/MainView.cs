@@ -22,7 +22,6 @@ namespace BTProgressHUDDemo
 
 		}
 
-		UITextView text;
 		float progress = -1;
 		NSTimer timer;
 
@@ -37,7 +36,7 @@ namespace BTProgressHUDDemo
 				// once BTProgressHUD.ANTYTHING has been called once on the UI thread, 
 				// it'll be setup. So this is an initial call OFF the main thread.
 				// Should except in debug.
-				var task = Task.Factory.StartNew(() =>
+				Task.Factory.StartNew(() =>
 				{
 					try
 					{
@@ -56,6 +55,14 @@ namespace BTProgressHUDDemo
 				BTProgressHUD.Show(); 
 				KillAfter();
 			});
+
+			MakeButton("Cancel problem 3", () =>
+				BTProgressHUD.Show("Cancel", () => KillAfter(), "Cancel and text")
+			);
+
+			MakeButton("Cancel problem 2", () =>
+				BTProgressHUD.Show("Cancel", () => KillAfter())
+			);
 
 			MakeButton("Cancel problem", () =>
 				BTProgressHUD.Show("Cancel", () => KillAfter(), "This is a multilinetext\nSome more text\n more text\n and again more text")

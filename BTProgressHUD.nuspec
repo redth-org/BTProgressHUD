@@ -2,9 +2,9 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>BTProgressHUD</id>
-        <version>1.0.0</version>
+        <version>$version$</version>
         <authors>nicwise</authors>
-        <owners>nicwise,ravensorb</owners>
+        <owners>nicwise,ravensorb,redth</owners>
         <projectUrl>https://github.com/nicwise/BTProgressHUD</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>SVProgressHUD (and BTProgressHUD) is a clean and easy-to-use HUD meant to display the progress of an ongoing task.</description>
