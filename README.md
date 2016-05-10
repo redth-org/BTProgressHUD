@@ -1,9 +1,9 @@
 BTProgressHUD
 =============
 
-__If you have an issue, file it here, but also email me__ - nicw@fastchicken.co.nz - or @fastchicken - as GitHub doesn't notify me! Thanks!.
+__This has been taken over by [@Redth](https://github.com/redth) - please contact him for bug reports etc__
 
-Port to [MonoTouch](http://xamar.in/r/nicwise/store.xamarin.com) of the [SVProgressHUD](https://github.com/samvermette/SVProgressHUD). 
+Port to Xamarin.iOS of the [SVProgressHUD](https://github.com/samvermette/SVProgressHUD). 
 
 SVProgressHUD (and BTProgressHUD) is a clean and easy-to-use HUD meant to display the progress of an ongoing task.
 
