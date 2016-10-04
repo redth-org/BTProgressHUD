@@ -274,7 +274,7 @@ namespace BigTed
 				var windows = UIApplication.SharedApplication.Windows;
 				Array.Reverse (windows);
 				foreach (UIWindow window in windows) {
-					if (window.WindowLevel == UIWindowLevel.Normal && !window.Hidden) {
+                    if (window.WindowLevel == UIWindowLevel.Normal && !window.Hidden && window.IsKeyWindow) {
 						window.AddSubview (OverlayView);
 						break;
 					}
