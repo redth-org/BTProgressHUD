@@ -549,6 +549,7 @@ namespace BigTed
 					_overlayView.AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
 					_overlayView.BackgroundColor = UIColor.Clear;
 					_overlayView.UserInteractionEnabled = false;
+					_overlayView.AccessibilityViewIsModal = true;
 				}
 				return _overlayView;
 			}
