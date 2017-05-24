@@ -13,6 +13,5 @@
     </metadata>
     <files>
         <file src="BTProgressHUD\bin\unified\Release\BTProgressHUD.dll" target="lib\Xamarin.iOS10\BTProgressHUD.dll" />
-        <file src="BTProgressHUD\bin\classic\Release\BTProgressHUD.dll" target="lib\MonoTouch\BTProgressHUD.dll" />
     </files>
 </package>
