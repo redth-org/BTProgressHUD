@@ -87,7 +87,7 @@ namespace BigTed
 		{
 
 			if (IsiOS7ForLookAndFeel) {
-				HudBackgroundColour = UIColor.White.ColorWithAlpha (0.8f);
+				HudBackgroundColour = UIColor.White;
 				HudForegroundColor = UIColor.FromWhiteAlpha (0.0f, 0.8f);
 				HudStatusShadowColor = UIColor.FromWhiteAlpha (200f / 255f, 0.8f);
 				_ringThickness = 1f;
@@ -559,13 +559,7 @@ namespace BigTed
 		UIView HudView {
 			get {
 				if (_hudView == null) {
-					if (IsiOS7ForLookAndFeel) {
-						_hudView = new UIToolbar ();
-						(_hudView as UIToolbar).Translucent = true;
-						(_hudView as UIToolbar).BarTintColor = HudBackgroundColour;
-					} else {
-						_hudView = new UIView ();
-					}
+					_hudView = new UIView ();
 					_hudView.Layer.CornerRadius = 10;
 					_hudView.Layer.MasksToBounds = true;
 					_hudView.BackgroundColor = HudBackgroundColour;
