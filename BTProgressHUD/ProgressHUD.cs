@@ -573,6 +573,9 @@ namespace BigTed
 					UIViewAutoresizing.FlexibleRightMargin | UIViewAutoresizing.FlexibleLeftMargin);
 
 					AddSubview (_hudView);
+
+					if (_hudView is UIToolbar)
+						_hudView.LayoutIfNeeded();
 				}
 				return _hudView;
 			}
