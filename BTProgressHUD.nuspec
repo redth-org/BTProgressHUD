@@ -13,5 +13,7 @@
     </metadata>
     <files>
         <file src="BTProgressHUD\bin\unified\Release\BTProgressHUD.dll" target="lib\Xamarin.iOS10\BTProgressHUD.dll" />
+
+        <file src="NOTICE" target="THIRD-PARTY-NOTICES.txt" />
     </files>
 </package>
