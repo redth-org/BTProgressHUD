@@ -21,16 +21,16 @@ You can force iOS6 or iOS7 style in the IsiOS7 property in ProgressHUD.cs
 
 
 
-##Installation
+## Installation
 
 * Grab the .cs files, and the images, and add them to your project.
 * Use it :)
 
-##TODO
+## TODO
 
 * The progress HUD is not Accessability-aware, which would be very good to add. The ObjC code for this is still in the project, just commented out.
 
-##Usage
+## Usage
 
 Have a look at the BTProgressHUDDemo project.
 
@@ -53,7 +53,7 @@ BTProgressHUD is aware of the thread you are calling from, and ensures that HUDs
 
 If you need to make your own instance of the HUD, you can make a new ProgressHUD.
 
-###Other Show options
+### Other Show options
 
 You can call Show with the following parameters
 * status: <string> - show status text
@@ -70,14 +70,14 @@ public enum MaskType
 }
 ```
 
-###ShowToast
+### ShowToast
 The toast can be centered or at the top or bottom of the screen. This is controlled by the second parameter.
 
 ```csharp
 BTProgressHUD.ShowToast("foo", toastPosition: ProgressHUD.ToastPosition.Center);
 ```
 
-###ShowSuccess/Error/ShowImage
+### ShowSuccess/Error/ShowImage
 This method dismisses the activity after 1 second. You can provide your own images if needed - make them 28x28 white PNGs.
 
 ```csharp
