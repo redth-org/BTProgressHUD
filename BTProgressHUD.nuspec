@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>BTProgressHUD</id>
@@ -12,7 +12,7 @@
         <tags>Xamarin, MonoTouch, Progress</tags>
     </metadata>
     <files>
-        <file src="BTProgressHUD\bin\unified\Release\BTProgressHUD.dll" target="lib\Xamarin.iOS10\BTProgressHUD.dll" />
+        <file src="BTProgressHUD/bin/unified/Release/BTProgressHUD.dll" target="lib/Xamarin.iOS10/BTProgressHUD.dll" />
 
         <file src="NOTICE" target="THIRD-PARTY-NOTICES.txt" />
     </files>
