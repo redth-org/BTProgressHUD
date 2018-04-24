@@ -274,7 +274,7 @@ namespace BigTed
 				var windows = UIApplication.SharedApplication.Windows;
 				Array.Reverse (windows);
 				foreach (UIWindow window in windows) {
-                    if (window.WindowLevel == UIWindowLevel.Normal && !window.Hidden && window.IsKeyWindow) {
+                    if (!window.Hidden && window.IsKeyWindow) {
 						window.AddSubview (OverlayView);
 						break;
 					}
@@ -671,14 +671,18 @@ namespace BigTed
 					if (testWindow.Class.Handle != Class.GetHandle("UIWindow")) {
 						foreach (var possibleKeyboard in testWindow.Subviews) {
 							if ((clsUIPeripheralHostView != null && possibleKeyboard.IsKindOfClass(clsUIPeripheralHostView)) ||
-								(clsUIKeyboard != null && possibleKeyboard.IsKindOfClass(clsUIKeyboard))) {
+							    (clsUIKeyboard != null && possibleKeyboard.IsKindOfClass(clsUIKeyboard))) {
 								return (float)possibleKeyboard.Bounds.Size.Height;
 							}
 							else if (clsUIInputSetContainerView != null && possibleKeyboard.IsKindOfClass(clsUIInputSetContainerView)) {
 								foreach (var possibleKeyboardSubview in possibleKeyboard.Subviews)
 								{
-									if (clsUIInputSetHostView != null && possibleKeyboardSubview.IsKindOfClass(clsUIInputSetHostView))
-										return (float)possibleKeyboardSubview.Bounds.Size.Height;
+									if (clsUIInputSetHostView != null && possibleKeyboardSubview.IsKindOfClass(clsUIInputSetHostView)) {
+										var convertedRect = possibleKeyboardSubview.ConvertRectToView(possibleKeyboardSubview.Frame, this);
+										var intersectRect = CGRect.Intersect(convertedRect, Bounds);
+										if (CGRect.Empty != intersectRect)
+											return (float) intersectRect.Height;
+									}
 								}
 							}
 						}
