@@ -130,7 +130,7 @@ namespace BigTed
 		}
 
 		public void Show (string cancelCaption, Action cancelCallback, string status = null, 
-		                  float progress = -1, MaskType maskType = MaskType.None, double timeoutMs = 1000)
+						  float progress = -1, MaskType maskType = MaskType.None, double timeoutMs = 1000)
 		{
 			// Making cancelCaption optional hides the method via the overload
 			if (string.IsNullOrEmpty (cancelCaption)) {
@@ -263,8 +263,8 @@ namespace BigTed
 		}
 
 		void ShowProgressWorker (float progress = -1, string status = null, MaskType maskType = MaskType.None, bool textOnly = false, 
-		                         ToastPosition toastPosition = ToastPosition.Center, string cancelCaption = null, Action cancelCallback = null, 
-		                         double timeoutMs = 1000, bool showContinuousProgress = false, UIImage displayContinuousImage = null)
+								 ToastPosition toastPosition = ToastPosition.Center, string cancelCaption = null, Action cancelCallback = null, 
+								 double timeoutMs = 1000, bool showContinuousProgress = false, UIImage displayContinuousImage = null)
 		{
 
 			Ring.ResetStyle(IsiOS7ForLookAndFeel, (IsiOS7ForLookAndFeel ? TintColor : UIColor.White));
@@ -274,7 +274,7 @@ namespace BigTed
 				var windows = UIApplication.SharedApplication.Windows;
 				Array.Reverse (windows);
 				foreach (UIWindow window in windows) {
-                    if (window.WindowLevel == UIWindowLevel.Normal && !window.Hidden && window.IsKeyWindow) {
+					if (window.WindowLevel == UIWindowLevel.Normal && !window.Hidden && window.IsKeyWindow) {
 						window.AddSubview (OverlayView);
 						break;
 					}
@@ -672,13 +672,17 @@ namespace BigTed
 						foreach (var possibleKeyboard in testWindow.Subviews) {
 							if ((clsUIPeripheralHostView != null && possibleKeyboard.IsKindOfClass(clsUIPeripheralHostView)) ||
 								(clsUIKeyboard != null && possibleKeyboard.IsKindOfClass(clsUIKeyboard))) {
-								return (float)possibleKeyboard.Bounds.Size.Height;
+								// Check that the keyboard is actually on screen
+								if (possibleKeyboard.Frame.IntersectsWith(testWindow.Frame))
+									return (float)possibleKeyboard.Bounds.Size.Height;
 							}
 							else if (clsUIInputSetContainerView != null && possibleKeyboard.IsKindOfClass(clsUIInputSetContainerView)) {
 								foreach (var possibleKeyboardSubview in possibleKeyboard.Subviews)
 								{
 									if (clsUIInputSetHostView != null && possibleKeyboardSubview.IsKindOfClass(clsUIInputSetHostView))
-										return (float)possibleKeyboardSubview.Bounds.Size.Height;
+										// Check that the keyboard is actually on screen
+										if (possibleKeyboardSubview.Frame.IntersectsWith(testWindow.Frame))
+											return (float)possibleKeyboardSubview.Bounds.Size.Height;
 								}
 							}
 						}
@@ -933,8 +937,8 @@ namespace BigTed
 
 				if (IsIOS7OrNewer) {
 					var stringSize = new NSString (@string).GetBoundingRect (new CGSize (200, 30 * lineCount), NSStringDrawingOptions.UsesLineFragmentOrigin,
-						                 new UIStringAttributes{ Font = StringLabel.Font },
-						                 null);
+										 new UIStringAttributes{ Font = StringLabel.Font },
+										 null);
 					stringWidth = stringSize.Width;
 					stringHeight = stringSize.Height;
 				} else {
@@ -944,7 +948,7 @@ namespace BigTed
 				}
 
 
-                
+				
 
 				hudHeight += stringHeight;
 
@@ -970,8 +974,8 @@ namespace BigTed
 
 				if (IsIOS7OrNewer) {
 					var stringSize = new NSString (@cancelCaption).GetBoundingRect (new CGSize (200, 300), NSStringDrawingOptions.UsesLineFragmentOrigin,
-						                 new UIStringAttributes{ Font = StringLabel.Font },
-						                 null);
+										 new UIStringAttributes{ Font = StringLabel.Font },
+										 null);
 					stringWidth = stringSize.Width;
 					stringHeight = stringSize.Height;
 				} else {
