@@ -96,6 +96,8 @@
     <ProjectReference Include="..\..\..\BTProgressHUD\BTProgressHUD.csproj">
       <Project>{8ECDFDC5-42D0-4540-9691-830EEB2ED874}</Project>
       <Name>BTProgressHUD</Name>
+      <IsAppExtension>false</IsAppExtension>
+      <IsWatchApp>false</IsWatchApp>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
