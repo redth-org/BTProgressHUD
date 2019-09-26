@@ -1,69 +1,16 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="MSBuild.Sdk.Extras">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8ECDFDC5-42D0-4540-9691-830EEB2ED874}</ProjectGuid>
-    <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <OutputType>Library</OutputType>
-    <RootNamespace>BTProgressHUD</RootNamespace>
-    <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
+    <TargetFrameworks>xamarin.ios10</TargetFrameworks>
     <AssemblyName>BTProgressHUD</AssemblyName>
-    <ReleaseVersion>1.7</ReleaseVersion>
-    <SynchReleaseVersion>false</SynchReleaseVersion>
+    <RootNamespace>BTProgressHUD</RootNamespace>
+    <PackageId>BTProgressHUD</PackageId>
+    <Description>SVProgressHUD (and BTProgressHUD) is a clean and easy-to-use HUD meant to display the progress of an ongoing task.</Description>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>True</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>False</Optimize>
-    <OutputPath>bin\unified\Debug</OutputPath>
-    <DefineConstants>DEBUG;__UNIFIED__</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>False</ConsolePause>
-    <IntermediateOutputPath>obj\unified\$(Configuration)\</IntermediateOutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>none</DebugType>
-    <Optimize>True</Optimize>
-    <OutputPath>bin\unified\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>False</ConsolePause>
-    <IntermediateOutputPath>obj\unified\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>__UNIFIED__</DefineConstants>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Core" />
-    <Reference Include="Xamarin.iOS" />
+	  <BundleResource Include="**\*.png" />
+	  <None Include="..\NOTICE" pack="true" PackagePath="" />
+    <None Include="..\LICENSE" Pack="true" PackagePath=""/>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
-  <ItemGroup>
-    <Compile Include="BTProgressHUD.cs" />
-    <Compile Include="NSObjectExtensions.cs" />
-    <Compile Include="ProgressHUD.cs" />
-    <Compile Include="Ring.cs" />
-    <Compile Include="XHUD.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <BundleResource Include="success%402x.png">
-      <DependentUpon>BTProgressHUD.cs</DependentUpon>
-    </BundleResource>
-    <BundleResource Include="error.png" />
-    <BundleResource Include="error%402x.png" />
-    <BundleResource Include="success.png" />
-    <BundleResource Include="error_7.png" />
-    <BundleResource Include="error_7%402x.png" />
-    <BundleResource Include="success_7.png" />
-    <BundleResource Include="success_7%402x.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <BundleResource Include="xamarin%402x.png" />
-    <BundleResource Include="xamarin.png" />
-  </ItemGroup>
+  
 </Project>
