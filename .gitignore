@@ -258,5 +258,5 @@ artifacts/
 #linting
 .sonarqube/
 
-# dotnet tools
-.store/
+.DS_Store
+.vs/
