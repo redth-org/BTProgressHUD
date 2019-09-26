@@ -143,24 +143,33 @@ namespace BTProgressHUDDemo
 			NSRunLoop.Current.AddTimer(timer, NSRunLoopMode.Common);
 		}
 
-		float y = 20;
+        UIButton previousButton;
 
 		void MakeButton(string text, Action del)
 		{
-			float x = 20;
-
-			var button = new UIButton(UIButtonType.RoundedRect);
-			button.Frame = new RectangleF(x, y, 280, 40);
+            var button = new UIButton(UIButtonType.RoundedRect)
+            {
+                TranslatesAutoresizingMaskIntoConstraints = false
+            };
 			button.SetTitle(text, UIControlState.Normal);
 			button.TouchUpInside += (o, e) =>
 			{
 				del();
 			};
 			View.Add(button);
-		
-			
-			y += 45;
 
+            button.CenterXAnchor.ConstraintEqualTo(View.CenterXAnchor).Active = true;
+
+            if (previousButton != null)
+            {
+                button.TopAnchor.ConstraintEqualTo(previousButton.BottomAnchor, 10).Active = true;
+            }
+            else
+            {
+                button.TopAnchor.ConstraintEqualTo(View.SafeAreaLayoutGuide.TopAnchor).Active = true;
+            }
+
+            previousButton = button;
 		}
 
 		public override void ViewDidLoad()
