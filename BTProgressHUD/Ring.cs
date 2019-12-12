@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 #if __UNIFIED__
 using UIKit;
@@ -26,7 +26,7 @@ namespace BigTed
 		public void ResetStyle(bool isiOS7, UIColor colorToUse)
 		{
 			Color = colorToUse;
-			BackgroundColor = isiOS7 ? UIColor.White : UIColor.DarkGray;
+			BackgroundColor = isiOS7 ? UIColor.SystemBackgroundColor : UIColor.DarkGray;
 			ProgressUpdateInterval = 300;
 
 

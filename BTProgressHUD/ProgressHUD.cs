@@ -1,4 +1,4 @@
-// BTProgressHUD - port of SVProgressHUD
+﻿// BTProgressHUD - port of SVProgressHUD
 //
 //  https://github.com/nicwise/BTProgressHUD
 // 
@@ -87,9 +87,9 @@ namespace BigTed
 		{
 
 			if (IsiOS7ForLookAndFeel) {
-				HudBackgroundColour = UIColor.White.ColorWithAlpha (0.8f);
-				HudForegroundColor = UIColor.FromWhiteAlpha (0.0f, 0.8f);
-				HudStatusShadowColor = UIColor.FromWhiteAlpha (200f / 255f, 0.8f);
+				HudBackgroundColour = UIColor.SystemBackgroundColor.ColorWithAlpha (0.8f);
+				HudForegroundColor = UIColor.LabelColor.ColorWithAlpha(0.8f);
+				HudStatusShadowColor = UIColor.LabelColor.ColorWithAlpha(0.8f);
 				_ringThickness = 1f;
 
 			} else {
