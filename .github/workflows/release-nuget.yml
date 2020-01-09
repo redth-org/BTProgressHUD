@@ -17,7 +17,7 @@ jobs:
     - name: Download Artifacts
       uses: actions/download-artifact@master
       with:
-        name: Nuget Package
+        name: NugetPackage
         path: ./
         
     - name: Publish NuGet Package (NuGet.org)

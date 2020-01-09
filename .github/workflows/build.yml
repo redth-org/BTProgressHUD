@@ -16,5 +16,5 @@ jobs:
 
     - uses: actions/upload-artifact@master
       with:
-        name: Nuget Package
+        name: NugetPackage
         path: artifacts
