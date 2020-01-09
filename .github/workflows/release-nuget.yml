@@ -20,7 +20,12 @@ jobs:
         name: Nuget Package
         path: ./
         
-    - name: Publish NuGet Package
+    - name: Publish NuGet Package (NuGet.org)
       env:
         API_KEY: ${{ secrets.NUGET_API_KEY }}
       run: dotnet nuget push **/*.nupkg -k ${API_KEY}
+
+    - name: Publish NuGet Package (GitHub)
+      env:
+        API_KEY: ${{ secrets.GITHUB_TOKEN }}
+      run: dotnet nuget push **/*.nupkg -k ${API_KEY} --source "https://nuget.pkg.github.com/redth-org/index.json"
