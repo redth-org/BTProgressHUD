@@ -1,0 +1,26 @@
+name: Release NuGet
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish-nuget:
+    runs-on: windows-latest
+
+    steps:
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '3.1.100'
+    
+    - name: Download Artifacts
+      uses: actions/download-artifact@master
+      with:
+        name: Nuget Package
+        path: ./
+        
+    - name: Publish NuGet Package
+      env:
+        API_KEY: ${{ secrets.NUGET_API_KEY }}
+      run: dotnet nuget push **/*.nupkg -k ${API_KEY}
