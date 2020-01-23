@@ -1,0 +1,32 @@
+name: Release NuGet
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish-nuget:
+    runs-on: windows-latest
+
+    steps:
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '3.1.100'
+    
+    - uses: actions/checkout@v1
+
+    - name: Build Project
+      run: ./build.ps1
+      shell: powershell
+
+    - uses: actions/upload-artifact@master
+      with:
+        name: NugetPackage
+        path: artifacts
+        
+    - name: Publish NuGet Package (NuGet.org)
+      run: dotnet nuget push artifacts/**/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
+
+    - name: Publish NuGet Package (GitHub)
+      run: dotnet nuget push artifacts/**/*.nupkg -k ${{ secrets.GITHUB_TOKEN }} -s https://nuget.pkg.github.com/redth-org/index.json
