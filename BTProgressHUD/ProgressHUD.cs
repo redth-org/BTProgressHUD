@@ -88,9 +88,12 @@ namespace BigTed
 
             if (IsiOS7ForLookAndFeel)
             {
-                HudBackgroundColour = UIDevice.CurrentDevice.CheckSystemVersion(13, 0) ? UIColor.SystemBackgroundColor.ColorWithAlpha(0.8f) : UIColor.White.ColorWithAlpha(0.8f);
-                HudForegroundColor = UIDevice.CurrentDevice.CheckSystemVersion(13, 0) ? UIColor.LabelColor.ColorWithAlpha(0.8f) : UIColor.FromWhiteAlpha(0.0f, 0.8f);
-                HudStatusShadowColor = UIDevice.CurrentDevice.CheckSystemVersion(13, 0) ? UIColor.LabelColor.ColorWithAlpha(0.8f) : UIColor.FromWhiteAlpha(200f / 255f, 0.8f);
+                HudBackgroundColour = UIColor.White.ColorWithAlpha (0.8f);
+                HudForegroundColor = UIColor.FromWhiteAlpha (0.0f, 0.8f);
+                HudStatusShadowColor = UIColor.FromWhiteAlpha (200f / 255f, 0.8f);
+            //    HudBackgroundColour = UIDevice.CurrentDevice.CheckSystemVersion(13, 0) ? UIColor.SystemBackgroundColor.ColorWithAlpha(0.8f) : UIColor.White.ColorWithAlpha(0.8f);
+            //    HudForegroundColor = UIDevice.CurrentDevice.CheckSystemVersion(13, 0) ? UIColor.LabelColor.ColorWithAlpha(0.8f) : UIColor.FromWhiteAlpha(0.0f, 0.8f);
+            //    HudStatusShadowColor = UIDevice.CurrentDevice.CheckSystemVersion(13, 0) ? UIColor.LabelColor.ColorWithAlpha(0.8f) : UIColor.FromWhiteAlpha(200f / 255f, 0.8f);
                 _ringThickness = 1f;
             }
             else
