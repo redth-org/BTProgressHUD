@@ -28,8 +28,7 @@ namespace BigTed
             Color = colorToUse;
             if(UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
             {
-                BackgroundColor = isiOS7 ? UIColor.White : UIColor.DarkGray;
-               // BackgroundColor = isiOS7 ? UIColor.SystemBackgroundColor : UIColor.DarkGray;
+                BackgroundColor = isiOS7 ? UIColor.SystemBackgroundColor : UIColor.DarkGray;
             }
             else
             {

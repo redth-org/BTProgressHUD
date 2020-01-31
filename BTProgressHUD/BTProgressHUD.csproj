@@ -7,6 +7,12 @@
     <Description>SVProgressHUD (and BTProgressHUD) is a clean and easy-to-use HUD meant to display the progress of an ongoing task.</Description>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release</OutputPath>
+    <DefineConstants>__IOS__;__MOBILE__;__UNIFIED__;TRACE;MONO;UIKIT;COCOA;IOS;RELEASE;XAMARIN_IOS;XAMARIN_IOS10</DefineConstants>
+    <DocumentationFile>obj\Release\BTProgressHUD.xml</DocumentationFile>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
   <ItemGroup>
 	  <BundleResource Include="**\*.png" />
 	  <None Include="..\NOTICE" pack="true" PackagePath="" />
