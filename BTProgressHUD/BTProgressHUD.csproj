@@ -15,8 +15,16 @@
   </PropertyGroup>
   <ItemGroup>
 	  <BundleResource Include="**\*.png" />
-	  <None Include="..\NOTICE" pack="true" PackagePath="" />
-    <None Include="..\LICENSE" Pack="true" PackagePath="" />
+	  <None Include="..\NOTICE">
+	    <pack>true</pack>
+	    <PackagePath></PackagePath>
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+    <None Include="..\LICENSE">
+      <Pack>true</Pack>
+      <PackagePath></PackagePath>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   
 </Project>

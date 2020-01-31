@@ -24,7 +24,7 @@
   <files>
     <file src="bin/Release/BTProgressHUD.dll" target="lib/xamarinios10/BTProgressHUD.dll" />
     <file src="bin/Release/BTProgressHUD.xml" target="lib/xamarinios10/BTProgressHUD.xml" />
-    <file src=".../NOTICE" target="NOTICE" />
-    <file src=".../LICENSE" target="LICENSE" />
+    <file src="bin/Release/NOTICE" target="NOTICE" />
+    <file src="bin/Release/LICENSE" target="LICENSE" />
   </files>
 </package>
