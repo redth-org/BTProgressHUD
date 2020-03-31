@@ -12,13 +12,10 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '3.1.100'
-    
-    - uses: actions/checkout@v1
+        dotnet-version: 3.1.200
 
-    - name: Build Project
-      run: ./build.ps1
-      shell: powershell
+    - name: Run the Cake script
+      uses: ecampidoglio/cake-action@master
 
     - uses: actions/upload-artifact@master
       with:
@@ -26,7 +23,7 @@ jobs:
         path: artifacts
         
     - name: Publish NuGet Package (NuGet.org)
-      run: dotnet nuget push artifacts/**/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
+      run: dotnet nuget push artifacts/**/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json -n true
 
     - name: Publish NuGet Package (GitHub)
-      run: dotnet nuget push artifacts/**/*.nupkg -k ${{ secrets.GITHUB_TOKEN }} -s https://nuget.pkg.github.com/redth-org/index.json
+      run: dotnet nuget push artifacts/**/*.nupkg -k ${{ secrets.GITHUB_TOKEN }} -s https://nuget.pkg.github.com/redth-org/index.json -n true

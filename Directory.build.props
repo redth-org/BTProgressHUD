@@ -3,7 +3,7 @@
     <Copyright>Copyright (c) nicwise</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/redth-org/BTProgressHUD</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/redth-org/BTProgressHUD/develop/icon.png</PackageIconUrl>
+    <PackageIcon>icon.png</PackageIcon>
     <Authors>nicwise</Authors>
     <Owners>nicwise,ravensorb,redth,cheesebaron</Owners>
     <PackageTags>Xamarin, MonoTouch, Progress, BTProgressHUD</PackageTags>
@@ -21,26 +21,26 @@
     <NoWarn>$(NoWarn);1591;1701;1702;1705;VSX1000;NU1603</NoWarn>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <DesignTimeBuild>false</DesignTimeBuild>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <DebugType>portable</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-  </PropertyGroup>
-  
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' And '$(OS)' == 'Windows_NT' ">
-    <!--<IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>-->
-    
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <!-- <IncludeSymbols>true</IncludeSymbols> -->
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>    
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
   
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)icon.png" Pack="true" PackagePath=""/>
+  </ItemGroup>
 </Project>
