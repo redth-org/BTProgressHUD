@@ -3,7 +3,7 @@
     <Copyright>Copyright (c) nicwise</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/redth-org/BTProgressHUD</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/redth-org/BTProgressHUD/develop/icon.png</PackageIconUrl>
+    <PackageIcon>icon.png</PackageIcon>
     <Authors>nicwise</Authors>
     <Owners>nicwise,ravensorb,redth,cheesebaron</Owners>
     <PackageTags>Xamarin, MonoTouch, Progress, BTProgressHUD</PackageTags>
@@ -38,5 +38,9 @@
   
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)icon.png" Pack="true" PackagePath=""/>
   </ItemGroup>
 </Project>
