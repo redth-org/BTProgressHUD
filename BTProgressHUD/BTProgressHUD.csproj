@@ -8,38 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-	  <BundleResource Include="**\*.png" />
-	  <None Include="..\NOTICE" pack="true" PackagePath="" />
+    <None Include="..\NOTICE" pack="true" PackagePath="" />
     <None Include="..\LICENSE" Pack="true" PackagePath="" />
   </ItemGroup>
-  
+
   <ItemGroup>
-    <BundleResource Update="success%402x.png">
-      <IncludeInPackage>true</IncludeInPackage>
-    </BundleResource>
-    <BundleResource Update="success_7%402x.png">
-      <IncludeInPackage>true</IncludeInPackage>
-    </BundleResource>
-    <BundleResource Update="xamarin%402x.png">
-      <IncludeInPackage>true</IncludeInPackage>
-    </BundleResource>
-    <BundleResource Update="error.png">
-      <IncludeInPackage>true</IncludeInPackage>
-    </BundleResource>
-    <BundleResource Update="error_7%402x.png">
-      <IncludeInPackage>true</IncludeInPackage>
-    </BundleResource>
-    <BundleResource Update="success.png">
-      <IncludeInPackage>true</IncludeInPackage>
-    </BundleResource>
-    <BundleResource Update="success_7.png">
-      <IncludeInPackage>true</IncludeInPackage>
-    </BundleResource>
-    <BundleResource Update="xamarin.png">
-      <IncludeInPackage>true</IncludeInPackage>
-    </BundleResource>
-    <BundleResource Update="error_7.png">
-      <IncludeInPackage>true</IncludeInPackage>
-    </BundleResource>
+    <None Include="..\assets\*.png" Pack="true" PackagePath="build\xamarin.ios10\assets" />
+    <None Include="..\assets\BTProgressHud.targets" Pack="true" PackagePath="build\xamarin.ios10" />
   </ItemGroup>
 </Project>

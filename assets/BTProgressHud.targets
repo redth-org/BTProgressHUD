@@ -1,0 +1,12 @@
+<Project>
+    <ItemGroup>
+        <BundleResource Include="$(MSBuildThisFileDirectory)\assets\error_7.png" />
+        <BundleResource Include="$(MSBuildThisFileDirectory)\assets\error_7@2x.png" />
+        <BundleResource Include="$(MSBuildThisFileDirectory)\assets\error.png" />
+        <BundleResource Include="$(MSBuildThisFileDirectory)\assets\error@2x.png" />
+        <BundleResource Include="$(MSBuildThisFileDirectory)\assets\success_7.png" />
+        <BundleResource Include="$(MSBuildThisFileDirectory)\assets\success_7@2x.png" />
+        <BundleResource Include="$(MSBuildThisFileDirectory)\assets\success.png" />
+        <BundleResource Include="$(MSBuildThisFileDirectory)\assets\success@2x.png" />
+    </ItemGroup>
+</Project>

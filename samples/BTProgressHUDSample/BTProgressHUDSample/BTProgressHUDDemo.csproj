@@ -93,14 +93,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\..\..\BTProgressHUD\BTProgressHUD.csproj">
-      <Project>{8ECDFDC5-42D0-4540-9691-830EEB2ED874}</Project>
-      <Name>BTProgressHUD</Name>
-      <IsAppExtension>false</IsAppExtension>
-      <IsWatchApp>false</IsWatchApp>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Contents.json">
       <Visible>false</Visible>
     </ImageAsset>
@@ -119,5 +111,11 @@
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BTProgressHUD\BTProgressHUD.csproj">
+      <Project>{8ecdfdc5-42d0-4540-9691-830eeb2ed874}</Project>
+      <Name>BTProgressHUD</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>
