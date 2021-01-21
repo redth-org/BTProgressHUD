@@ -846,7 +846,7 @@ namespace BigTed
 
                             if (IsiOS7ForLookAndFeel)
                             {
-                                var rootController = UIApplication.SharedApplication.KeyWindow.RootViewController;
+                                var rootController = UIApplication.SharedApplication.GetKeyWindow().RootViewController;
                                 if (rootController != null)
                                     rootController.SetNeedsStatusBarAppearanceUpdate();
                             }
@@ -930,7 +930,7 @@ namespace BigTed
                 keyboardHeight = VisibleKeyboardHeight;
             }
 
-            CGRect orientationFrame = UIApplication.SharedApplication.KeyWindow.Bounds;
+            CGRect orientationFrame = UIApplication.SharedApplication.GetKeyWindow().Bounds;
 
             CGRect statusBarFrame = UIApplication.SharedApplication.StatusBarFrame;
 

@@ -27,4 +27,9 @@
     </None>
   </ItemGroup>
   
+  <ItemGroup>
+    <Compile Update="UIApplicationExtensions.cs">
+      <SubType></SubType>
+    </Compile>
+  </ItemGroup>
 </Project>
