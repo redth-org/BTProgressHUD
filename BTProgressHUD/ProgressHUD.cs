@@ -163,20 +163,19 @@ namespace BigTed
             obj.InvokeOnMainThread(() => SetStatusWorker(status));
         }
 
-        public void ShowSuccessWithStatus(string status, double timeoutMs = 1000)
+        public void ShowSuccessWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000)
         {
-            ShowImage(SuccessImage, status, timeoutMs);
+            ShowImage(SuccessImage, status, maskType, timeoutMs);
         }
 
-        public void ShowErrorWithStatus(string status, double timeoutMs = 1000)
+        public void ShowErrorWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000)
         {
-            ShowImage(ErrorImage, status, timeoutMs);
+            ShowImage(ErrorImage, status, maskType, timeoutMs);
         }
 
-        public void ShowImage(UIImage image, string status, double timeoutMs = 1000)
+        public void ShowImage(UIImage image, string status, MaskType maskType = MaskType.None, double timeoutMs = 1000)
         {
-
-            obj.InvokeOnMainThread(() => ShowImageWorker(image, status, TimeSpan.FromMilliseconds(timeoutMs)));
+            obj.InvokeOnMainThread(() => ShowImageWorker(image, status, maskType, TimeSpan.FromMilliseconds(timeoutMs)));
         }
 
         public void Dismiss()
@@ -419,7 +418,7 @@ namespace BigTed
             }
         }
 
-        void ShowImageWorker(UIImage image, string status, TimeSpan duration)
+        void ShowImageWorker(UIImage image, string status, MaskType maskType, TimeSpan duration)
         {
 
             _progress = -1;
@@ -434,7 +433,7 @@ namespace BigTed
             }
 
             if (!IsVisible)
-                Show();
+                Show(null, -1F, maskType);
 
             ImageView.TintColor = HudForegroundColor;
             ImageView.Image = image.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);

@@ -28,7 +28,7 @@ namespace BTProgressHUDDemo
 		public override void LoadView()
 		{
 			base.LoadView();
-			View.BackgroundColor = UIColor.LightGray;
+			View.BackgroundColor = UIColor.White;
 
 			MakeButton("Run first - off main thread", () =>
 			{
@@ -90,8 +90,7 @@ namespace BTProgressHUDDemo
 
 			});
 
-
-			MakeButton("Dismiss", () =>
+            MakeButton("Dismiss", () =>
 			{
 				BTProgressHUD.Dismiss(); 
 			});
@@ -128,6 +127,14 @@ namespace BTProgressHUDDemo
 				BTProgressHUD.Dismiss(); 
 			});
 
+            // This demo only works on iOS 13 and above because of UIImage.GetSystemImage
+            // But it should work with versions below if you just use a UIImage
+            if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
+            {
+                MakeButton("Success With Status", () =>
+                    BTProgressHUD.ShowImage(UIImage.GetSystemImage("photo"),"Success with image", ProgressHUD.MaskType.Black, 4000f)
+                );
+            }
 		}
 
 		void KillAfter(float timeout = 5)
@@ -171,18 +178,6 @@ namespace BTProgressHUDDemo
 
             previousButton = button;
 		}
-
-		public override void ViewDidLoad()
-		{
-			base.ViewDidLoad();
-		
-		}
-
-		public override void ViewDidAppear(bool animated)
-		{
-			base.ViewDidAppear(animated);
-
-		}
-	}
+    }
 }
 
