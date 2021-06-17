@@ -45,19 +45,19 @@ namespace BigTed
 			ProgressHUD.Shared.SetStatus(status);
 		}
 
-		public static void ShowSuccessWithStatus(string status, double timeoutMs = 1000)
+		public static void ShowSuccessWithStatus(string status, ProgressHUD.MaskType maskType = ProgressHUD.MaskType.None, double timeoutMs = 1000)
 		{
-			ProgressHUD.Shared.ShowSuccessWithStatus(status, timeoutMs);
+			ProgressHUD.Shared.ShowSuccessWithStatus(status, maskType, timeoutMs);
 		}
 
-		public static void ShowErrorWithStatus(string status, double timeoutMs = 1000)
+		public static void ShowErrorWithStatus(string status, ProgressHUD.MaskType maskType = ProgressHUD.MaskType.None, double timeoutMs = 1000)
 		{
-			ProgressHUD.Shared.ShowErrorWithStatus(status, timeoutMs);
+			ProgressHUD.Shared.ShowErrorWithStatus(status, maskType, timeoutMs);
 		}
 
-		public static void ShowImage(UIImage image, string status, double timeoutMs = 1000)
+		public static void ShowImage(UIImage image, string status, ProgressHUD.MaskType maskType = ProgressHUD.MaskType.None, double timeoutMs = 1000)
 		{
-			ProgressHUD.Shared.ShowImage(image, status, timeoutMs);
+			ProgressHUD.Shared.ShowImage(image, status, maskType, timeoutMs);
 		}
 
 		public static void Dismiss()
