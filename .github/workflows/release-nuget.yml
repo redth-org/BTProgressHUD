@@ -3,29 +3,38 @@ name: Release NuGet
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      runId:
+        description: "The run id of the GitHub Action Run to publish artifacts from"
+        required: false
+        default: '-1'
 
 jobs:
-  publish-nuget:
+  nuget-publish:
     runs-on: windows-latest
-
     steps:
-    - uses: actions/checkout@v1
-
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
+    - name: Download specific artifact
+      if: ${{ github.event.inputs.runId > 0 }}
+      uses: dawidd6/action-download-artifact@v2
       with:
-        dotnet-version: 3.1.200
+        workflow: build.yml
+        branch: master
+        run_id: ${{ github.event.inputs.runId }}
 
-    - name: Run the Cake script
-      uses: ecampidoglio/cake-action@master
-
-    - uses: actions/upload-artifact@master
+    - name: Download latest artifact
+      if: ${{ github.event.inputs.runId == -1 }}
+      uses: dawidd6/action-download-artifact@v2
       with:
-        name: NugetPackage
-        path: artifacts
-        
-    - name: Publish NuGet Package (NuGet.org)
-      run: dotnet nuget push artifacts/**/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json -n true
+        workflow: build.yml
+        branch: master
+      
+    - shell: pwsh
+      name: Publish NuGet Package
+      run: dotnet nuget push **/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
 
-    - name: Publish NuGet Package (GitHub)
-      run: dotnet nuget push artifacts/**/*.nupkg -k ${{ secrets.GITHUB_TOKEN }} -s https://nuget.pkg.github.com/redth-org/index.json -n true
+    - shell: pwsh
+      name: Publish NuGet Package (GitHub)
+      run: |
+        dotnet nuget add source "https://nuget.pkg.github.com/redth-org/index.json" -n "Github" -u redth-org -p ${{ secrets.GITHUB_TOKEN }}
+        dotnet nuget push **/*.nupkg -s "Github" -n true
