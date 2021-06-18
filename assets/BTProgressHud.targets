@@ -1,13 +1,5 @@
 <Project>
     <ItemGroup>
-        <BundleResource Include="$(MSBuildThisFileDirectory)\BTProgressHud\error_7.png">
-            <LogicalName>error_7</LogicalName>
-            <TargetPath>error_7</TargetPath>
-        </BundleResource>
-        <BundleResource Include="$(MSBuildThisFileDirectory)\BTProgressHud\error_7@2x.png">
-            <LogicalName>error_7@2x</LogicalName>
-            <TargetPath>error_7@2x</TargetPath>
-        </BundleResource>
         <BundleResource Include="$(MSBuildThisFileDirectory)\BTProgressHud\error.png">
             <LogicalName>error</LogicalName>
             <TargetPath>error</TargetPath>
@@ -16,13 +8,13 @@
             <LogicalName>error@2x</LogicalName>
             <TargetPath>error@2x</TargetPath>
         </BundleResource>
-        <BundleResource Include="$(MSBuildThisFileDirectory)\BTProgressHud\success_7.png">
-            <LogicalName>success_7</LogicalName>
-            <TargetPath>success_7</TargetPath>
+        <BundleResource Include="$(MSBuildThisFileDirectory)\BTProgressHud\error-outline.png">
+            <LogicalName>error-outline</LogicalName>
+            <TargetPath>error-outline</TargetPath>
         </BundleResource>
-        <BundleResource Include="$(MSBuildThisFileDirectory)\BTProgressHud\success_7@2x.png">
-            <LogicalName>success_7@2x</LogicalName>
-            <TargetPath>success_7@2x</TargetPath>
+        <BundleResource Include="$(MSBuildThisFileDirectory)\BTProgressHud\error-outline@2x.png">
+            <LogicalName>error-outline@2x</LogicalName>
+            <TargetPath>error-outline@2x</TargetPath>
         </BundleResource>
         <BundleResource Include="$(MSBuildThisFileDirectory)\BTProgressHud\success.png">
             <LogicalName>success</LogicalName>
@@ -31,6 +23,30 @@
         <BundleResource Include="$(MSBuildThisFileDirectory)\BTProgressHud\success@2x.png">
             <LogicalName>success@2x</LogicalName>
             <TargetPath>success@2x</TargetPath>
+        </BundleResource>
+        <BundleResource Include="$(MSBuildThisFileDirectory)\BTProgressHud\success-outline.png">
+            <LogicalName>success-outline</LogicalName>
+            <TargetPath>success-outline</TargetPath>
+        </BundleResource>
+        <BundleResource Include="$(MSBuildThisFileDirectory)\BTProgressHud\success-outline@2x.png">
+            <LogicalName>success-outline@2x</LogicalName>
+            <TargetPath>success-outline@2x</TargetPath>
+        </BundleResource>
+        <BundleResource Include="$(MSBuildThisFileDirectory)\BTProgressHud\info.png">
+            <LogicalName>info</LogicalName>
+            <TargetPath>info</TargetPath>
+        </BundleResource>
+        <BundleResource Include="$(MSBuildThisFileDirectory)\BTProgressHud\info@2x.png">
+            <LogicalName>info@2x</LogicalName>
+            <TargetPath>info@2x</TargetPath>
+        </BundleResource>
+        <BundleResource Include="$(MSBuildThisFileDirectory)\BTProgressHud\info-outline.png">
+            <LogicalName>info-outline</LogicalName>
+            <TargetPath>info-outline</TargetPath>
+        </BundleResource>
+        <BundleResource Include="$(MSBuildThisFileDirectory)\BTProgressHud\info-outline@2x.png">
+            <LogicalName>info-outline@2x</LogicalName>
+            <TargetPath>info-outline@2x</TargetPath>
         </BundleResource>
     </ItemGroup>
 </Project>

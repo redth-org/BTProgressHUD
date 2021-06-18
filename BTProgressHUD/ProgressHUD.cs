@@ -133,14 +133,19 @@ namespace BTProgressHUD
             obj.InvokeOnMainThread(() => SetStatusWorker(status));
         }
 
-        public void ShowSuccessWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000)
+        public void ShowSuccessWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000, bool outlinedImage = false)
         {
-            ShowImage(SuccessImage, status, maskType, timeoutMs);
+            ShowImage(outlinedImage ? SuccessOutlineImage : SuccessImage, status, maskType, timeoutMs);
         }
 
-        public void ShowErrorWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000)
+        public void ShowErrorWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000, bool outlinedImage = false)
         {
-            ShowImage(ErrorImage, status, maskType, timeoutMs);
+            ShowImage(outlinedImage ? ErrorOutlineImage : ErrorImage, status, maskType, timeoutMs);
+        }
+        
+        public void ShowInfoWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000, bool outlinedImage = false)
+        {
+            ShowImage(outlinedImage ? InfoOutlineImage: InfoImage, status, maskType, timeoutMs);
         }
 
         public void ShowImage(UIImage image, string status, MaskType maskType = MaskType.None, double timeoutMs = 1000)
@@ -153,29 +158,14 @@ namespace BTProgressHUD
             obj.InvokeOnMainThread(DismissWorker);
         }
 
-        public UIImage ErrorImage
-        {
-            get
-            {
-                return (UIImage.FromBundle("error_7.png"));
-            }
-        }
-
-        public UIImage SuccessImage
-        {
-            get
-            {
-                return (UIImage.FromBundle("success_7.png"));
-            }
-        }
-
-        public bool IsVisible
-        {
-            get
-            {
-                return Alpha == 1;
-            }
-        }
+        public UIImage ErrorImage => UIImage.FromBundle("error.png");
+        public UIImage SuccessImage => UIImage.FromBundle("success.png");
+        public UIImage InfoImage => UIImage.FromBundle("info.png");
+        
+        public UIImage ErrorOutlineImage => UIImage.FromBundle("error-outline.png");
+        public UIImage SuccessOutlineImage => UIImage.FromBundle("success-outline.png");
+        public UIImage InfoOutlineImage => UIImage.FromBundle("info-outline.png");
+        public bool IsVisible => Alpha == 1;
 
         static ProgressHUD sharedHUD = null;
 

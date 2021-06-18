@@ -84,12 +84,31 @@ namespace BTProgressHUDDemo
 			{
                 BTProgressHUD.BTProgressHUD.ShowErrorWithStatus("Oh, thats bad");
 			});
+            
+            MakeButton("Show Info", () =>
+            {
+                BTProgressHUD.BTProgressHUD.ShowInfoWithStatus("Notice me!");
+            });
+            
+            MakeButton("Show Success (Outlined)", () =>
+            {
+                BTProgressHUD.BTProgressHUD.ShowSuccessWithStatus("Great success!", default, default, true);
+            });
+
+            MakeButton("Show Fail (Outlined)", () =>
+            {
+                BTProgressHUD.BTProgressHUD.ShowErrorWithStatus("Oh, thats bad", default, default, true);
+            });
+            
+            MakeButton("Show Info (Outlined)", () =>
+            {
+                BTProgressHUD.BTProgressHUD.ShowInfoWithStatus("Notice me!", default, default, true);
+            });
 
 			MakeButton("Toast", () =>
 			{
-                BTProgressHUD.BTProgressHUD.ShowToast("Hello from the toast", showToastCentered: false, timeoutMs: 1000);
-
-			});
+                BTProgressHUD.BTProgressHUD.ShowToast("Hello from the toast", false, 1000);
+            });
 
             MakeButton("Dismiss", () =>
 			{
@@ -117,8 +136,6 @@ namespace BTProgressHUDDemo
 					{
                         BTProgressHUD.BTProgressHUD.Show("Hello!", progress);
 					}
-
-
 				});
 				NSRunLoop.Current.AddTimer(timer, NSRunLoopMode.Common);
 			});
