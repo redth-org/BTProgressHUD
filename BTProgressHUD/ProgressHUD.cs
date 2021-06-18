@@ -400,7 +400,7 @@ namespace BTProgressHUD
 #if __UNIFIED__
             _fadeoutTimer = NSTimer.CreateTimer(duration, timer => DismissWorker());
 #else
-			_fadeoutTimer = NSTimer.CreateTimer(duration, DismissWorker);
+            _fadeoutTimer = NSTimer.CreateTimer(duration, DismissWorker);
 #endif
             NSRunLoop.Main.AddTimer(_fadeoutTimer, NSRunLoopMode.Common);
         }
@@ -413,7 +413,7 @@ namespace BTProgressHUD
 #if __UNIFIED__
                 _progressTimer = NSTimer.CreateRepeatingTimer(duration, timer => UpdateProgress());
 #else
-				_progressTimer = NSTimer.CreateRepeatingTimer(duration, UpdateProgress);
+                _progressTimer = NSTimer.CreateRepeatingTimer(duration, UpdateProgress);
 #endif
                 NSRunLoop.Current.AddTimer(_progressTimer, NSRunLoopMode.Common);
             }
@@ -600,12 +600,12 @@ namespace BTProgressHUD
                     HudView.AddSubview(_cancelHud);
                     // Position the Cancel button at the bottom
                     /* var hudFrame = HudView.Frame;
-					var cancelFrame = _cancelHud.Frame;
-					var x = ((hudFrame.Width - cancelFrame.Width)/2) + 0;
-					var y = (hudFrame.Height - cancelFrame.Height - 10);
-					_cancelHud.Frame = new RectangleF(x, y, cancelFrame.Width, cancelFrame.Height);
-					HudView.SizeToFit();
-					*/
+                    var cancelFrame = _cancelHud.Frame;
+                    var x = ((hudFrame.Width - cancelFrame.Width)/2) + 0;
+                    var y = (hudFrame.Height - cancelFrame.Height - 10);
+                    _cancelHud.Frame = new RectangleF(x, y, cancelFrame.Width, cancelFrame.Height);
+                    HudView.SizeToFit();
+                    */
                 }
                 return _cancelHud;
             }
