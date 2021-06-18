@@ -369,11 +369,10 @@ namespace BTProgressHUD
 
         void ShowImageWorker(UIImage image, string status, MaskType maskType, TimeSpan duration)
         {
-
             _progress = -1;
             CancelRingLayerAnimation();
 
-            //this should happen when Dismiss is called, but it happens AFTER the animation ends
+            // this should happen when Dismiss is called, but it happens AFTER the animation ends
             // so sometimes, the cancel button is left on :(
             if (_cancelHud != null)
             {

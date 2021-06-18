@@ -7,19 +7,9 @@ Port to Xamarin.iOS of the [SVProgressHUD](https://github.com/samvermette/SVProg
 
 SVProgressHUD (and BTProgressHUD) is a clean and easy-to-use HUD meant to display the progress of an ongoing task.
 
-![SVProgressHUD](http://f.cl.ly/items/3r2x0b1E1O2F0V422a3R/screenshots2.png)
-
-(Image from SVProgressHUD)
-
 This is also available in the [Xamarin Component Store](https://components.xamarin.com/view/btprogresshud/). 
 
 If you need this for Xamarin.Android, [redth has a very similar component](https://github.com/Redth/AndHUD)
-
-__Now includes iOS7-style HUD if the app is running on iOS7__
-
-You can force iOS6 or iOS7 style in the IsiOS7 property in ProgressHUD.cs
-
-
 
 ## Installation
 
@@ -41,6 +31,7 @@ BTProgressHUD.Show(); //shows the spinner
 BTProgressHUD.Show(status: "Oh hai"); //show spinner + text
 BTProgressHUD.ShowSuccessWithStatus("Wow, that worked"); //A big TICK with text
 BTProgressHUD.ShowErrorWithStatus("Fail!"); //A big CROSS with text
+BTProgressHUD.ShowInfoWithStatus("Info!"); //A big I with text
 BTProgressHUD.ShowToast("Hello from Toast"); //show an Android-style toast
 ```
 All of these can be dismissed with
@@ -77,12 +68,13 @@ The toast can be centered or at the top or bottom of the screen. This is control
 BTProgressHUD.ShowToast("foo", toastPosition: ToastPosition.Center);
 ```
 
-### ShowSuccess/Error/ShowImage
-This method dismisses the activity after 1 second. You can provide your own images if needed - make them 28x28 white PNGs.
+### ShowSuccess/ShowError/ShowInfo/ShowImage
+This method dismisses the activity after 1 second. You can provide your own images if needed
 
 ```csharp
 BTProgressHUD.ShowSuccessWithStatus("Wow, that worked"); //A big TICK with text
 BTProgressHUD.ShowErrorWithStatus("Fail!"); //A big CROSS with text
+BTProgressHUD.ShowInfoWithStatus("Info!"); //A big I with text
 BTProgressHUD.ShowImage(UIImage.FromFile(…), "Nice one Stu!");
 ```
 
