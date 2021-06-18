@@ -58,7 +58,7 @@ If you need to make your own instance of the HUD, you can make a new ProgressHUD
 You can call Show with the following parameters
 * status: <string> - show status text
 * progress: <float> - show a progress circle with 0.0 - 1.0 of progress. Call again to change the progress.
-* maskType: <ProgressHUD.MaskType> - show with the background (the whole window) clear, black or gradient. Default is none, which allows interaction with the underlying elements.
+* maskType: <MaskType> - show with the background (the whole window) clear, black or gradient. Default is none, which allows interaction with the underlying elements.
 
 ```csharp
 public enum MaskType
@@ -74,7 +74,7 @@ public enum MaskType
 The toast can be centered or at the top or bottom of the screen. This is controlled by the second parameter.
 
 ```csharp
-BTProgressHUD.ShowToast("foo", toastPosition: ProgressHUD.ToastPosition.Center);
+BTProgressHUD.ShowToast("foo", toastPosition: ToastPosition.Center);
 ```
 
 ### ShowSuccess/Error/ShowImage

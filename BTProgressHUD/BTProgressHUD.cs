@@ -1,43 +1,44 @@
 using System;
-
-#if __UNIFIED__
+using BigTed;
 using UIKit;
+#if __UNIFIED__
+
 #else
 using MonoTouch.UIKit;
 #endif
 
-namespace BigTed
+namespace BTProgressHUD
 {
 	public static class BTProgressHUD
 	{
-		public static void Show(string status = null, float progress = -1, ProgressHUD.MaskType maskType = ProgressHUD.MaskType.None)
+		public static void Show(string status = null, float progress = -1, MaskType maskType = MaskType.None)
 		{
 			ProgressHUD.Shared.Show(status, progress, maskType);
 		}
 
-		public static void Show(string cancelCaption, Action cancelCallback, string status = null, float progress = -1, ProgressHUD.MaskType maskType = ProgressHUD.MaskType.None)
+		public static void Show(string cancelCaption, Action cancelCallback, string status = null, float progress = -1, MaskType maskType = MaskType.None)
 		{
 			ProgressHUD.Shared.Show(cancelCaption, cancelCallback, status, progress, maskType);
 		}
 
-		public static void ShowContinuousProgress(string status = null, ProgressHUD.MaskType maskType = ProgressHUD.MaskType.None)
+		public static void ShowContinuousProgress(string status = null, MaskType maskType = MaskType.None)
 		{
 			ProgressHUD.Shared.ShowContinuousProgress(status, maskType);
 		}
 
 		public static void ShowToast(string status, bool showToastCentered = false, double timeoutMs = 1000)
 		{
-			ShowToast(status, showToastCentered ? ProgressHUD.ToastPosition.Center : ProgressHUD.ToastPosition.Bottom, timeoutMs);
+			ShowToast(status, showToastCentered ? ToastPosition.Center : ToastPosition.Bottom, timeoutMs);
 		}
 
-		public static void ShowToast(string status, ProgressHUD.ToastPosition toastPosition = ProgressHUD.ToastPosition.Center, double timeoutMs = 1000)
+		public static void ShowToast(string status, ToastPosition toastPosition = ToastPosition.Center, double timeoutMs = 1000)
 		{
-			ProgressHUD.Shared.ShowToast(status, ProgressHUD.MaskType.None, toastPosition, timeoutMs);
+			ProgressHUD.Shared.ShowToast(status, MaskType.None, toastPosition, timeoutMs);
 		}
 
-		public static void ShowToast(string status, ProgressHUD.MaskType maskType = ProgressHUD.MaskType.None, bool showToastCentered = true, double timeoutMs = 1000)
+		public static void ShowToast(string status, MaskType maskType = MaskType.None, bool showToastCentered = true, double timeoutMs = 1000)
 		{
-			ProgressHUD.Shared.ShowToast(status, maskType, showToastCentered ? ProgressHUD.ToastPosition.Center : ProgressHUD.ToastPosition.Bottom, timeoutMs);
+			ProgressHUD.Shared.ShowToast(status, maskType, showToastCentered ? ToastPosition.Center : ToastPosition.Bottom, timeoutMs);
 		}
 
 		public static void SetStatus(string status)
@@ -45,17 +46,17 @@ namespace BigTed
 			ProgressHUD.Shared.SetStatus(status);
 		}
 
-		public static void ShowSuccessWithStatus(string status, ProgressHUD.MaskType maskType = ProgressHUD.MaskType.None, double timeoutMs = 1000)
+		public static void ShowSuccessWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000)
 		{
 			ProgressHUD.Shared.ShowSuccessWithStatus(status, maskType, timeoutMs);
 		}
 
-		public static void ShowErrorWithStatus(string status, ProgressHUD.MaskType maskType = ProgressHUD.MaskType.None, double timeoutMs = 1000)
+		public static void ShowErrorWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000)
 		{
 			ProgressHUD.Shared.ShowErrorWithStatus(status, maskType, timeoutMs);
 		}
 
-		public static void ShowImage(UIImage image, string status, ProgressHUD.MaskType maskType = ProgressHUD.MaskType.None, double timeoutMs = 1000)
+		public static void ShowImage(UIImage image, string status, MaskType maskType = MaskType.None, double timeoutMs = 1000)
 		{
 			ProgressHUD.Shared.ShowImage(image, status, maskType, timeoutMs);
 		}
@@ -72,18 +73,6 @@ namespace BigTed
 				return ProgressHUD.Shared.IsVisible;
 			}
 		}
-
-		public static bool ForceiOS6LookAndFeel
-		{
-			get
-			{
-				return ProgressHUD.Shared.ForceiOS6LookAndFeel;
-			}
-			set
-			{
-				ProgressHUD.Shared.ForceiOS6LookAndFeel = value;
-			}
-		}
-	}
+    }
 }
 

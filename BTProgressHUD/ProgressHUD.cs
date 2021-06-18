@@ -13,20 +13,16 @@
 //  https://github.com/samvermette/SVProgressHUD
 //
 //  Version 1.6.1
+
 using System;
 using System.Collections.Generic;
-
-#if __UNIFIED__
-using UIKit;
-using Foundation;
+using BigTed;
 using CoreAnimation;
 using CoreGraphics;
+using Foundation;
 using ObjCRuntime;
-
-
-
-
-
+using UIKit;
+#if __UNIFIED__
 
 #else
 using MonoTouch.UIKit;
@@ -42,7 +38,7 @@ using CGPoint = global::System.Drawing.PointF;
 using CGSize = global::System.Drawing.SizeF;
 #endif
 
-namespace BigTed
+namespace BTProgressHUD
 {
     public class ProgressHUD : UIView
     {
@@ -85,36 +81,10 @@ namespace BigTed
 
         public void SetOSSpecificLookAndFeel()
         {
-
-            if (IsiOS7ForLookAndFeel)
-            {
-                HudBackgroundColour = UIDevice.CurrentDevice.CheckSystemVersion(13, 0) ? UIColor.SystemBackgroundColor.ColorWithAlpha(0.8f) : UIColor.White.ColorWithAlpha(0.8f);
-                HudForegroundColor = UIDevice.CurrentDevice.CheckSystemVersion(13, 0) ? UIColor.LabelColor.ColorWithAlpha(0.8f) : UIColor.FromWhiteAlpha(0.0f, 0.8f);
-                HudStatusShadowColor = UIDevice.CurrentDevice.CheckSystemVersion(13, 0) ? UIColor.LabelColor.ColorWithAlpha(0.8f) : UIColor.FromWhiteAlpha(200f / 255f, 0.8f);
-                _ringThickness = 1f;
-            }
-            else
-            {
-                HudBackgroundColour = UIColor.FromWhiteAlpha(0.0f, 0.8f);
-                HudForegroundColor = UIColor.White;
-                HudStatusShadowColor = UIColor.Black;
-                _ringThickness = 6f;
-            }
-        }
-
-        public enum MaskType
-        {
-            None = 1,
-            Clear,
-            Black,
-            Gradient
-        }
-
-        public enum ToastPosition
-        {
-            Bottom = 1,
-            Center,
-            Top
+            HudBackgroundColour = UIDevice.CurrentDevice.CheckSystemVersion(13, 0) ? UIColor.SystemBackgroundColor.ColorWithAlpha(0.8f) : UIColor.White.ColorWithAlpha(0.8f);
+            HudForegroundColor = UIDevice.CurrentDevice.CheckSystemVersion(13, 0) ? UIColor.LabelColor.ColorWithAlpha(0.8f) : UIColor.FromWhiteAlpha(0.0f, 0.8f);
+            HudStatusShadowColor = UIDevice.CurrentDevice.CheckSystemVersion(13, 0) ? UIColor.LabelColor.ColorWithAlpha(0.8f) : UIColor.FromWhiteAlpha(200f / 255f, 0.8f);
+            RingThickness = 1f;
         }
 
         public UIColor HudBackgroundColour = UIColor.FromWhiteAlpha(0.0f, 0.8f);
@@ -187,7 +157,7 @@ namespace BigTed
         {
             get
             {
-                return (IsiOS7ForLookAndFeel ? UIImage.FromBundle("error_7.png") : UIImage.FromBundle("error.png"));
+                return (UIImage.FromBundle("error_7.png"));
             }
         }
 
@@ -195,7 +165,7 @@ namespace BigTed
         {
             get
             {
-                return (IsiOS7ForLookAndFeel ? UIImage.FromBundle("success_7.png") : UIImage.FromBundle("success.png"));
+                return (UIImage.FromBundle("success_7.png"));
             }
         }
 
@@ -222,8 +192,9 @@ namespace BigTed
             }
         }
 
-        float _ringRadius = 14f;
-        float _ringThickness = 6f;
+        private float RingRadius { get; set; } = 14f;
+        private float RingThickness { get; set; } = 6f;
+        
         MaskType _maskType;
         NSTimer _fadeoutTimer;
         UIView _overlayView;
@@ -239,18 +210,6 @@ namespace BigTed
         List<NSObject> _eventListeners;
         bool _displayContinuousImage;
 
-        public float RingRadius
-        {
-            get { return _ringRadius; }
-            set { _ringRadius = value; }
-        }
-
-        public float RingThickness
-        {
-            get { return _ringThickness; }
-            set { _ringThickness = value; }
-        }
-
         public override void Draw(CGRect rect)
         {
             using (var context = UIGraphics.GetCurrentContext())
@@ -262,8 +221,8 @@ namespace BigTed
                         context.FillRect(Bounds);
                         break;
                     case MaskType.Gradient:
-                        nfloat[] colors = new nfloat[] { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.75f };
-                        nfloat[] locations = new nfloat[] { 0.0f, 1.0f };
+                        var colors = new nfloat[] { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.75f };
+                        var locations = new nfloat[] { 0.0f, 1.0f };
                         using (var colorSpace = CGColorSpace.CreateDeviceRGB())
                         {
                             using (var gradient = new CGGradient(colorSpace, colors, locations))
@@ -284,7 +243,7 @@ namespace BigTed
                                  double timeoutMs = 1000, bool showContinuousProgress = false, UIImage displayContinuousImage = null)
         {
 
-            Ring.ResetStyle(IsiOS7ForLookAndFeel, (IsiOS7ForLookAndFeel ? TintColor : UIColor.White));
+            Ring.ResetStyle(TintColor);
 
 
             if (OverlayView.Superview == null)
@@ -531,7 +490,7 @@ namespace BigTed
                 if (_ringLayer == null)
                 {
                     var center = new CGPoint(HudView.Frame.Width / 2, HudView.Frame.Height / 2);
-                    _ringLayer = CreateRingLayer(center, _ringRadius, _ringThickness, Ring.Color);
+                    _ringLayer = ShapeHelper.CreateRingLayer(center, RingRadius, RingThickness, Ring.Color);
                     HudView.Layer.AddSublayer(_ringLayer);
                 }
                 return _ringLayer;
@@ -546,7 +505,7 @@ namespace BigTed
                 if (_backgroundRingLayer == null)
                 {
                     var center = new CGPoint(HudView.Frame.Width / 2, HudView.Frame.Height / 2);
-                    _backgroundRingLayer = CreateRingLayer(center, _ringRadius, _ringThickness, Ring.BackgroundColor);
+                    _backgroundRingLayer = ShapeHelper.CreateRingLayer(center, RingRadius, RingThickness, Ring.BackgroundColor);
                     _backgroundRingLayer.StrokeEnd = 1;
                     HudView.Layer.AddSublayer(_backgroundRingLayer);
                 }
@@ -555,52 +514,11 @@ namespace BigTed
             set { _backgroundRingLayer = value; }
         }
 
-        CGPoint PointOnCircle(CGPoint center, float radius, float angleInDegrees)
-        {
-            float x = radius * (float)Math.Cos(angleInDegrees * Math.PI / 180) + radius;
-            float y = radius * (float)Math.Sin(angleInDegrees * Math.PI / 180) + radius;
-            return new CGPoint(x, y);
-        }
-
-        UIBezierPath CreateCirclePath(CGPoint center, float radius, int sampleCount)
-        {
-            var smoothedPath = new UIBezierPath();
-            CGPoint startPoint = PointOnCircle(center, radius, -90);
-
-            smoothedPath.MoveTo(startPoint);
-
-            float delta = 360 / sampleCount;
-            float angleInDegrees = -90;
-            for (int i = 1; i < sampleCount; i++)
-            {
-                angleInDegrees += delta;
-                var point = PointOnCircle(center, radius, angleInDegrees);
-                smoothedPath.AddLineTo(point);
-            }
-            smoothedPath.AddLineTo(startPoint);
-            return smoothedPath;
-        }
-
-        CAShapeLayer CreateRingLayer(CGPoint center, float radius, float lineWidth, UIColor color)
-        {
-            var smoothedPath = CreateCirclePath(center, radius, 72);
-            var slice = new CAShapeLayer();
-            slice.Frame = new CGRect(center.X - radius, center.Y - radius, radius * 2, radius * 2);
-            slice.FillColor = UIColor.Clear.CGColor;
-            slice.StrokeColor = color.CGColor;
-            slice.LineWidth = lineWidth;
-            slice.LineCap = CAShapeLayer.JoinBevel;
-            slice.LineJoin = CAShapeLayer.JoinBevel;
-            slice.Path = smoothedPath.CGPath;
-            return slice;
-
-        }
-
         bool isClear
         {
             get
             {
-                return (_maskType == ProgressHUD.MaskType.Clear || _maskType == ProgressHUD.MaskType.None);
+                return (_maskType == MaskType.Clear || _maskType == MaskType.None);
             }
         }
 
@@ -627,16 +545,9 @@ namespace BigTed
             {
                 if (_hudView == null)
                 {
-                    if (IsiOS7ForLookAndFeel)
-                    {
-                        _hudView = new UIToolbar();
-                        (_hudView as UIToolbar).Translucent = true;
-                        (_hudView as UIToolbar).BarTintColor = HudBackgroundColour;
-                    }
-                    else
-                    {
-                        _hudView = new UIView();
-                    }
+                    _hudView = new UIToolbar();
+                    ((UIToolbar) _hudView).Translucent = true;
+                    ((UIToolbar) _hudView).BarTintColor = HudBackgroundColour;
                     _hudView.Layer.CornerRadius = 10;
                     _hudView.Layer.MasksToBounds = true;
                     _hudView.BackgroundColor = HudBackgroundColour;
@@ -659,19 +570,16 @@ namespace BigTed
             {
                 if (_stringLabel == null)
                 {
-                    _stringLabel = new UILabel();
-                    _stringLabel.BackgroundColor = HudToastBackgroundColor;
-                    _stringLabel.AdjustsFontSizeToFitWidth = true;
-                    _stringLabel.TextAlignment = HudTextAlignment;
-                    _stringLabel.BaselineAdjustment = UIBaselineAdjustment.AlignCenters;
-                    _stringLabel.TextColor = HudForegroundColor;
-                    _stringLabel.Font = HudFont;
-                    if (!IsiOS7ForLookAndFeel)
+                    _stringLabel = new UILabel
                     {
-                        _stringLabel.ShadowColor = HudStatusShadowColor;
-                        _stringLabel.ShadowOffset = new CGSize(0, -1);
-                    }
-                    _stringLabel.Lines = 0;
+                        BackgroundColor = HudToastBackgroundColor,
+                        AdjustsFontSizeToFitWidth = true,
+                        TextAlignment = HudTextAlignment,
+                        BaselineAdjustment = UIBaselineAdjustment.AlignCenters,
+                        TextColor = HudForegroundColor,
+                        Font = HudFont,
+                        Lines = 0
+                    };
                 }
                 if (_stringLabel.Superview == null)
                 {
@@ -818,7 +726,7 @@ namespace BigTed
                             UnRegisterNotifications();
                             NSNotificationCenter.DefaultCenter.RemoveObserver(this);
 
-                            Ring.ResetStyle(IsiOS7ForLookAndFeel, (IsiOS7ForLookAndFeel ? TintColor : UIColor.White));
+                            Ring.ResetStyle(TintColor);
 
                             CancelRingLayerAnimation();
                             StringLabel.RemoveFromSuperview();
@@ -838,12 +746,9 @@ namespace BigTed
                             OverlayView = null;
                             this.RemoveFromSuperview();
 
-                            if (IsiOS7ForLookAndFeel)
-                            {
-                                var rootController = UIApplication.SharedApplication.KeyWindow.RootViewController;
-                                if (rootController != null)
-                                    rootController.SetNeedsStatusBarAppearanceUpdate();
-                            }
+                            var rootController = UIApplication.SharedApplication.KeyWindow.RootViewController;
+                            if (rootController != null)
+                                rootController.SetNeedsStatusBarAppearanceUpdate();
                         });
                     }
                 });
@@ -1059,25 +964,13 @@ namespace BigTed
 
             if (!string.IsNullOrEmpty(@string))
             {
-                int lineCount = Math.Min(10, @string.Split('\n').Length + 1);
+                var lineCount = Math.Min(10, @string.Split('\n').Length + 1);
 
-                if (IsIOS7OrNewer)
-                {
-                    var stringSize = new NSString(@string).GetBoundingRect(new CGSize(200, 30 * lineCount), NSStringDrawingOptions.UsesLineFragmentOrigin,
-                                         new UIStringAttributes { Font = StringLabel.Font },
-                                         null);
-                    stringWidth = stringSize.Width;
-                    stringHeight = stringSize.Height;
-                }
-                else
-                {
-                    var stringSize = new NSString(@string).StringSize(StringLabel.Font, new CGSize(200, 30 * lineCount));
-                    stringWidth = stringSize.Width;
-                    stringHeight = stringSize.Height;
-                }
-
-
-
+                var stringSize = new NSString(@string).GetBoundingRect(new CGSize(200, 30 * lineCount), NSStringDrawingOptions.UsesLineFragmentOrigin,
+                    new UIStringAttributes { Font = StringLabel.Font },
+                    null);
+                stringWidth = stringSize.Width;
+                stringHeight = stringSize.Height;
 
                 hudHeight += stringHeight;
 
@@ -1105,20 +998,11 @@ namespace BigTed
             {
                 const int gap = 20;
 
-                if (IsIOS7OrNewer)
-                {
-                    var stringSize = new NSString(@cancelCaption).GetBoundingRect(new CGSize(200, 300), NSStringDrawingOptions.UsesLineFragmentOrigin,
-                                         new UIStringAttributes { Font = StringLabel.Font },
-                                         null);
-                    stringWidth = stringSize.Width;
-                    stringHeight = stringSize.Height;
-                }
-                else
-                {
-                    var stringSize = new NSString(@cancelCaption).StringSize(StringLabel.Font, new CGSize(200, 300));
-                    stringWidth = stringSize.Width;
-                    stringHeight = stringSize.Height;
-                }
+                var stringSize = new NSString(@cancelCaption).GetBoundingRect(new CGSize(200, 300), NSStringDrawingOptions.UsesLineFragmentOrigin,
+                    new UIStringAttributes { Font = StringLabel.Font },
+                    null);
+                stringWidth = stringSize.Width;
+                stringHeight = stringSize.Height;
 
                 if (stringWidth > hudWidth)
                     hudWidth = (float)Math.Ceiling(stringWidth / 2) * 2;
@@ -1197,37 +1081,6 @@ namespace BigTed
         public bool IsPortrait(UIInterfaceOrientation orientation)
         {
             return (orientation == UIInterfaceOrientation.Portrait || orientation == UIInterfaceOrientation.PortraitUpsideDown);
-        }
-
-        public bool IsiOS7ForLookAndFeel
-        {
-            get
-            {
-                if (ForceiOS6LookAndFeel)
-                    return false;
-
-                return UIDevice.CurrentDevice.CheckSystemVersion(7, 0);
-            }
-        }
-
-        public bool IsIOS7OrNewer
-        {
-            get
-            {
-                return UIDevice.CurrentDevice.CheckSystemVersion(7, 0);
-            }
-        }
-
-        bool forceiOS6LookAndFeel = false;
-
-        public bool ForceiOS6LookAndFeel
-        {
-            get { return forceiOS6LookAndFeel; }
-            set
-            {
-                forceiOS6LookAndFeel = value;
-                SetOSSpecificLookAndFeel();
-            }
         }
     }
 }
