@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using BigTed;
 using CoreAnimation;
 using CoreGraphics;
@@ -342,7 +343,7 @@ namespace BTProgressHUD
                     HudView.Alpha = 0f;
                 }
 
-                UIView.Animate(0.15f, 0,
+                Animate(0.15f, 0,
                     UIViewAnimationOptions.AllowUserInteraction | UIViewAnimationOptions.CurveEaseOut | UIViewAnimationOptions.BeginFromCurrentState,
                     delegate
                     {
@@ -382,7 +383,8 @@ namespace BTProgressHUD
 
             if (!IsVisible)
                 Show(null, -1F, maskType);
-
+            
+            ImageView.Frame = new CGRect(0, 0, image.Size.Width, image.Size.Height);
             ImageView.TintColor = HudForegroundColor;
             ImageView.Image = image.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
             ImageView.Hidden = false;
@@ -612,14 +614,14 @@ namespace BTProgressHUD
                 _cancelHud = value;
             }
         }
-
+        
         UIImageView ImageView
         {
             get
             {
                 if (_imageView == null)
                 {
-                    _imageView = new UIImageView(new CGRect(0, 0, 28, 28));
+                    _imageView = new UIImageView();
                 }
                 if (_imageView.Superview == null)
                 {
@@ -629,7 +631,6 @@ namespace BTProgressHUD
             }
             set { _imageView = value; }
         }
-
         UIActivityIndicatorView SpinnerView
         {
             get
@@ -936,7 +937,7 @@ namespace BTProgressHUD
             string @string = StringLabel.Text;
 
             // False if it's text-only
-            bool imageUsed = (ImageView.Image != null) || (ImageView.Hidden);
+            bool imageUsed = ImageView.Image != null || ImageView.Hidden;
             if (textOnly)
             {
                 imageUsed = false;
