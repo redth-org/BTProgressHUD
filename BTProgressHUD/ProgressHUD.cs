@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using BigTed;
 using CoreAnimation;
 using CoreGraphics;
 using Foundation;

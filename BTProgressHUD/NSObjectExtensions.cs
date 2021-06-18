@@ -1,25 +1,20 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-
-#if __UNIFIED__
 using Foundation;
-using UIKit;
+#if __UNIFIED__
+
 #else
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
 #endif
 
-namespace BigTed
+namespace BTProgressHUD
 {
     /// <summary>
     /// Contains several extensions for NSObject and derived classes.
     /// </summary>
     public static class NSObjectExtensions
     {
-
         [DllImport("/usr/lib/libobjc.dylib")]
         private static extern IntPtr object_getClassName(IntPtr obj);
 
@@ -32,6 +27,5 @@ namespace BigTed
         {
             return Marshal.PtrToStringAuto(object_getClassName(obj.Handle));
         }
-
     }
 }

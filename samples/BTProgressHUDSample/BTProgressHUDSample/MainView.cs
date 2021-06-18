@@ -1,6 +1,5 @@
 using System;
 using UIKit;
-using BigTed;
 using System.Threading;
 using System.Drawing;
 using System.Collections.Generic;
