@@ -74,34 +74,34 @@ namespace BTProgressHUDDemo
                 KillAfter();
             });
 
-            MakeButton("Show Success", () =>
-            {
-                BTProgressHUD.BTProgressHUD.ShowSuccessWithStatus("Great success!");
-            });
-
-            MakeButton("Show Fail", () =>
-            {
-                BTProgressHUD.BTProgressHUD.ShowErrorWithStatus("Oh, thats bad");
-            });
-            
-            MakeButton("Show Info", () =>
-            {
-                BTProgressHUD.BTProgressHUD.ShowInfoWithStatus("Notice me!");
-            });
-            
             MakeButton("Show Success (Outlined)", () =>
             {
-                BTProgressHUD.BTProgressHUD.ShowSuccessWithStatus("Great success!", default, default, true);
+                BTProgressHUD.BTProgressHUD.ShowSuccessWithStatus("Great success!", default, 1000, ImageStyle.Outline);
             });
 
             MakeButton("Show Fail (Outlined)", () =>
             {
-                BTProgressHUD.BTProgressHUD.ShowErrorWithStatus("Oh, thats bad", default, default, true);
+                BTProgressHUD.BTProgressHUD.ShowErrorWithStatus("Oh, thats bad", default, 1000, ImageStyle.Outline);
             });
             
             MakeButton("Show Info (Outlined)", () =>
             {
-                BTProgressHUD.BTProgressHUD.ShowInfoWithStatus("Notice me!", default, default, true);
+                BTProgressHUD.BTProgressHUD.ShowInfoWithStatus("Notice me!", default, 1000,  ImageStyle.Outline);
+            });
+            
+            MakeButton("Show Success (Full Outlined)", () =>
+            {
+                BTProgressHUD.BTProgressHUD.ShowSuccessWithStatus("Great success!", default, 1000, ImageStyle.OutlineFull);
+            });
+
+            MakeButton("Show Fail (Full Outlined)", () =>
+            {
+                BTProgressHUD.BTProgressHUD.ShowErrorWithStatus("Oh, thats bad", default, 1000, ImageStyle.OutlineFull);
+            });
+            
+            MakeButton("Show Info (Full Outlined)", () =>
+            {
+                BTProgressHUD.BTProgressHUD.ShowInfoWithStatus("Notice me!", default, 1000,  ImageStyle.OutlineFull);
             });
 
             MakeButton("Toast", () =>

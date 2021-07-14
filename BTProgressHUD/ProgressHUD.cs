@@ -133,19 +133,40 @@ namespace BTProgressHUD
             obj.InvokeOnMainThread(() => SetStatusWorker(status));
         }
 
-        public void ShowSuccessWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000, bool outlinedImage = false)
+        public void ShowSuccessWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000, ImageStyle outlinedImage = ImageStyle.Outline)
         {
-            ShowImage(outlinedImage ? SuccessOutlineImage : SuccessImage, status, maskType, timeoutMs);
+            var image = outlinedImage switch
+            {
+                ImageStyle.Outline => SuccessOutlineImage,
+                ImageStyle.OutlineFull => SuccessOutlineFullImage,
+                _ => throw new ArgumentOutOfRangeException (nameof (outlinedImage), outlinedImage, $"Use ImageStyle.Outline or ImageStyle.OutlineFull")
+            };
+
+            ShowImage(image, status, maskType, timeoutMs);
         }
 
-        public void ShowErrorWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000, bool outlinedImage = false)
+        public void ShowErrorWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000, ImageStyle outlinedImage = ImageStyle.Outline)
         {
-            ShowImage(outlinedImage ? ErrorOutlineImage : ErrorImage, status, maskType, timeoutMs);
+            var image = outlinedImage switch
+            {
+                ImageStyle.Outline => ErrorOutlineImage,
+                ImageStyle.OutlineFull => ErrorOutlineFullImage,
+                _ => throw new ArgumentOutOfRangeException (nameof (outlinedImage), outlinedImage, $"Use ImageStyle.Outline or ImageStyle.OutlineFull")
+            };
+
+            ShowImage(image, status, maskType, timeoutMs);
         }
         
-        public void ShowInfoWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000, bool outlinedImage = false)
+        public void ShowInfoWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000, ImageStyle outlinedImage = ImageStyle.Outline)
         {
-            ShowImage(outlinedImage ? InfoOutlineImage: InfoImage, status, maskType, timeoutMs);
+            var image = outlinedImage switch
+            {
+                ImageStyle.Outline => InfoOutlineImage,
+                ImageStyle.OutlineFull => InfoOutlineFullImage,
+                _ => throw new ArgumentOutOfRangeException (nameof (outlinedImage), outlinedImage, $"Use ImageStyle.Outline or ImageStyle.OutlineFull")
+            };
+
+            ShowImage(image, status, maskType, timeoutMs);
         }
 
         public void ShowImage(UIImage image, string status, MaskType maskType = MaskType.None, double timeoutMs = 1000)
@@ -157,14 +178,15 @@ namespace BTProgressHUD
         {
             obj.InvokeOnMainThread(DismissWorker);
         }
-
-        public UIImage ErrorImage => UIImage.FromBundle("error.png");
-        public UIImage SuccessImage => UIImage.FromBundle("success.png");
-        public UIImage InfoImage => UIImage.FromBundle("info.png");
         
-        public UIImage ErrorOutlineImage => UIImage.FromBundle("error-outline.png");
-        public UIImage SuccessOutlineImage => UIImage.FromBundle("success-outline.png");
-        public UIImage InfoOutlineImage => UIImage.FromBundle("info-outline.png");
+        public UIImage ErrorOutlineImage { get; set; } = ImageHelper.ErrorOutlineImage;
+        public UIImage SuccessOutlineImage { get; set; } = ImageHelper.SuccessOutlineImage;
+        public UIImage InfoOutlineImage { get; set; } = ImageHelper.InfoOutlineImage;
+        
+        public UIImage ErrorOutlineFullImage { get; set; } = ImageHelper.ErrorOutlineFullImage;
+        public UIImage SuccessOutlineFullImage { get; set; } = ImageHelper.SuccessOutlineFullImage;
+        public UIImage InfoOutlineFullImage { get; set; } = ImageHelper.InfoOutlineFullImage;
+        
         public bool IsVisible => Alpha == 1;
 
         static ProgressHUD sharedHUD = null;
@@ -381,9 +403,10 @@ namespace BTProgressHUD
             }
 
             if (!IsVisible)
+            {
                 Show(null, -1F, maskType);
+            }
             
-            ImageView.Frame = new CGRect(0, 0, image.Size.Width, image.Size.Height);
             ImageView.TintColor = HudForegroundColor;
             ImageView.Image = image.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
             ImageView.Hidden = false;
@@ -620,7 +643,10 @@ namespace BTProgressHUD
             {
                 if (_imageView == null)
                 {
-                    _imageView = new UIImageView();
+                    _imageView = new UIImageView(new CGRect(0, 0, 32, 32))
+                    {
+                        ContentMode = UIViewContentMode.ScaleAspectFill
+                    };
                 }
                 if (_imageView.Superview == null)
                 {

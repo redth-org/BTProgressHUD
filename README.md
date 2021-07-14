@@ -83,7 +83,9 @@ You can use the timeout parameter of ShowImage to control the time before it's d
 
 ## Credits
 
-SVProgressHUD is brought to you by [Sam Vermette](http://samvermette.com) and [contributors to the project](https://github.com/samvermette/SVProgressHUD/contributors). The success and error icons are from [Glyphish](http://glyphish.com/). If you have feature suggestions or bug reports, feel free to help out by sending pull requests or by [creating new issues](https://github.com/samvermette/SVProgressHUD/issues/new). If you're using SVProgressHUD in your project, attribution would be nice.
+SVProgressHUD is brought to you by [Sam Vermette](http://samvermette.com) and [contributors to the project](https://github.com/samvermette/SVProgressHUD/contributors). 
+
+The success, error and info icons are from [Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/sf-symbols/overview/) from Apple. If you have feature suggestions or bug reports, feel free to help out by sending pull requests or by [creating new issues](https://github.com/samvermette/SVProgressHUD/issues/new). If you're using SVProgressHUD in your project, attribution would be nice.
 
 BTProgressHUD is brought to you by [Nic Wise](http://www.fastchicken.co.nz/). I'm also happy to take bug reports and pull 
 requests for the MonoTouch version. If you use BTProgressHUD in your project, attribution would also be 
