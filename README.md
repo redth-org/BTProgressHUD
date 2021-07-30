@@ -50,6 +50,7 @@ You can call Show with the following parameters
 * status: <string> - show status text
 * progress: <float> - show a progress circle with 0.0 - 1.0 of progress. Call again to change the progress.
 * maskType: <MaskType> - show with the background (the whole window) clear, black or gradient. Default is none, which allows interaction with the underlying elements.
+* imageStyle: <ImageStyle> - the type of image is used in the dialog, default, outline and outline full 
 
 ```csharp
 public enum MaskType
@@ -58,6 +59,15 @@ public enum MaskType
 	Clear, // disable user interactions, don't dim background UI
 	Black, // disable user interactions, dim background UI with 50% translucent black
 	Gradient // disable user interactions, dim background UI with translucent radial gradient (a-la-alertView)
+}
+```
+
+```csharp
+public enum ImageStyle
+{
+    Default, // icon without an outline
+    Outline, // icon with an outline
+    OutlineFull // icon with a full outline
 }
 ```
 

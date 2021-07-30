@@ -133,37 +133,40 @@ namespace BTProgressHUD
             obj.InvokeOnMainThread(() => SetStatusWorker(status));
         }
 
-        public void ShowSuccessWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000, ImageStyle outlinedImage = ImageStyle.Outline)
+        public void ShowSuccessWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000, ImageStyle imageStyle = ImageStyle.Default)
         {
-            var image = outlinedImage switch
+            var image = imageStyle switch
             {
+                ImageStyle.Default => SuccessImage,
                 ImageStyle.Outline => SuccessOutlineImage,
                 ImageStyle.OutlineFull => SuccessOutlineFullImage,
-                _ => throw new ArgumentOutOfRangeException (nameof (outlinedImage), outlinedImage, $"Use ImageStyle.Outline or ImageStyle.OutlineFull")
+                _ => throw new ArgumentOutOfRangeException (nameof (imageStyle), imageStyle, $"Use ImageStyle.Default, ImageStyle.Outline or ImageStyle.OutlineFull")
             };
 
             ShowImage(image, status, maskType, timeoutMs);
         }
 
-        public void ShowErrorWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000, ImageStyle outlinedImage = ImageStyle.Outline)
+        public void ShowErrorWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000, ImageStyle imageStyle = ImageStyle.Default)
         {
-            var image = outlinedImage switch
+            var image = imageStyle switch
             {
+                ImageStyle.Default => ErrorImage,
                 ImageStyle.Outline => ErrorOutlineImage,
                 ImageStyle.OutlineFull => ErrorOutlineFullImage,
-                _ => throw new ArgumentOutOfRangeException (nameof (outlinedImage), outlinedImage, $"Use ImageStyle.Outline or ImageStyle.OutlineFull")
+                _ => throw new ArgumentOutOfRangeException (nameof (imageStyle), imageStyle, $"Use ImageStyle.Default, ImageStyle.Outline or ImageStyle.OutlineFull")
             };
 
             ShowImage(image, status, maskType, timeoutMs);
         }
         
-        public void ShowInfoWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000, ImageStyle outlinedImage = ImageStyle.Outline)
+        public void ShowInfoWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000, ImageStyle imageStyle = ImageStyle.Default)
         {
-            var image = outlinedImage switch
+            var image = imageStyle switch
             {
+                ImageStyle.Default => InfoImage,
                 ImageStyle.Outline => InfoOutlineImage,
                 ImageStyle.OutlineFull => InfoOutlineFullImage,
-                _ => throw new ArgumentOutOfRangeException (nameof (outlinedImage), outlinedImage, $"Use ImageStyle.Outline or ImageStyle.OutlineFull")
+                _ => throw new ArgumentOutOfRangeException (nameof (imageStyle), imageStyle, $"Use ImageStyle.Default, ImageStyle.Outline or ImageStyle.OutlineFull")
             };
 
             ShowImage(image, status, maskType, timeoutMs);
@@ -178,6 +181,10 @@ namespace BTProgressHUD
         {
             obj.InvokeOnMainThread(DismissWorker);
         }
+        
+        public UIImage ErrorImage { get; set; } = ImageHelper.ErrorImage;
+        public UIImage SuccessImage { get; set; } = ImageHelper.SuccessImage;
+        public UIImage InfoImage { get; set; } = ImageHelper.InfoImage;
         
         public UIImage ErrorOutlineImage { get; set; } = ImageHelper.ErrorOutlineImage;
         public UIImage SuccessOutlineImage { get; set; } = ImageHelper.SuccessOutlineImage;

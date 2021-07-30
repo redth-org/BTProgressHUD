@@ -45,17 +45,17 @@ namespace BTProgressHUD
             ProgressHUD.Shared.SetStatus(status);
         }
 
-        public static void ShowSuccessWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000, ImageStyle imageStyle = ImageStyle.Outline)
+        public static void ShowSuccessWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000, ImageStyle imageStyle = ImageStyle.Default)
         {
             ProgressHUD.Shared.ShowSuccessWithStatus(status, maskType, timeoutMs, imageStyle);
         }
 
-        public static void ShowErrorWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000, ImageStyle imageStyle = ImageStyle.Outline)
+        public static void ShowErrorWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000, ImageStyle imageStyle = ImageStyle.Default)
         {
             ProgressHUD.Shared.ShowErrorWithStatus(status, maskType, timeoutMs, imageStyle);
         }
         
-        public static void ShowInfoWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000, ImageStyle imageStyle = ImageStyle.Outline)
+        public static void ShowInfoWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000, ImageStyle imageStyle = ImageStyle.Default)
         {
             ProgressHUD.Shared.ShowInfoWithStatus(status, maskType, timeoutMs, imageStyle);
         }

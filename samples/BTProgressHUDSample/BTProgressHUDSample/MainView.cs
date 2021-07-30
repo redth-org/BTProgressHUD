@@ -73,6 +73,21 @@ namespace BTProgressHUDDemo
                 BTProgressHUD.BTProgressHUD.Show("Processing your image", -1, MaskType.Black); 
                 KillAfter();
             });
+            
+            MakeButton("Show Success", () =>
+            {
+                BTProgressHUD.BTProgressHUD.ShowSuccessWithStatus("Great success!");
+            });
+
+            MakeButton("Show Fail", () =>
+            {
+                BTProgressHUD.BTProgressHUD.ShowErrorWithStatus("Oh, thats bad");
+            });
+            
+            MakeButton("Show Info", () =>
+            {
+                BTProgressHUD.BTProgressHUD.ShowInfoWithStatus("Notice me!");
+            });
 
             MakeButton("Show Success (Outlined)", () =>
             {
