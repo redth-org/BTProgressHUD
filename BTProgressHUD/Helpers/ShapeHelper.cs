@@ -9,8 +9,8 @@ namespace BTProgressHUD
     {
         public static CGPoint PointOnCircle(CGPoint center, float radius, float angleInDegrees)
         {
-            float x = radius * (float)Math.Cos(angleInDegrees * Math.PI / 180) + radius;
-            float y = radius * (float)Math.Sin(angleInDegrees * Math.PI / 180) + radius;
+            float x = radius * MathF.Cos(angleInDegrees * MathF.PI / 180f) + radius;
+            float y = radius * MathF.Sin(angleInDegrees * MathF.PI / 180f) + radius;
             return new CGPoint(x, y);
         }
 
