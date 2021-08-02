@@ -197,6 +197,15 @@ namespace BTProgressHUDDemo
                     stack
                 );
             }
+
+            MakeButton("Show modal", () =>
+                NavigationController.PresentViewController(
+                    new UINavigationController(new ModalView())
+                    {
+                        ModalPresentationStyle = UIModalPresentationStyle.PageSheet 
+                    }, true, null),
+                stack
+            );
         }
 
         void KillAfter(float timeout = 5)
