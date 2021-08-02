@@ -16,27 +16,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using CoreAnimation;
 using CoreGraphics;
 using Foundation;
 using ObjCRuntime;
 using UIKit;
-#if __UNIFIED__
-
-#else
-using MonoTouch.UIKit;
-using MonoTouch.Foundation;
-using MonoTouch.CoreAnimation;
-using MonoTouch.CoreGraphics;
-using MonoTouch.ObjCRuntime;
-
-using nfloat = System.Single;
-using System.Drawing;
-using CGRect = global::System.Drawing.RectangleF;
-using CGPoint = global::System.Drawing.PointF;
-using CGSize = global::System.Drawing.SizeF;
-#endif
 
 namespace BTProgressHUD
 {

@@ -1,10 +1,5 @@
 ﻿using System;
 using UIKit;
-#if __UNIFIED__
-
-#else
-using MonoTouch.UIKit;
-#endif
 
 namespace BTProgressHUD
 {
