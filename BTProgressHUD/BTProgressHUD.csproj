@@ -12,13 +12,4 @@
     <None Include="..\LICENSE" Pack="true" PackagePath="" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\assets\*.png" Pack="true" PackagePath="build\xamarin.ios10\BTProgressHud" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Helpers\ShapeHelper.cs">
-      <SubType>Code</SubType>
-    </Compile>
-  </ItemGroup>
 </Project>
