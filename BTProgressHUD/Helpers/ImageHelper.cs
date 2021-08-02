@@ -1,6 +1,4 @@
-using System;
-using System.Drawing;
-using CoreGraphics;
+﻿using System;
 using Foundation;
 using UIKit;
 
