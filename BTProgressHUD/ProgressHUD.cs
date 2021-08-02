@@ -410,11 +410,7 @@ namespace BTProgressHUD
 
         void StartDismissTimer(TimeSpan duration)
         {
-#if __UNIFIED__
             _fadeoutTimer = NSTimer.CreateTimer(duration, timer => DismissWorker());
-#else
-            _fadeoutTimer = NSTimer.CreateTimer(duration, DismissWorker);
-#endif
             NSRunLoop.Main.AddTimer(_fadeoutTimer, NSRunLoopMode.Common);
         }
 
@@ -423,11 +419,7 @@ namespace BTProgressHUD
 
             if (_progressTimer == null)
             {
-#if __UNIFIED__
                 _progressTimer = NSTimer.CreateRepeatingTimer(duration, timer => UpdateProgress());
-#else
-                _progressTimer = NSTimer.CreateRepeatingTimer(duration, UpdateProgress);
-#endif
                 NSRunLoop.Current.AddTimer(_progressTimer, NSRunLoopMode.Common);
             }
         }
