@@ -31,6 +31,16 @@ namespace BTProgressHUD
         static Class clsUIInputSetContainerView = null;
         static Class clsUIInputSetHostView = null;
 
+        UIImage errorImage;
+        UIImage successImage;
+        UIImage infoImage;
+        UIImage errorOutlineImage;
+        UIImage successOutlineImage;
+        UIImage infoOutlineImage;
+        UIImage errorOutlineFullImage;
+        UIImage successOutlineFullImage;
+        UIImage infoOutlineFullImage;
+
         static ProgressHUD()
         {
             //initialize static fields used for input view detection
@@ -165,18 +175,60 @@ namespace BTProgressHUD
         {
             obj.InvokeOnMainThread(DismissWorker);
         }
-        
-        public UIImage ErrorImage { get; set; } = ImageHelper.ErrorImage;
-        public UIImage SuccessImage { get; set; } = ImageHelper.SuccessImage;
-        public UIImage InfoImage { get; set; } = ImageHelper.InfoImage;
-        
-        public UIImage ErrorOutlineImage { get; set; } = ImageHelper.ErrorOutlineImage;
-        public UIImage SuccessOutlineImage { get; set; } = ImageHelper.SuccessOutlineImage;
-        public UIImage InfoOutlineImage { get; set; } = ImageHelper.InfoOutlineImage;
-        
-        public UIImage ErrorOutlineFullImage { get; set; } = ImageHelper.ErrorOutlineFullImage;
-        public UIImage SuccessOutlineFullImage { get; set; } = ImageHelper.SuccessOutlineFullImage;
-        public UIImage InfoOutlineFullImage { get; set; } = ImageHelper.InfoOutlineFullImage;
+
+        public UIImage ErrorImage
+        {
+            get => errorImage ?? ImageHelper.ErrorImage.Value;
+            set => errorImage = value;
+        }
+
+        public UIImage SuccessImage
+        {
+            get => successImage ?? ImageHelper.SuccessImage.Value;
+            set => successImage = value;
+        }
+
+        public UIImage InfoImage
+        {
+            get => infoImage ?? ImageHelper.InfoImage.Value;
+            set => infoImage = value;
+        }
+
+        public UIImage ErrorOutlineImage
+        {
+            get => errorOutlineImage ?? ImageHelper.ErrorOutlineImage.Value;
+            set => errorOutlineImage = value;
+        }
+
+        public UIImage SuccessOutlineImage
+        {
+            get => successOutlineImage ?? ImageHelper.SuccessOutlineImage.Value;
+            set => successOutlineImage = value;
+        }
+
+        public UIImage InfoOutlineImage
+        {
+            get => infoOutlineImage ?? ImageHelper.InfoOutlineImage.Value;
+            set => infoOutlineImage = value;
+        }
+
+        public UIImage ErrorOutlineFullImage
+        {
+            get => errorOutlineFullImage ?? ImageHelper.ErrorOutlineFullImage.Value;
+            set => errorOutlineFullImage = value;
+        }
+
+        public UIImage SuccessOutlineFullImage
+        {
+            get => successOutlineFullImage ?? ImageHelper.SuccessOutlineFullImage.Value;
+            set => successOutlineFullImage = value;
+        }
+
+        public UIImage InfoOutlineFullImage
+        {
+            get => infoOutlineFullImage ?? ImageHelper.InfoOutlineFullImage.Value;
+            set => infoOutlineFullImage = value;
+        }
         
         public bool IsVisible => Alpha == 1;
 
