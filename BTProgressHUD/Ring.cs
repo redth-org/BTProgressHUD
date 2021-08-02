@@ -1,12 +1,12 @@
 ﻿using System;
-
-#if __UNIFIED__
 using UIKit;
+#if __UNIFIED__
+
 #else
 using MonoTouch.UIKit;
 #endif
 
-namespace BigTed
+namespace BTProgressHUD
 {
     public class Ring
     {
@@ -23,20 +23,18 @@ namespace BigTed
         /// </summary>
         public Double ProgressUpdateInterval = 300;
 
-        public void ResetStyle(bool isiOS7, UIColor colorToUse)
+        public void ResetStyle(UIColor colorToUse)
         {
             Color = colorToUse;
             if(UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
             {
-                BackgroundColor = isiOS7 ? UIColor.SystemBackgroundColor : UIColor.DarkGray;
+                BackgroundColor = UIColor.SystemBackgroundColor;
             }
             else
             {
-                BackgroundColor = isiOS7 ? UIColor.White : UIColor.DarkGray;
+                BackgroundColor = UIColor.White;
             }
             ProgressUpdateInterval = 300;
-
-
         }
     }
 }
