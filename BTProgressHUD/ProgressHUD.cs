@@ -31,6 +31,8 @@ namespace BTProgressHUD
         static Class clsUIInputSetContainerView = null;
         static Class clsUIInputSetHostView = null;
 
+        static NSObject obj = new NSObject();
+
         UIImage errorImage;
         UIImage successImage;
         UIImage infoImage;
@@ -40,6 +42,21 @@ namespace BTProgressHUD
         UIImage errorOutlineFullImage;
         UIImage successOutlineFullImage;
         UIImage infoOutlineFullImage;
+
+        MaskType _maskType;
+        NSTimer _fadeoutTimer;
+        UIView _overlayView;
+        UIView _hudView;
+        UILabel _stringLabel;
+        UIImageView _imageView;
+        UIActivityIndicatorView _spinnerView;
+        UIButton _cancelHud;
+        NSTimer _progressTimer;
+        float _progress;
+        CAShapeLayer _backgroundRingLayer;
+        CAShapeLayer _ringLayer;
+        List<NSObject> _eventListeners;
+        bool _displayContinuousImage;
 
         static ProgressHUD()
         {
@@ -70,111 +87,15 @@ namespace BTProgressHUD
             AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
 
             SetOSSpecificLookAndFeel();
-
         }
 
-        public void SetOSSpecificLookAndFeel()
-        {
-            HudBackgroundColour = UIDevice.CurrentDevice.CheckSystemVersion(13, 0) ? UIColor.SystemBackgroundColor.ColorWithAlpha(0.8f) : UIColor.White.ColorWithAlpha(0.8f);
-            HudForegroundColor = UIDevice.CurrentDevice.CheckSystemVersion(13, 0) ? UIColor.LabelColor.ColorWithAlpha(0.8f) : UIColor.FromWhiteAlpha(0.0f, 0.8f);
-            HudStatusShadowColor = UIDevice.CurrentDevice.CheckSystemVersion(13, 0) ? UIColor.LabelColor.ColorWithAlpha(0.8f) : UIColor.FromWhiteAlpha(200f / 255f, 0.8f);
-            RingThickness = 1f;
-        }
-
-        public UIColor HudBackgroundColour = UIColor.FromWhiteAlpha(0.0f, 0.8f);
-        public UIColor HudForegroundColor = UIColor.White;
-        public UIColor HudStatusShadowColor = UIColor.Black;
-        public UIColor HudToastBackgroundColor = UIColor.Clear;
-        public UIFont HudFont = UIFont.BoldSystemFontOfSize(16f);
-        public UITextAlignment HudTextAlignment = UITextAlignment.Center;
+        public UIColor HudBackgroundColour { get; set; } = UIColor.FromWhiteAlpha(0.0f, 0.8f);
+        public UIColor HudForegroundColor { get; set; } = UIColor.White;
+        public UIColor HudStatusShadowColor { get; set; } = UIColor.Black;
+        public UIColor HudToastBackgroundColor { get; set; } = UIColor.Clear;
+        public UIFont HudFont { get; set; } = UIFont.BoldSystemFontOfSize(16f);
+        public UITextAlignment HudTextAlignment { get; set; } = UITextAlignment.Center;
         public Ring Ring = new Ring();
-        static NSObject obj = new NSObject();
-
-        public void Show(string status = null, float progress = -1, MaskType maskType = MaskType.None, double timeoutMs = 1000)
-        {
-            obj.InvokeOnMainThread(() => ShowProgressWorker(progress, status, maskType, timeoutMs: timeoutMs));
-        }
-
-        public void Show(string cancelCaption, Action cancelCallback, string status = null,
-                          float progress = -1, MaskType maskType = MaskType.None, double timeoutMs = 1000)
-        {
-            // Making cancelCaption optional hides the method via the overload
-            if (string.IsNullOrEmpty(cancelCaption))
-            {
-                cancelCaption = "Cancel";
-            }
-            obj.InvokeOnMainThread(() => ShowProgressWorker(progress, status, maskType,
-               cancelCaption: cancelCaption, cancelCallback: cancelCallback, timeoutMs: timeoutMs));
-        }
-
-        public void ShowContinuousProgress(string status = null, MaskType maskType = MaskType.None, double timeoutMs = 1000, UIImage img = null)
-        {
-            obj.InvokeOnMainThread(() => ShowProgressWorker(0, status, maskType, false, ToastPosition.Center, null, null, timeoutMs, true, img));
-        }
-
-        public void ShowContinuousProgressTest(string status = null, MaskType maskType = MaskType.None, double timeoutMs = 1000)
-        {
-            obj.InvokeOnMainThread(() => ShowProgressWorker(0, status, maskType, false, ToastPosition.Center, null, null, timeoutMs, true));
-        }
-
-        public void ShowToast(string status, MaskType maskType = MaskType.None, ToastPosition toastPosition = ToastPosition.Center, double timeoutMs = 1000)
-        {
-            obj.InvokeOnMainThread(() => ShowProgressWorker(status: status, textOnly: true, toastPosition: toastPosition, timeoutMs: timeoutMs, maskType: maskType));
-        }
-
-        public void SetStatus(string status)
-        {
-            obj.InvokeOnMainThread(() => SetStatusWorker(status));
-        }
-
-        public void ShowSuccessWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000, ImageStyle imageStyle = ImageStyle.Default)
-        {
-            var image = imageStyle switch
-            {
-                ImageStyle.Default => SuccessImage,
-                ImageStyle.Outline => SuccessOutlineImage,
-                ImageStyle.OutlineFull => SuccessOutlineFullImage,
-                _ => throw new ArgumentOutOfRangeException (nameof (imageStyle), imageStyle, $"Use ImageStyle.Default, ImageStyle.Outline or ImageStyle.OutlineFull")
-            };
-
-            ShowImage(image, status, maskType, timeoutMs);
-        }
-
-        public void ShowErrorWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000, ImageStyle imageStyle = ImageStyle.Default)
-        {
-            var image = imageStyle switch
-            {
-                ImageStyle.Default => ErrorImage,
-                ImageStyle.Outline => ErrorOutlineImage,
-                ImageStyle.OutlineFull => ErrorOutlineFullImage,
-                _ => throw new ArgumentOutOfRangeException (nameof (imageStyle), imageStyle, $"Use ImageStyle.Default, ImageStyle.Outline or ImageStyle.OutlineFull")
-            };
-
-            ShowImage(image, status, maskType, timeoutMs);
-        }
-        
-        public void ShowInfoWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000, ImageStyle imageStyle = ImageStyle.Default)
-        {
-            var image = imageStyle switch
-            {
-                ImageStyle.Default => InfoImage,
-                ImageStyle.Outline => InfoOutlineImage,
-                ImageStyle.OutlineFull => InfoOutlineFullImage,
-                _ => throw new ArgumentOutOfRangeException (nameof (imageStyle), imageStyle, $"Use ImageStyle.Default, ImageStyle.Outline or ImageStyle.OutlineFull")
-            };
-
-            ShowImage(image, status, maskType, timeoutMs);
-        }
-
-        public void ShowImage(UIImage image, string status, MaskType maskType = MaskType.None, double timeoutMs = 1000)
-        {
-            obj.InvokeOnMainThread(() => ShowImageWorker(image, status, maskType, TimeSpan.FromMilliseconds(timeoutMs)));
-        }
-
-        public void Dismiss()
-        {
-            obj.InvokeOnMainThread(DismissWorker);
-        }
 
         public UIImage ErrorImage
         {
@@ -229,7 +150,7 @@ namespace BTProgressHUD
             get => infoOutlineFullImage ?? ImageHelper.InfoOutlineFullImage.Value;
             set => infoOutlineFullImage = value;
         }
-        
+
         public bool IsVisible => Alpha == 1;
 
         static ProgressHUD sharedHUD = null;
@@ -247,23 +168,102 @@ namespace BTProgressHUD
             }
         }
 
-        private float RingRadius { get; set; } = 14f;
-        private float RingThickness { get; set; } = 6f;
-        
-        MaskType _maskType;
-        NSTimer _fadeoutTimer;
-        UIView _overlayView;
-        UIView _hudView;
-        UILabel _stringLabel;
-        UIImageView _imageView;
-        UIActivityIndicatorView _spinnerView;
-        UIButton _cancelHud;
-        NSTimer _progressTimer;
-        float _progress;
-        CAShapeLayer _backgroundRingLayer;
-        CAShapeLayer _ringLayer;
-        List<NSObject> _eventListeners;
-        bool _displayContinuousImage;
+        public float RingRadius { get; set; } = 14f;
+        public float RingThickness { get; set; } = 6f;
+
+        public void SetOSSpecificLookAndFeel()
+        {
+            HudBackgroundColour = UIDevice.CurrentDevice.CheckSystemVersion(13, 0) ? UIColor.SystemBackgroundColor.ColorWithAlpha(0.8f) : UIColor.White.ColorWithAlpha(0.8f);
+            HudForegroundColor = UIDevice.CurrentDevice.CheckSystemVersion(13, 0) ? UIColor.LabelColor.ColorWithAlpha(0.8f) : UIColor.FromWhiteAlpha(0.0f, 0.8f);
+            HudStatusShadowColor = UIDevice.CurrentDevice.CheckSystemVersion(13, 0) ? UIColor.LabelColor.ColorWithAlpha(0.8f) : UIColor.FromWhiteAlpha(200f / 255f, 0.8f);
+            RingThickness = 1f;
+        }
+
+        public void Show(string status = null, float progress = -1, MaskType maskType = MaskType.None, double timeoutMs = 1000)
+        {
+            obj.InvokeOnMainThread(() => ShowProgressWorker(progress, status, maskType, timeoutMs: timeoutMs));
+        }
+
+        public void Show(string cancelCaption, Action cancelCallback, string status = null,
+                          float progress = -1, MaskType maskType = MaskType.None, double timeoutMs = 1000)
+        {
+            // Making cancelCaption optional hides the method via the overload
+            if (string.IsNullOrEmpty(cancelCaption))
+            {
+                cancelCaption = "Cancel";
+            }
+            obj.InvokeOnMainThread(() => ShowProgressWorker(progress, status, maskType,
+               cancelCaption: cancelCaption, cancelCallback: cancelCallback, timeoutMs: timeoutMs));
+        }
+
+        public void ShowContinuousProgress(string status = null, MaskType maskType = MaskType.None, double timeoutMs = 1000, UIImage img = null)
+        {
+            obj.InvokeOnMainThread(() => ShowProgressWorker(0, status, maskType, false, ToastPosition.Center, null, null, timeoutMs, true, img));
+        }
+
+        public void ShowContinuousProgressTest(string status = null, MaskType maskType = MaskType.None, double timeoutMs = 1000)
+        {
+            obj.InvokeOnMainThread(() => ShowProgressWorker(0, status, maskType, false, ToastPosition.Center, null, null, timeoutMs, true));
+        }
+
+        public void ShowToast(string status, MaskType maskType = MaskType.None, ToastPosition toastPosition = ToastPosition.Center, double timeoutMs = 1000)
+        {
+            obj.InvokeOnMainThread(() => ShowProgressWorker(status: status, textOnly: true, toastPosition: toastPosition, timeoutMs: timeoutMs, maskType: maskType));
+        }
+
+        public void SetStatus(string status)
+        {
+            obj.InvokeOnMainThread(() => SetStatusWorker(status));
+        }
+
+        public void ShowSuccessWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000, ImageStyle imageStyle = ImageStyle.Default)
+        {
+            var image = imageStyle switch
+            {
+                ImageStyle.Default => SuccessImage,
+                ImageStyle.Outline => SuccessOutlineImage,
+                ImageStyle.OutlineFull => SuccessOutlineFullImage,
+                _ => throw new ArgumentOutOfRangeException(nameof(imageStyle), imageStyle, $"Use ImageStyle.Default, ImageStyle.Outline or ImageStyle.OutlineFull")
+            };
+
+            ShowImage(image, status, maskType, timeoutMs);
+        }
+
+        public void ShowErrorWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000, ImageStyle imageStyle = ImageStyle.Default)
+        {
+            var image = imageStyle switch
+            {
+                ImageStyle.Default => ErrorImage,
+                ImageStyle.Outline => ErrorOutlineImage,
+                ImageStyle.OutlineFull => ErrorOutlineFullImage,
+                _ => throw new ArgumentOutOfRangeException(nameof(imageStyle), imageStyle, $"Use ImageStyle.Default, ImageStyle.Outline or ImageStyle.OutlineFull")
+            };
+
+            ShowImage(image, status, maskType, timeoutMs);
+        }
+
+        public void ShowInfoWithStatus(string status, MaskType maskType = MaskType.None, double timeoutMs = 1000, ImageStyle imageStyle = ImageStyle.Default)
+        {
+            var image = imageStyle switch
+            {
+                ImageStyle.Default => InfoImage,
+                ImageStyle.Outline => InfoOutlineImage,
+                ImageStyle.OutlineFull => InfoOutlineFullImage,
+                _ => throw new ArgumentOutOfRangeException(nameof(imageStyle), imageStyle, $"Use ImageStyle.Default, ImageStyle.Outline or ImageStyle.OutlineFull")
+            };
+
+            ShowImage(image, status, maskType, timeoutMs);
+        }
+
+        public void ShowImage(UIImage image, string status, MaskType maskType = MaskType.None, double timeoutMs = 1000)
+        {
+            obj.InvokeOnMainThread(() => ShowImageWorker(image, status, maskType, TimeSpan.FromMilliseconds(timeoutMs)));
+        }
+
+        public void Dismiss()
+        {
+            obj.InvokeOnMainThread(DismissWorker);
+        }
 
         public override void Draw(CGRect rect)
         {
@@ -449,7 +449,7 @@ namespace BTProgressHUD
             {
                 Show(null, -1F, maskType);
             }
-            
+
             ImageView.TintColor = HudForegroundColor;
             ImageView.Image = image.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
             ImageView.Hidden = false;
@@ -594,8 +594,8 @@ namespace BTProgressHUD
                 if (_hudView == null)
                 {
                     _hudView = new UIToolbar();
-                    ((UIToolbar) _hudView).Translucent = true;
-                    ((UIToolbar) _hudView).BarTintColor = HudBackgroundColour;
+                    ((UIToolbar)_hudView).Translucent = true;
+                    ((UIToolbar)_hudView).BarTintColor = HudBackgroundColour;
                     _hudView.Layer.CornerRadius = 10;
                     _hudView.Layer.MasksToBounds = true;
                     _hudView.BackgroundColor = HudBackgroundColour;
@@ -671,7 +671,7 @@ namespace BTProgressHUD
                 _cancelHud = value;
             }
         }
-        
+
         UIImageView ImageView
         {
             get
