@@ -223,7 +223,7 @@ namespace BTProgressHUD
                 ImageStyle.Default => SuccessImage,
                 ImageStyle.Outline => SuccessOutlineImage,
                 ImageStyle.OutlineFull => SuccessOutlineFullImage,
-                _ => throw new ArgumentOutOfRangeException(nameof(imageStyle), imageStyle, $"Use ImageStyle.Default, ImageStyle.Outline or ImageStyle.OutlineFull")
+                _ => throw new ArgumentOutOfRangeException(nameof(imageStyle), imageStyle, "Use ImageStyle.Default, ImageStyle.Outline or ImageStyle.OutlineFull")
             };
 
             ShowImage(image, status, maskType, timeoutMs);
@@ -236,7 +236,7 @@ namespace BTProgressHUD
                 ImageStyle.Default => ErrorImage,
                 ImageStyle.Outline => ErrorOutlineImage,
                 ImageStyle.OutlineFull => ErrorOutlineFullImage,
-                _ => throw new ArgumentOutOfRangeException(nameof(imageStyle), imageStyle, $"Use ImageStyle.Default, ImageStyle.Outline or ImageStyle.OutlineFull")
+                _ => throw new ArgumentOutOfRangeException(nameof(imageStyle), imageStyle, "Use ImageStyle.Default, ImageStyle.Outline or ImageStyle.OutlineFull")
             };
 
             ShowImage(image, status, maskType, timeoutMs);
@@ -249,7 +249,7 @@ namespace BTProgressHUD
                 ImageStyle.Default => InfoImage,
                 ImageStyle.Outline => InfoOutlineImage,
                 ImageStyle.OutlineFull => InfoOutlineFullImage,
-                _ => throw new ArgumentOutOfRangeException(nameof(imageStyle), imageStyle, $"Use ImageStyle.Default, ImageStyle.Outline or ImageStyle.OutlineFull")
+                _ => throw new ArgumentOutOfRangeException(nameof(imageStyle), imageStyle, "Use ImageStyle.Default, ImageStyle.Outline or ImageStyle.OutlineFull")
             };
 
             ShowImage(image, status, maskType, timeoutMs);
@@ -1134,4 +1134,3 @@ namespace BTProgressHUD
         }
     }
 }
-
