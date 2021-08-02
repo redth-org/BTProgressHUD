@@ -7,17 +7,17 @@ namespace BTProgressHUD
 {
     public static class ShapeHelper
     {
-        public static CGPoint PointOnCircle(CGPoint center, float radius, float angleInDegrees)
+        public static CGPoint PointOnCircle(float radius, float angleInDegrees)
         {
             float x = radius * MathF.Cos(angleInDegrees * MathF.PI / 180f) + radius;
             float y = radius * MathF.Sin(angleInDegrees * MathF.PI / 180f) + radius;
             return new CGPoint(x, y);
         }
 
-        public static UIBezierPath CreateCirclePath(CGPoint center, float radius, int sampleCount)
+        public static UIBezierPath CreateCirclePath(float radius, int sampleCount)
         {
             var smoothedPath = new UIBezierPath();
-            CGPoint startPoint = PointOnCircle(center, radius, -90);
+            CGPoint startPoint = PointOnCircle(radius, -90);
 
             smoothedPath.MoveTo(startPoint);
 
@@ -26,7 +26,7 @@ namespace BTProgressHUD
             for (int i = 1; i < sampleCount; i++)
             {
                 angleInDegrees += delta;
-                var point = PointOnCircle(center, radius, angleInDegrees);
+                var point = PointOnCircle(radius, angleInDegrees);
                 smoothedPath.AddLineTo(point);
             }
             smoothedPath.AddLineTo(startPoint);
@@ -35,7 +35,7 @@ namespace BTProgressHUD
 
         public static CAShapeLayer CreateRingLayer(CGPoint center, float radius, float lineWidth, UIColor color)
         {
-            var smoothedPath = CreateCirclePath(center, radius, 72);
+            var smoothedPath = CreateCirclePath(radius, 72);
             var slice = new CAShapeLayer();
             slice.Frame = new CGRect(center.X - radius, center.Y - radius, radius * 2, radius * 2);
             slice.FillColor = UIColor.Clear.CGColor;
