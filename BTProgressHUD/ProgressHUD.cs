@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using CoreAnimation;
 using CoreGraphics;
 using Foundation;
@@ -303,18 +304,9 @@ namespace BTProgressHUD
 
             if (OverlayView.Superview == null)
             {
-                var windows = UIApplication.SharedApplication.Windows;
-                Array.Reverse(windows);
-                foreach (UIWindow window in windows)
-                {
-                    if (window.WindowLevel == UIWindowLevel.Normal && !window.Hidden && window.IsKeyWindow)
-                    {
-                        window.AddSubview(OverlayView);
-                        break;
-                    }
-                }
+                var window = GetActiveWindow();
+                window?.AddSubview(OverlayView);
             }
-
 
             if (Superview == null)
                 OverlayView.AddSubview(this);
@@ -796,9 +788,7 @@ namespace BTProgressHUD
                             OverlayView = null;
                             this.RemoveFromSuperview();
 
-                            var rootController = UIApplication.SharedApplication.KeyWindow.RootViewController;
-                            if (rootController != null)
-                                rootController.SetNeedsStatusBarAppearanceUpdate();
+                            GetActiveWindow()?.RootViewController?.SetNeedsStatusBarAppearanceUpdate();
                         });
                     }
                 });
@@ -1131,6 +1121,24 @@ namespace BTProgressHUD
         public bool IsPortrait(UIInterfaceOrientation orientation)
         {
             return (orientation == UIInterfaceOrientation.Portrait || orientation == UIInterfaceOrientation.PortraitUpsideDown);
+        }
+
+        private static UIWindow GetActiveWindow()
+        {
+            if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
+            {
+                var scene = UIApplication.SharedApplication.ConnectedScenes.ToArray()
+                    .OfType<UIWindowScene>()
+                    .FirstOrDefault(s =>
+                        s.ActivationState == UISceneActivationState.ForegroundActive || // scene in foreground or
+                        s.Windows.Any(w => w.IsKeyWindow)); // current shown window
+
+                if (scene != null)
+                    return scene.Windows.FirstOrDefault(w => w.IsKeyWindow);
+            }
+            
+            var windows = UIApplication.SharedApplication.Windows;
+            return windows.LastOrDefault(w => w.WindowLevel == UIWindowLevel.Normal && !w.Hidden && w.IsKeyWindow);
         }
     }
 }
