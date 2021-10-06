@@ -13,7 +13,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.200
+        dotnet-version: 5.0.401
 
     - name: Run the Cake script
       uses: cake-build/cake-action@v1
