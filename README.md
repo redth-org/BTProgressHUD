@@ -7,18 +7,15 @@ Port to Xamarin.iOS of the [SVProgressHUD](https://github.com/samvermette/SVProg
 
 SVProgressHUD (and BTProgressHUD) is a clean and easy-to-use HUD meant to display the progress of an ongoing task.
 
-This is also available in the [Xamarin Component Store](https://components.xamarin.com/view/btprogresshud/). 
-
 If you need this for Xamarin.Android, [redth has a very similar component](https://github.com/Redth/AndHUD)
 
 ## Installation
 
-* Grab the .cs files, and the images, and add them to your project.
-* Use it :)
+Install the NuGet package [BTProgressHUD][nuget]
 
 ## TODO
 
-* The progress HUD is not Accessability-aware, which would be very good to add. The ObjC code for this is still in the project, just commented out.
+* The progress HUD is not Accessability-aware, which would be very good to add.
 
 ## Usage
 
@@ -109,3 +106,5 @@ Thanks to
 * [Greg Shackles](https://github.com/gshackles)
 
 for the updates / fixes.
+        
+[nuget]: https://www.nuget.org/packages/BTProgressHUD/
