@@ -21,4 +21,3 @@
 - [ ] All projects build
 - [ ] Follows style guide lines 
 - [ ] Relevant documentation was updated
-- [ ] Rebased onto current develop
