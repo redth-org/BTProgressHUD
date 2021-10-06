@@ -25,38 +25,38 @@ using UIKit;
 
 namespace BigTed
 {
-    public class ProgressHUD : UIView
+    public sealed class ProgressHUD : UIView
     {
-        static Class clsUIPeripheralHostView = null;
-        static Class clsUIKeyboard = null;
-        static Class clsUIInputSetContainerView = null;
-        static Class clsUIInputSetHostView = null;
+        static readonly Class? ClsUIPeripheralHostView;
+        static readonly Class? ClsUIKeyboard;
+        static readonly Class? ClsUIInputSetContainerView;
+        static readonly Class? ClsUIInputSetHostView;
 
-        static NSObject obj = new NSObject();
+        static readonly NSObject obj = new();
 
-        UIImage errorImage;
-        UIImage successImage;
-        UIImage infoImage;
-        UIImage errorOutlineImage;
-        UIImage successOutlineImage;
-        UIImage infoOutlineImage;
-        UIImage errorOutlineFullImage;
-        UIImage successOutlineFullImage;
-        UIImage infoOutlineFullImage;
+        UIImage? _errorImage;
+        UIImage? _successImage;
+        UIImage? _infoImage;
+        UIImage? _errorOutlineImage;
+        UIImage? _successOutlineImage;
+        UIImage? _infoOutlineImage;
+        UIImage? _errorOutlineFullImage;
+        UIImage? _successOutlineFullImage;
+        UIImage? _infoOutlineFullImage;
 
         MaskType _maskType;
-        NSTimer _fadeoutTimer;
-        UIView _overlayView;
-        UIView _hudView;
-        UILabel _stringLabel;
-        UIImageView _imageView;
-        UIActivityIndicatorView _spinnerView;
-        UIButton _cancelHud;
-        NSTimer _progressTimer;
+        NSTimer? _fadeoutTimer;
+        UIView? _overlayView;
+        UIView? _hudView;
+        UILabel? _stringLabel;
+        UIImageView? _imageView;
+        UIActivityIndicatorView? _spinnerView;
+        UIButton? _cancelHud;
+        NSTimer? _progressTimer;
         float _progress;
-        CAShapeLayer _backgroundRingLayer;
-        CAShapeLayer _ringLayer;
-        List<NSObject> _eventListeners;
+        CAShapeLayer? _backgroundRingLayer;
+        CAShapeLayer? _ringLayer;
+        List<NSObject>? _eventListeners;
         bool _displayContinuousImage;
 
         static ProgressHUD()
@@ -64,16 +64,16 @@ namespace BigTed
             //initialize static fields used for input view detection
             var ptrUIPeripheralHostView = Class.GetHandle("UIPeripheralHostView");
             if (ptrUIPeripheralHostView != IntPtr.Zero)
-                clsUIPeripheralHostView = new Class(ptrUIPeripheralHostView);
+                ClsUIPeripheralHostView = new Class(ptrUIPeripheralHostView);
             var ptrUIKeyboard = Class.GetHandle("UIKeyboard");
             if (ptrUIKeyboard != IntPtr.Zero)
-                clsUIKeyboard = new Class(ptrUIKeyboard);
+                ClsUIKeyboard = new Class(ptrUIKeyboard);
             var ptrUIInputSetContainerView = Class.GetHandle("UIInputSetContainerView");
             if (ptrUIInputSetContainerView != IntPtr.Zero)
-                clsUIInputSetContainerView = new Class(ptrUIInputSetContainerView);
+                ClsUIInputSetContainerView = new Class(ptrUIInputSetContainerView);
             var ptrUIInputSetHostView = Class.GetHandle("UIInputSetHostView");
             if (ptrUIInputSetHostView != IntPtr.Zero)
-                clsUIInputSetHostView = new Class(ptrUIInputSetHostView);
+                ClsUIInputSetHostView = new Class(ptrUIInputSetHostView);
         }
 
         public ProgressHUD() : this(UIScreen.MainScreen.Bounds)
@@ -96,76 +96,76 @@ namespace BigTed
         public UIColor HudToastBackgroundColor { get; set; } = UIColor.Clear;
         public UIFont HudFont { get; set; } = UIFont.BoldSystemFontOfSize(16f);
         public UITextAlignment HudTextAlignment { get; set; } = UITextAlignment.Center;
-        public Ring Ring = new Ring();
+        public Ring Ring { get; } = new();
 
         public UIImage ErrorImage
         {
-            get => errorImage ?? ImageHelper.ErrorImage.Value;
-            set => errorImage = value;
+            get => _errorImage ?? ImageHelper.ErrorImage.Value;
+            set => _errorImage = value;
         }
 
         public UIImage SuccessImage
         {
-            get => successImage ?? ImageHelper.SuccessImage.Value;
-            set => successImage = value;
+            get => _successImage ?? ImageHelper.SuccessImage.Value;
+            set => _successImage = value;
         }
 
         public UIImage InfoImage
         {
-            get => infoImage ?? ImageHelper.InfoImage.Value;
-            set => infoImage = value;
+            get => _infoImage ?? ImageHelper.InfoImage.Value;
+            set => _infoImage = value;
         }
 
         public UIImage ErrorOutlineImage
         {
-            get => errorOutlineImage ?? ImageHelper.ErrorOutlineImage.Value;
-            set => errorOutlineImage = value;
+            get => _errorOutlineImage ?? ImageHelper.ErrorOutlineImage.Value;
+            set => _errorOutlineImage = value;
         }
 
         public UIImage SuccessOutlineImage
         {
-            get => successOutlineImage ?? ImageHelper.SuccessOutlineImage.Value;
-            set => successOutlineImage = value;
+            get => _successOutlineImage ?? ImageHelper.SuccessOutlineImage.Value;
+            set => _successOutlineImage = value;
         }
 
         public UIImage InfoOutlineImage
         {
-            get => infoOutlineImage ?? ImageHelper.InfoOutlineImage.Value;
-            set => infoOutlineImage = value;
+            get => _infoOutlineImage ?? ImageHelper.InfoOutlineImage.Value;
+            set => _infoOutlineImage = value;
         }
 
         public UIImage ErrorOutlineFullImage
         {
-            get => errorOutlineFullImage ?? ImageHelper.ErrorOutlineFullImage.Value;
-            set => errorOutlineFullImage = value;
+            get => _errorOutlineFullImage ?? ImageHelper.ErrorOutlineFullImage.Value;
+            set => _errorOutlineFullImage = value;
         }
 
         public UIImage SuccessOutlineFullImage
         {
-            get => successOutlineFullImage ?? ImageHelper.SuccessOutlineFullImage.Value;
-            set => successOutlineFullImage = value;
+            get => _successOutlineFullImage ?? ImageHelper.SuccessOutlineFullImage.Value;
+            set => _successOutlineFullImage = value;
         }
 
         public UIImage InfoOutlineFullImage
         {
-            get => infoOutlineFullImage ?? ImageHelper.InfoOutlineFullImage.Value;
-            set => infoOutlineFullImage = value;
+            get => _infoOutlineFullImage ?? ImageHelper.InfoOutlineFullImage.Value;
+            set => _infoOutlineFullImage = value;
         }
 
         public bool IsVisible => Alpha == 1;
 
-        static ProgressHUD sharedHUD = null;
+        static ProgressHUD? _sharedHud;
 
         public static ProgressHUD Shared
         {
             get
             {
-                if (sharedHUD == null)
+                if (_sharedHud == null)
                 {
                     UIApplication.EnsureUIThread();
-                    sharedHUD = new ProgressHUD(UIScreen.MainScreen.Bounds);
+                    _sharedHud = new ProgressHUD(UIScreen.MainScreen.Bounds);
                 }
-                return sharedHUD;
+                return _sharedHud;
             }
         }
 
@@ -180,12 +180,12 @@ namespace BigTed
             RingThickness = 1f;
         }
 
-        public void Show(string status = null, float progress = -1, MaskType maskType = MaskType.None, double timeoutMs = 1000)
+        public void Show(string? status = null, float progress = -1, MaskType maskType = MaskType.None, double timeoutMs = 1000)
         {
             obj.InvokeOnMainThread(() => ShowProgressWorker(progress, status, maskType, timeoutMs: timeoutMs));
         }
 
-        public void Show(string cancelCaption, Action cancelCallback, string status = null,
+        public void Show(string cancelCaption, Action cancelCallback, string? status = null,
                           float progress = -1, MaskType maskType = MaskType.None, double timeoutMs = 1000)
         {
             // Making cancelCaption optional hides the method via the overload
@@ -197,12 +197,12 @@ namespace BigTed
                cancelCaption: cancelCaption, cancelCallback: cancelCallback, timeoutMs: timeoutMs));
         }
 
-        public void ShowContinuousProgress(string status = null, MaskType maskType = MaskType.None, double timeoutMs = 1000, UIImage img = null)
+        public void ShowContinuousProgress(string? status = null, MaskType maskType = MaskType.None, double timeoutMs = 1000, UIImage? img = null)
         {
             obj.InvokeOnMainThread(() => ShowProgressWorker(0, status, maskType, false, ToastPosition.Center, null, null, timeoutMs, true, img));
         }
 
-        public void ShowContinuousProgressTest(string status = null, MaskType maskType = MaskType.None, double timeoutMs = 1000)
+        public void ShowContinuousProgressTest(string? status = null, MaskType maskType = MaskType.None, double timeoutMs = 1000)
         {
             obj.InvokeOnMainThread(() => ShowProgressWorker(0, status, maskType, false, ToastPosition.Center, null, null, timeoutMs, true));
         }
@@ -268,39 +268,37 @@ namespace BigTed
 
         public override void Draw(CGRect rect)
         {
-            using (var context = UIGraphics.GetCurrentContext())
+            using var context = UIGraphics.GetCurrentContext();
+            switch (_maskType)
             {
-                switch (_maskType)
-                {
-                    case MaskType.Black:
-                        UIColor.FromWhiteAlpha(0f, 0.5f).SetColor();
-                        context.FillRect(Bounds);
-                        break;
-                    case MaskType.Gradient:
-                        var colors = new nfloat[] { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.75f };
-                        var locations = new nfloat[] { 0.0f, 1.0f };
-                        using (var colorSpace = CGColorSpace.CreateDeviceRGB())
+                case MaskType.Black:
+                    UIColor.FromWhiteAlpha(0f, 0.5f).SetColor();
+                    context.FillRect(Bounds);
+                    break;
+                case MaskType.Gradient:
+                    var colors = new nfloat[] { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.75f };
+                    var locations = new nfloat[] { 0.0f, 1.0f };
+                    using (var colorSpace = CGColorSpace.CreateDeviceRGB())
+                    {
+                        using (var gradient = new CGGradient(colorSpace, colors, locations))
                         {
-                            using (var gradient = new CGGradient(colorSpace, colors, locations))
-                            {
-                                var center = new CGPoint(Bounds.Size.Width / 2, Bounds.Size.Height / 2);
-                                float radius = Math.Min((float)Bounds.Size.Width, (float)Bounds.Size.Height);
-                                context.DrawRadialGradient(gradient, center, 0, center, radius, CGGradientDrawingOptions.DrawsAfterEndLocation);
-                            }
+                            var center = new CGPoint(Bounds.Size.Width / 2, Bounds.Size.Height / 2);
+                            float radius = Math.Min((float)Bounds.Size.Width, (float)Bounds.Size.Height);
+                            context.DrawRadialGradient(gradient, center, 0, center, radius, CGGradientDrawingOptions.DrawsAfterEndLocation);
                         }
+                    }
 
-                        break;
-                }
+                    break;
             }
         }
 
-        void ShowProgressWorker(float progress = -1, string status = null, MaskType maskType = MaskType.None, bool textOnly = false,
-                                 ToastPosition toastPosition = ToastPosition.Center, string cancelCaption = null, Action cancelCallback = null,
-                                 double timeoutMs = 1000, bool showContinuousProgress = false, UIImage displayContinuousImage = null)
+        void ShowProgressWorker(
+            float progress = -1, string? status = null, MaskType maskType = MaskType.None, bool textOnly = false,
+            ToastPosition toastPosition = ToastPosition.Center, string? cancelCaption = null, Action? cancelCallback = null,
+            double timeoutMs = 1000, bool showContinuousProgress = false, UIImage? displayContinuousImage = null)
         {
-
-            Ring.ResetStyle(TintColor);
-
+            if (TintColor != null)
+                Ring.ResetStyle(TintColor);
 
             if (OverlayView.Superview == null)
             {
@@ -368,32 +366,28 @@ namespace BigTed
                 }
             }
 
-            bool cancelButtonVisible = _cancelHud != null && _cancelHud.IsDescendantOfView(_hudView);
+            bool cancelButtonVisible = _cancelHud?.IsDescendantOfView(HudView) == true;
 
             // intercept user interaction with the underlying view
             if (maskType != MaskType.None || cancelButtonVisible)
             {
                 OverlayView.UserInteractionEnabled = true;
-                //AccessibilityLabel = status;
-                //IsAccessibilityElement = true;
             }
             else
             {
                 OverlayView.UserInteractionEnabled = false;
-                //hudView.IsAccessibilityElement = true;
             }
 
             OverlayView.Hidden = false;
-            this.toastPosition = toastPosition;
+            _toastPosition = toastPosition;
             PositionHUD(null);
-
-
+            
             if (Alpha != 1)
             {
                 RegisterNotifications();
                 HudView.Transform.Scale(1.3f, 1.3f);
 
-                if (isClear)
+                if (IsClear)
                 {
                     Alpha = 1f;
                     HudView.Alpha = 0f;
@@ -403,8 +397,8 @@ namespace BigTed
                     UIViewAnimationOptions.AllowUserInteraction | UIViewAnimationOptions.CurveEaseOut | UIViewAnimationOptions.BeginFromCurrentState,
                     delegate
                     {
-                        HudView.Transform.Scale((float)1 / 1.3f, (float)1f / 1.3f);
-                        if (isClear)
+                        HudView.Transform.Scale(1f / 1.3f, 1f / 1.3f);
+                        if (IsClear)
                         {
                             HudView.Alpha = 1f;
                         }
@@ -460,23 +454,18 @@ namespace BigTed
 
         void StartProgressTimer(TimeSpan duration)
         {
+            if (_progressTimer != null)
+                return;
 
-            if (_progressTimer == null)
-            {
-                _progressTimer = NSTimer.CreateRepeatingTimer(duration, timer => UpdateProgress());
-                NSRunLoop.Current.AddTimer(_progressTimer, NSRunLoopMode.Common);
-            }
+            _progressTimer = NSTimer.CreateRepeatingTimer(duration, timer => UpdateProgress());
+            NSRunLoop.Current.AddTimer(_progressTimer, NSRunLoopMode.Common);
         }
 
         void StopProgressTimer()
         {
-            if (_progressTimer != null)
-            {
-                _progressTimer.Invalidate();
-                _progressTimer = null;
-            }
+            _progressTimer?.Invalidate();
+            _progressTimer = null;
         }
-
 
         void UpdateProgress()
         {
@@ -512,9 +501,9 @@ namespace BigTed
             {
                 RingLayer.RemoveFromSuperLayer();
             }
-            RingLayer = null;
+            _ringLayer = null;
 
-            if (BackgroundRingLayer.SuperLayer != null)
+            if (BackgroundRingLayer?.SuperLayer != null)
             {
                 BackgroundRingLayer.RemoveFromSuperLayer();
             }
@@ -535,10 +524,9 @@ namespace BigTed
                 }
                 return _ringLayer;
             }
-            set { _ringLayer = value; }
         }
 
-        CAShapeLayer BackgroundRingLayer
+        CAShapeLayer? BackgroundRingLayer
         {
             get
             {
@@ -554,80 +542,65 @@ namespace BigTed
             set { _backgroundRingLayer = value; }
         }
 
-        bool isClear
-        {
-            get
-            {
-                return (_maskType == MaskType.Clear || _maskType == MaskType.None);
-            }
-        }
+        bool IsClear => _maskType is MaskType.Clear or MaskType.None;
 
-        UIView OverlayView
-        {
-            get
+        UIView OverlayView =>
+            _overlayView ??= new UIView(UIScreen.MainScreen.Bounds)
             {
-                if (_overlayView == null)
-                {
-                    _overlayView = new UIView(UIScreen.MainScreen.Bounds);
-                    _overlayView.AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
-                    _overlayView.BackgroundColor = UIColor.Clear;
-                    _overlayView.UserInteractionEnabled = false;
-                    _overlayView.AccessibilityViewIsModal = true;
-                }
-                return _overlayView;
-            }
-            set { _overlayView = value; }
-        }
+                AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight,
+                BackgroundColor = UIColor.Clear,
+                UserInteractionEnabled = false,
+                AccessibilityViewIsModal = true
+            };
 
         UIView HudView
         {
             get
             {
-                if (_hudView == null)
+                if (_hudView != null)
+                    return _hudView;
+
+                var hudView = new UIToolbar
                 {
-                    _hudView = new UIToolbar();
-                    ((UIToolbar)_hudView).Translucent = true;
-                    ((UIToolbar)_hudView).BarTintColor = HudBackgroundColour;
-                    _hudView.Layer.CornerRadius = 10;
-                    _hudView.Layer.MasksToBounds = true;
-                    _hudView.BackgroundColor = HudBackgroundColour;
-                    _hudView.AutoresizingMask = (UIViewAutoresizing.FlexibleBottomMargin | UIViewAutoresizing.FlexibleTopMargin |
-                    UIViewAutoresizing.FlexibleRightMargin | UIViewAutoresizing.FlexibleLeftMargin);
+                    Translucent = true,
+                    BarTintColor = HudBackgroundColour,
+                    BackgroundColor = HudBackgroundColour,
+                    AutoresizingMask =
+                        UIViewAutoresizing.FlexibleBottomMargin | UIViewAutoresizing.FlexibleTopMargin |
+                        UIViewAutoresizing.FlexibleRightMargin | UIViewAutoresizing.FlexibleLeftMargin
+                };
+                hudView.Layer.CornerRadius = 10;
+                hudView.Layer.MasksToBounds = true;
 
-                    AddSubview(_hudView);
+                AddSubview(hudView);
 
-                    if (_hudView is UIToolbar)
-                        _hudView.LayoutIfNeeded();
-                }
+                hudView.LayoutIfNeeded();
+                _hudView = hudView;
                 return _hudView;
             }
-            set { _hudView = value; }
         }
 
         UILabel StringLabel
         {
             get
             {
-                if (_stringLabel == null)
+                _stringLabel ??= new UILabel
                 {
-                    _stringLabel = new UILabel
-                    {
-                        BackgroundColor = HudToastBackgroundColor,
-                        AdjustsFontSizeToFitWidth = true,
-                        TextAlignment = HudTextAlignment,
-                        BaselineAdjustment = UIBaselineAdjustment.AlignCenters,
-                        TextColor = HudForegroundColor,
-                        Font = HudFont,
-                        Lines = 0
-                    };
-                }
+                    BackgroundColor = HudToastBackgroundColor,
+                    AdjustsFontSizeToFitWidth = true,
+                    TextAlignment = HudTextAlignment,
+                    BaselineAdjustment = UIBaselineAdjustment.AlignCenters,
+                    TextColor = HudForegroundColor,
+                    Font = HudFont,
+                    Lines = 0
+                };
+                
                 if (_stringLabel.Superview == null)
                 {
                     HudView.AddSubview(_stringLabel);
                 }
                 return _stringLabel;
             }
-            set { _stringLabel = value; }
         }
 
         UIButton CancelHudButton
@@ -636,14 +609,18 @@ namespace BigTed
             {
                 if (_cancelHud == null)
                 {
-                    _cancelHud = new UIButton();
-
-                    _cancelHud.BackgroundColor = UIColor.Clear;
+                    _cancelHud = new UIButton
+                    {
+                        BackgroundColor = UIColor.Clear,
+                        UserInteractionEnabled = true,
+                        Font = HudFont
+                    };
+                    
                     _cancelHud.SetTitleColor(HudForegroundColor, UIControlState.Normal);
-                    _cancelHud.UserInteractionEnabled = true;
-                    _cancelHud.Font = HudFont;
-                    this.UserInteractionEnabled = true;
+                    UserInteractionEnabled = true;
                 }
+                
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                 if (_cancelHud.Superview == null)
                 {
                     HudView.AddSubview(_cancelHud);
@@ -658,49 +635,41 @@ namespace BigTed
                 }
                 return _cancelHud;
             }
-            set
-            {
-                _cancelHud = value;
-            }
         }
 
         UIImageView ImageView
         {
             get
             {
-                if (_imageView == null)
+                _imageView ??= new UIImageView(new CGRect(0, 0, 32, 32))
                 {
-                    _imageView = new UIImageView(new CGRect(0, 0, 32, 32))
-                    {
-                        ContentMode = UIViewContentMode.ScaleAspectFill
-                    };
-                }
+                    ContentMode = UIViewContentMode.ScaleAspectFill
+                };
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                 if (_imageView.Superview == null)
                 {
                     HudView.AddSubview(_imageView);
                 }
                 return _imageView;
             }
-            set { _imageView = value; }
         }
         UIActivityIndicatorView SpinnerView
         {
             get
             {
-                if (_spinnerView == null)
+                _spinnerView ??= new UIActivityIndicatorView(UIActivityIndicatorViewStyle.WhiteLarge)
                 {
-                    _spinnerView = new UIActivityIndicatorView(UIActivityIndicatorViewStyle.WhiteLarge);
-                    _spinnerView.HidesWhenStopped = true;
-                    _spinnerView.Bounds = new CGRect(0, 0, 37, 37);
-                    _spinnerView.Color = HudForegroundColor;
-                }
+                    HidesWhenStopped = true,
+                    Bounds = new CGRect(0, 0, 37, 37),
+                    Color = HudForegroundColor
+                };
 
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                 if (_spinnerView.Superview == null)
                     HudView.AddSubview(_spinnerView);
 
                 return _spinnerView;
             }
-            set { _spinnerView = value; }
         }
 
         float VisibleKeyboardHeight
@@ -713,18 +682,18 @@ namespace BigTed
                     {
                         foreach (var possibleKeyboard in testWindow.Subviews)
                         {
-                            if ((clsUIPeripheralHostView != null && possibleKeyboard.IsKindOfClass(clsUIPeripheralHostView)) ||
-                                (clsUIKeyboard != null && possibleKeyboard.IsKindOfClass(clsUIKeyboard)))
+                            if ((ClsUIPeripheralHostView != null && possibleKeyboard.IsKindOfClass(ClsUIPeripheralHostView)) ||
+                                (ClsUIKeyboard != null && possibleKeyboard.IsKindOfClass(ClsUIKeyboard)))
                             {
                                 // Check that the keyboard is actually on screen
                                 if (possibleKeyboard.Frame.IntersectsWith(testWindow.Frame))
                                     return (float)possibleKeyboard.Bounds.Size.Height;
                             }
-                            else if (clsUIInputSetContainerView != null && possibleKeyboard.IsKindOfClass(clsUIInputSetContainerView))
+                            else if (ClsUIInputSetContainerView != null && possibleKeyboard.IsKindOfClass(ClsUIInputSetContainerView))
                             {
                                 foreach (var possibleKeyboardSubview in possibleKeyboard.Subviews)
                                 {
-                                    if (clsUIInputSetHostView != null && possibleKeyboardSubview.IsKindOfClass(clsUIInputSetHostView))
+                                    if (ClsUIInputSetHostView != null && possibleKeyboardSubview.IsKindOfClass(ClsUIInputSetHostView))
                                         // Check that the keyboard is actually on screen
                                         if (possibleKeyboardSubview.Frame.IntersectsWith(testWindow.Frame))
                                             return (float)possibleKeyboardSubview.Bounds.Size.Height;
@@ -743,11 +712,11 @@ namespace BigTed
             SetFadeoutTimer(null);
             SetProgressTimer(null);
 
-            UIView.Animate(0.3, 0, UIViewAnimationOptions.CurveEaseIn | UIViewAnimationOptions.AllowUserInteraction,
+            Animate(0.3, 0, UIViewAnimationOptions.CurveEaseIn | UIViewAnimationOptions.AllowUserInteraction,
                 delegate
                 {
                     HudView.Transform.Scale(0.8f, 0.8f);
-                    if (isClear)
+                    if (IsClear)
                     {
                         HudView.Alpha = 0f;
                     }
@@ -759,54 +728,53 @@ namespace BigTed
                 {
                     if (Alpha == 0f || HudView.Alpha == 0f)
                     {
-                        InvokeOnMainThread(delegate
-                        {
-                            Alpha = 0f;
-                            HudView.Alpha = 0f;
-
-                            //Removing observers
-                            UnRegisterNotifications();
-                            NSNotificationCenter.DefaultCenter.RemoveObserver(this);
-
-                            Ring.ResetStyle(TintColor);
-
-                            CancelRingLayerAnimation();
-                            StringLabel.RemoveFromSuperview();
-                            SpinnerView.RemoveFromSuperview();
-                            ImageView.RemoveFromSuperview();
-                            if (_cancelHud != null)
-                                _cancelHud.RemoveFromSuperview();
-
-                            StringLabel = null;
-                            SpinnerView = null;
-                            ImageView = null;
-                            _cancelHud = null;
-
-                            HudView.RemoveFromSuperview();
-                            HudView = null;
-                            OverlayView.RemoveFromSuperview();
-                            OverlayView = null;
-                            this.RemoveFromSuperview();
-
-                            GetActiveWindow()?.RootViewController?.SetNeedsStatusBarAppearanceUpdate();
-                        });
+                        InvokeOnMainThread(RemoveHud);
                     }
                 });
+        }
+
+        void RemoveHud()
+        {
+            Alpha = 0f;
+            HudView.Alpha = 0f;
+
+            //Removing observers
+            UnRegisterNotifications();
+            NSNotificationCenter.DefaultCenter.RemoveObserver(this);
+
+            if (TintColor != null)
+                Ring.ResetStyle(TintColor);
+
+            CancelRingLayerAnimation();
+            StringLabel.RemoveFromSuperview();
+            SpinnerView.RemoveFromSuperview();
+            ImageView.RemoveFromSuperview();
+            _cancelHud?.RemoveFromSuperview();
+
+            _stringLabel = null;
+            _spinnerView = null;
+            _imageView = null;
+            _cancelHud = null;
+
+            HudView.RemoveFromSuperview();
+            _hudView = null;
+            OverlayView.RemoveFromSuperview();
+            _overlayView = null;
+            RemoveFromSuperview();
+
+            GetActiveWindow()?.RootViewController?.SetNeedsStatusBarAppearanceUpdate();
         }
 
         void SetStatusWorker(string status)
         {
             StringLabel.Text = status;
             UpdatePosition();
-
         }
 
         void RegisterNotifications()
         {
-            if (_eventListeners == null)
-            {
-                _eventListeners = new List<NSObject>();
-            }
+            _eventListeners ??= new List<NSObject>();
+
             _eventListeners.Add(NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidChangeStatusBarOrientationNotification,
                 PositionHUD));
             _eventListeners.Add(NSNotificationCenter.DefaultCenter.AddObserver(UIKeyboard.WillHideNotification,
@@ -821,12 +789,12 @@ namespace BigTed
 
         void UnRegisterNotifications()
         {
-            if (_eventListeners != null)
-            {
-                NSNotificationCenter.DefaultCenter.RemoveObservers(_eventListeners);
-                _eventListeners.Clear();
-                _eventListeners = null;
-            }
+            if (_eventListeners == null)
+                return;
+
+            NSNotificationCenter.DefaultCenter.RemoveObservers(_eventListeners);
+            _eventListeners.Clear();
+            _eventListeners = null;
         }
 
         void MoveToPoint(CGPoint newCenter, float angle)
@@ -835,12 +803,10 @@ namespace BigTed
             HudView.Center = newCenter;
         }
 
-        ToastPosition toastPosition = ToastPosition.Center;
+        ToastPosition _toastPosition = ToastPosition.Center;
 
-        void PositionHUD(NSNotification notification)
+        void PositionHUD(NSNotification? notification)
         {
-
-            nfloat keyboardHeight = 0;
             double animationDuration = 0;
 
             Frame = UIScreen.MainScreen.Bounds;
@@ -848,63 +814,22 @@ namespace BigTed
             UIInterfaceOrientation orientation = UIApplication.SharedApplication.StatusBarOrientation;
             bool ignoreOrientation = UIDevice.CurrentDevice.CheckSystemVersion(8, 0);
 
-            if (notification != null)
-            {
-                var keyboardFrame = UIKeyboard.FrameEndFromNotification(notification);
-                animationDuration = UIKeyboard.AnimationDurationFromNotification(notification);
-
-                if (notification.Name == UIKeyboard.WillShowNotification || notification.Name == UIKeyboard.DidShowNotification)
-                {
-                    if (ignoreOrientation || IsPortrait(orientation))
-                        keyboardHeight = keyboardFrame.Size.Height;
-                    else
-                        keyboardHeight = keyboardFrame.Size.Width;
-                }
-                else
-                    keyboardHeight = 0;
-
-            }
-            else
-            {
-                keyboardHeight = VisibleKeyboardHeight;
-            }
+            var keyboardHeight = GetKeyboardHeightFromNotification(notification, ignoreOrientation, orientation, ref animationDuration);
 
             CGRect orientationFrame = GetActiveWindow().Bounds;
+            var activeHeight = GetActiveHeight(ignoreOrientation, orientation, orientationFrame, keyboardHeight);
+            
+            nfloat posY = (float)Math.Floor(activeHeight * 0.45); 
+            nfloat posX = orientationFrame.Size.Width / 2f;
+            nfloat textHeight = StringLabel.Frame.Height / 2f + 40;
 
-            CGRect statusBarFrame = UIApplication.SharedApplication.StatusBarFrame;
-
-            if (!ignoreOrientation && IsLandscape(orientation))
+            posY = _toastPosition switch
             {
-                orientationFrame.Size = new CGSize(orientationFrame.Size.Height, orientationFrame.Size.Width);
-                statusBarFrame.Size = new CGSize(statusBarFrame.Size.Height, statusBarFrame.Size.Width);
-
-            }
-
-            var activeHeight = orientationFrame.Size.Height;
-
-            if (keyboardHeight > 0)
-                activeHeight += statusBarFrame.Size.Height * 2;
-
-            activeHeight -= keyboardHeight;
-            nfloat posY = (float)Math.Floor(activeHeight * 0.45);
-            nfloat posX = orientationFrame.Size.Width / 2;
-            nfloat textHeight = _stringLabel.Frame.Height / 2 + 40;
-
-            switch (toastPosition)
-            {
-                case ToastPosition.Bottom:
-                    posY = activeHeight - textHeight;
-                    break;
-                case ToastPosition.Center:
-                    // Already set above
-                    break;
-                case ToastPosition.Top:
-                    posY = textHeight;
-                    break;
-                default:
-                    break;
-            }
-
+                ToastPosition.Bottom => activeHeight - textHeight,
+                ToastPosition.Top => textHeight,
+                _ => posY
+            };
+            
             CGPoint newCenter;
             float rotateAngle;
 
@@ -938,12 +863,11 @@ namespace BigTed
 
             if (notification != null)
             {
-                UIView.Animate(animationDuration,
+                Animate(animationDuration,
                     0, UIViewAnimationOptions.AllowUserInteraction, delegate
                     {
                         MoveToPoint(newCenter, rotateAngle);
                     }, null);
-
             }
             else
             {
@@ -951,7 +875,54 @@ namespace BigTed
             }
         }
 
-        void SetFadeoutTimer(NSTimer newtimer)
+        private static nfloat GetActiveHeight(bool ignoreOrientation, UIInterfaceOrientation orientation,
+            CGRect orientationFrame, nfloat keyboardHeight)
+        {
+            CGRect statusBarFrame = UIApplication.SharedApplication.StatusBarFrame;
+
+            if (!ignoreOrientation && IsLandscape(orientation))
+            {
+                orientationFrame.Size = new CGSize(orientationFrame.Size.Height, orientationFrame.Size.Width);
+                statusBarFrame.Size = new CGSize(statusBarFrame.Size.Height, statusBarFrame.Size.Width);
+            }
+
+            var activeHeight = orientationFrame.Size.Height;
+
+            if (keyboardHeight > 0)
+                activeHeight += statusBarFrame.Size.Height * 2;
+
+            activeHeight -= keyboardHeight;
+            return activeHeight;
+        }
+
+        private nfloat GetKeyboardHeightFromNotification(NSNotification? notification, bool ignoreOrientation,
+            UIInterfaceOrientation orientation, ref double animationDuration)
+        {
+            nfloat keyboardHeight;
+            if (notification != null)
+            {
+                var keyboardFrame = UIKeyboard.FrameEndFromNotification(notification);
+                animationDuration = UIKeyboard.AnimationDurationFromNotification(notification);
+
+                if (notification.Name == UIKeyboard.WillShowNotification || notification.Name == UIKeyboard.DidShowNotification)
+                {
+                    if (ignoreOrientation || IsPortrait(orientation))
+                        keyboardHeight = keyboardFrame.Size.Height;
+                    else
+                        keyboardHeight = keyboardFrame.Size.Width;
+                }
+                else
+                    keyboardHeight = 0;
+            }
+            else
+            {
+                keyboardHeight = VisibleKeyboardHeight;
+            }
+
+            return keyboardHeight;
+        }
+
+        void SetFadeoutTimer(NSTimer? newTimer)
         {
             if (_fadeoutTimer != null)
             {
@@ -959,32 +930,29 @@ namespace BigTed
                 _fadeoutTimer = null;
             }
 
-            if (newtimer != null)
-                _fadeoutTimer = newtimer;
+            if (newTimer != null)
+                _fadeoutTimer = newTimer;
         }
 
 
-        void SetProgressTimer(NSTimer newtimer)
+        void SetProgressTimer(NSTimer? newTimer)
         {
-
             StopProgressTimer();
 
-            if (newtimer != null)
-                _progressTimer = newtimer;
+            if (newTimer != null)
+                _progressTimer = newTimer;
         }
 
         void UpdatePosition(bool textOnly = false)
         {
             nfloat hudWidth = 100f;
-            nfloat hudHeight = 100f;
-            nfloat stringWidth = 0f;
             nfloat stringHeight = 0f;
             nfloat stringHeightBuffer = 20f;
             nfloat stringAndImageHeightBuffer = 80f;
 
-            CGRect labelRect = new CGRect();
+            var labelRect = CGRect.Empty;
 
-            string @string = StringLabel.Text;
+            string? text = StringLabel.Text;
 
             // False if it's text-only
             bool imageUsed = ImageView.Image != null || ImageView.Hidden;
@@ -993,69 +961,36 @@ namespace BigTed
                 imageUsed = false;
             }
 
-            if (imageUsed)
-            {
-                hudHeight = stringAndImageHeightBuffer + stringHeight;
-            }
-            else
-            {
-                hudHeight = (textOnly ? stringHeightBuffer : stringHeightBuffer + 40);
-            }
-
-            if (!string.IsNullOrEmpty(@string))
-            {
-                var lineCount = Math.Min(10, @string.Split('\n').Length + 1);
-
-                var stringSize = new NSString(@string).GetBoundingRect(new CGSize(200, 30 * lineCount), NSStringDrawingOptions.UsesLineFragmentOrigin,
-                    new UIStringAttributes { Font = StringLabel.Font },
-                    null);
-                stringWidth = stringSize.Width;
-                stringHeight = stringSize.Height;
-
-                hudHeight += stringHeight;
-
-                if (stringWidth > hudWidth)
-                    hudWidth = (float)Math.Ceiling(stringWidth / 2) * 2;
-
-                float labelRectY = imageUsed ? 66 : 9;
-
-                if (hudHeight > 100)
-                {
-                    labelRect = new CGRect(12, labelRectY, hudWidth, stringHeight);
-                    hudWidth += 24;
-                }
-                else
-                {
-                    hudWidth += 24;
-                    labelRect = new CGRect(0, labelRectY, hudWidth, stringHeight);
-                }
-            }
+            nfloat hudHeight = GetDefaultHudHeight(textOnly, imageUsed, stringAndImageHeightBuffer, stringHeight, stringHeightBuffer);
+            hudHeight = AdjustSizesForText(text, hudHeight, imageUsed, ref hudWidth, ref labelRect);
 
             // Adjust for Cancel Button
-            var cancelRect = new CGRect();
-            string @cancelCaption = _cancelHud == null ? null : CancelHudButton.Title(UIControlState.Normal);
-            if (!string.IsNullOrEmpty(@cancelCaption))
+            string? cancelCaption = _cancelHud == null ? null : CancelHudButton.Title(UIControlState.Normal);
+            if (!string.IsNullOrEmpty(cancelCaption))
             {
                 const int gap = 20;
 
-                var stringSize = new NSString(@cancelCaption).GetBoundingRect(new CGSize(200, 300), NSStringDrawingOptions.UsesLineFragmentOrigin,
+                var stringSize = new NSString(cancelCaption).GetBoundingRect(
+                    new CGSize(200, 300),
+                    NSStringDrawingOptions.UsesLineFragmentOrigin,
                     new UIStringAttributes { Font = StringLabel.Font },
                     null);
-                stringWidth = stringSize.Width;
+
+                var stringWidth = stringSize.Width;
                 stringHeight = stringSize.Height;
 
                 if (stringWidth > hudWidth)
                     hudWidth = (float)Math.Ceiling(stringWidth / 2) * 2;
 
                 // Adjust for label
-                nfloat cancelRectY = 0f;
+                nfloat cancelRectY;
                 if (labelRect.Height > 0)
                 {
-                    cancelRectY = labelRect.Y + labelRect.Height + (nfloat)gap;
+                    cancelRectY = labelRect.Y + labelRect.Height + gap;
                 }
                 else
                 {
-                    if (string.IsNullOrEmpty(@string))
+                    if (string.IsNullOrEmpty(text))
                     {
                         cancelRectY = 76;
                     }
@@ -1063,9 +998,9 @@ namespace BigTed
                     {
                         cancelRectY = (imageUsed ? 66 : 9);
                     }
-
                 }
 
+                CGRect cancelRect;
                 if (hudHeight > 100)
                 {
                     cancelRect = new CGRect(12, cancelRectY, hudWidth, stringHeight);
@@ -1079,11 +1014,11 @@ namespace BigTed
                     labelRect = new CGRect(0, labelRect.Y, hudWidth, labelRect.Height);
                 }
                 CancelHudButton.Frame = cancelRect;
-                hudHeight += (cancelRect.Height + (string.IsNullOrEmpty(@string) ? 10 : gap));
+                hudHeight += cancelRect.Height + (string.IsNullOrEmpty(text) ? 10 : gap);
             }
 
             HudView.Bounds = new CGRect(0, 0, hudWidth, hudHeight);
-            if (!string.IsNullOrEmpty(@string))
+            if (!string.IsNullOrEmpty(text))
                 ImageView.Center = new CGPoint(HudView.Bounds.Width / 2, 36);
             else
                 ImageView.Center = new CGPoint(HudView.Bounds.Width / 2, HudView.Bounds.Height / 2);
@@ -1094,10 +1029,10 @@ namespace BigTed
 
             if (!textOnly)
             {
-                if (!string.IsNullOrEmpty(@string) || !string.IsNullOrEmpty(@cancelCaption))
+                if (!string.IsNullOrEmpty(text) || !string.IsNullOrEmpty(cancelCaption))
                 {
                     SpinnerView.Center = new CGPoint((float)Math.Ceiling(HudView.Bounds.Width / 2.0f) + 0.5f, 40.5f);
-                    if (_progress != -1)
+                    if (_progress > -1 && BackgroundRingLayer != null)
                     {
                         BackgroundRingLayer.Position = RingLayer.Position = new CGPoint(HudView.Bounds.Width / 2, 36f);
                     }
@@ -1105,7 +1040,7 @@ namespace BigTed
                 else
                 {
                     SpinnerView.Center = new CGPoint((float)Math.Ceiling(HudView.Bounds.Width / 2.0f) + 0.5f, (float)Math.Ceiling(HudView.Bounds.Height / 2.0f) + 0.5f);
-                    if (_progress != -1)
+                    if (_progress > -1 && BackgroundRingLayer != null)
                     {
                         BackgroundRingLayer.Position = RingLayer.Position = new CGPoint(HudView.Bounds.Width / 2, HudView.Bounds.Height / 2.0f + 0.5f);
                     }
@@ -1113,17 +1048,65 @@ namespace BigTed
             }
         }
 
-        public bool IsLandscape(UIInterfaceOrientation orientation)
+        private nfloat AdjustSizesForText(string? text, nfloat hudHeight, bool imageUsed, ref nfloat hudWidth,
+            ref CGRect labelRect)
         {
-            return (orientation == UIInterfaceOrientation.LandscapeLeft || orientation == UIInterfaceOrientation.LandscapeRight);
+            if (string.IsNullOrEmpty(text))
+                return hudHeight;
+            
+            var lineCount = Math.Min(10, text!.Split('\n').Length + 1);
+
+            var stringSize = new NSString(text).GetBoundingRect(new CGSize(200, 30 * lineCount),
+                NSStringDrawingOptions.UsesLineFragmentOrigin,
+                new UIStringAttributes { Font = StringLabel.Font },
+                null);
+            var stringWidth = stringSize.Width;
+            var stringHeight = stringSize.Height;
+
+            hudHeight += stringHeight;
+
+            if (stringWidth > hudWidth)
+                hudWidth = (float)Math.Ceiling(stringWidth / 2.0) * 2;
+
+            float labelRectY = imageUsed ? 66 : 9;
+
+            if (hudHeight > 100)
+            {
+                labelRect = new CGRect(12, labelRectY, hudWidth, stringHeight);
+                hudWidth += 24;
+            }
+            else
+            {
+                hudWidth += 24;
+                labelRect = new CGRect(0, labelRectY, hudWidth, stringHeight);
+            }
+
+            return hudHeight;
         }
 
-        public bool IsPortrait(UIInterfaceOrientation orientation)
+        private static nfloat GetDefaultHudHeight(bool textOnly, bool imageUsed, nfloat stringAndImageHeightBuffer,
+            nfloat stringHeight, nfloat stringHeightBuffer)
         {
-            return (orientation == UIInterfaceOrientation.Portrait || orientation == UIInterfaceOrientation.PortraitUpsideDown);
+            nfloat hudHeight;
+            if (imageUsed)
+            {
+                hudHeight = stringAndImageHeightBuffer + stringHeight;
+            }
+            else
+            {
+                hudHeight = textOnly ? stringHeightBuffer : stringHeightBuffer + 40;
+            }
+
+            return hudHeight;
         }
 
-        private static UIWindow GetActiveWindow()
+        public static bool IsLandscape(UIInterfaceOrientation orientation) =>
+            orientation is UIInterfaceOrientation.LandscapeLeft or UIInterfaceOrientation.LandscapeRight;
+
+        public static bool IsPortrait(UIInterfaceOrientation orientation) =>
+            orientation is UIInterfaceOrientation.Portrait or UIInterfaceOrientation.PortraitUpsideDown;
+
+        private static UIWindow? GetActiveWindow()
         {
             if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
             {

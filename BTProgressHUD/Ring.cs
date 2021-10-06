@@ -1,5 +1,4 @@
-﻿using System;
-using UIKit;
+﻿using UIKit;
 
 namespace BigTed
 {
@@ -16,12 +15,12 @@ namespace BigTed
         /// <summary>
         /// Progress update interval in milliseconds
         /// </summary>
-        public Double ProgressUpdateInterval = 300;
+        public double ProgressUpdateInterval = 300;
 
         public void ResetStyle(UIColor colorToUse)
         {
             Color = colorToUse;
-            if(UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
+            if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
             {
                 BackgroundColor = UIColor.SystemBackgroundColor;
             }
