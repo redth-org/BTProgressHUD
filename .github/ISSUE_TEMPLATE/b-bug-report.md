@@ -13,14 +13,6 @@ about: Create a report to help us fix bugs and make improvements
 ### Reproduction steps
 
 ### Configuration
+<!-- Describe your configuration. Is BTProgressHUD pulled in directly or perhaps through a 3rd party package like ACR.UserDialogs? -->
 
-**Version:** 1.x
-
-**Platform:** 
-- [ ] :iphone: iOS
-- [ ] :robot: Android
-- [ ] :checkered_flag: WPF
-- [ ] :earth_americas: UWP
-- [ ] :apple: MacOS
-- [ ] :tv: tvOS
-- [ ] :monkey: Xamarin.Forms
+**Package Version:** <!-- for example 1.3.3 -->
