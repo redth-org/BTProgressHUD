@@ -898,26 +898,21 @@ namespace BigTed
         private nfloat GetKeyboardHeightFromNotification(NSNotification? notification, bool ignoreOrientation,
             UIInterfaceOrientation orientation, ref double animationDuration)
         {
-            nfloat keyboardHeight;
-            if (notification != null)
-            {
+            if (notification == null)
+                return VisibleKeyboardHeight;
+            
+            nfloat keyboardHeight = 0;
                 var keyboardFrame = UIKeyboard.FrameEndFromNotification(notification);
                 animationDuration = UIKeyboard.AnimationDurationFromNotification(notification);
 
-                if (notification.Name == UIKeyboard.WillShowNotification || notification.Name == UIKeyboard.DidShowNotification)
+            if (notification.Name == UIKeyboard.WillShowNotification ||
+                notification.Name == UIKeyboard.DidShowNotification)
                 {
                     if (ignoreOrientation || IsPortrait(orientation))
                         keyboardHeight = keyboardFrame.Size.Height;
                     else
                         keyboardHeight = keyboardFrame.Size.Width;
                 }
-                else
-                    keyboardHeight = 0;
-            }
-            else
-            {
-                keyboardHeight = VisibleKeyboardHeight;
-            }
 
             return keyboardHeight;
         }
