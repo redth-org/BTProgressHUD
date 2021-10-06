@@ -16,3 +16,5 @@ about: Create a report to help us fix bugs and make improvements
 <!-- Describe your configuration. Is BTProgressHUD pulled in directly or perhaps through a 3rd party package like ACR.UserDialogs? -->
 
 **Package Version:** <!-- for example 1.3.3 -->
+
+**iOS Version:** <!-- which iOS versions are affected? -->
