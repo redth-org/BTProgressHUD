@@ -255,6 +255,7 @@ namespace BigTed
                     Lines = 0
                 };
                 
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                 if (_stringLabel.Superview == null)
                 {
                     HudView.AddSubview(_stringLabel);
@@ -495,12 +496,14 @@ namespace BigTed
             if (TintColor != null)
                 Ring.ResetStyle(TintColor);
 
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if (OverlayView.Superview == null)
             {
                 var window = GetActiveWindow();
                 window?.AddSubview(OverlayView);
             }
 
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if (Superview == null)
                 OverlayView.AddSubview(this);
 

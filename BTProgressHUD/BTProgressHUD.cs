@@ -3,6 +3,7 @@ using UIKit;
 
 namespace BigTed
 {
+    // ReSharper disable once InconsistentNaming
     public static class BTProgressHUD
     {
         public static void Show(string? status = null, float progress = -1, MaskType maskType = MaskType.None)
