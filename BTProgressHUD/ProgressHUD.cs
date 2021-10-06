@@ -200,7 +200,6 @@ namespace BigTed
                 }
                 return _backgroundRingLayer;
             }
-            set { _backgroundRingLayer = value; }
         }
 
         bool IsClear => _maskType is MaskType.Clear or MaskType.None;
@@ -703,7 +702,7 @@ namespace BigTed
             {
                 BackgroundRingLayer.RemoveFromSuperLayer();
             }
-            BackgroundRingLayer = null;
+            _backgroundRingLayer = null;
 
             CATransaction.Commit();
         }
