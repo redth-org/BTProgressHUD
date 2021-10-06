@@ -58,6 +58,9 @@ namespace BigTed
         CAShapeLayer? _ringLayer;
         List<NSObject>? _eventListeners;
         bool _displayContinuousImage;
+        
+        static ProgressHUD? _sharedHud;
+        ToastPosition _toastPosition = ToastPosition.Center;
 
         static ProgressHUD()
         {
@@ -154,8 +157,6 @@ namespace BigTed
 
         public bool IsVisible => Alpha == 1;
 
-        static ProgressHUD? _sharedHud;
-
         public static ProgressHUD Shared
         {
             get
@@ -171,6 +172,201 @@ namespace BigTed
 
         public float RingRadius { get; set; } = 14f;
         public float RingThickness { get; set; } = 6f;
+        
+        CAShapeLayer RingLayer
+        {
+            get
+            {
+                if (_ringLayer == null)
+                {
+                    var center = new CGPoint(HudView.Frame.Width / 2, HudView.Frame.Height / 2);
+                    _ringLayer = ShapeHelper.CreateRingLayer(center, RingRadius, RingThickness, Ring.Color);
+                    HudView.Layer.AddSublayer(_ringLayer);
+                }
+                return _ringLayer;
+            }
+        }
+
+        CAShapeLayer? BackgroundRingLayer
+        {
+            get
+            {
+                if (_backgroundRingLayer == null)
+                {
+                    var center = new CGPoint(HudView.Frame.Width / 2, HudView.Frame.Height / 2);
+                    _backgroundRingLayer = ShapeHelper.CreateRingLayer(center, RingRadius, RingThickness, Ring.BackgroundColor);
+                    _backgroundRingLayer.StrokeEnd = 1;
+                    HudView.Layer.AddSublayer(_backgroundRingLayer);
+                }
+                return _backgroundRingLayer;
+            }
+            set { _backgroundRingLayer = value; }
+        }
+
+        bool IsClear => _maskType is MaskType.Clear or MaskType.None;
+
+        UIView OverlayView =>
+            _overlayView ??= new UIView(UIScreen.MainScreen.Bounds)
+            {
+                AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight,
+                BackgroundColor = UIColor.Clear,
+                UserInteractionEnabled = false,
+                AccessibilityViewIsModal = true
+            };
+
+        UIView HudView
+        {
+            get
+            {
+                if (_hudView != null)
+                    return _hudView;
+
+                var hudView = new UIToolbar
+                {
+                    Translucent = true,
+                    BarTintColor = HudBackgroundColour,
+                    BackgroundColor = HudBackgroundColour,
+                    AutoresizingMask =
+                        UIViewAutoresizing.FlexibleBottomMargin | UIViewAutoresizing.FlexibleTopMargin |
+                        UIViewAutoresizing.FlexibleRightMargin | UIViewAutoresizing.FlexibleLeftMargin
+                };
+                hudView.Layer.CornerRadius = 10;
+                hudView.Layer.MasksToBounds = true;
+
+                AddSubview(hudView);
+
+                hudView.LayoutIfNeeded();
+                _hudView = hudView;
+                return _hudView;
+            }
+        }
+
+        UILabel StringLabel
+        {
+            get
+            {
+                _stringLabel ??= new UILabel
+                {
+                    BackgroundColor = HudToastBackgroundColor,
+                    AdjustsFontSizeToFitWidth = true,
+                    TextAlignment = HudTextAlignment,
+                    BaselineAdjustment = UIBaselineAdjustment.AlignCenters,
+                    TextColor = HudForegroundColor,
+                    Font = HudFont,
+                    Lines = 0
+                };
+                
+                if (_stringLabel.Superview == null)
+                {
+                    HudView.AddSubview(_stringLabel);
+                }
+                return _stringLabel;
+            }
+        }
+
+        UIButton CancelHudButton
+        {
+            get
+            {
+                if (_cancelHud == null)
+                {
+                    _cancelHud = new UIButton
+                    {
+                        BackgroundColor = UIColor.Clear,
+                        UserInteractionEnabled = true,
+                        Font = HudFont
+                    };
+                    
+                    _cancelHud.SetTitleColor(HudForegroundColor, UIControlState.Normal);
+                    UserInteractionEnabled = true;
+                }
+                
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                if (_cancelHud.Superview == null)
+                {
+                    HudView.AddSubview(_cancelHud);
+                    // Position the Cancel button at the bottom
+                    /* var hudFrame = HudView.Frame;
+                    var cancelFrame = _cancelHud.Frame;
+                    var x = ((hudFrame.Width - cancelFrame.Width)/2) + 0;
+                    var y = (hudFrame.Height - cancelFrame.Height - 10);
+                    _cancelHud.Frame = new RectangleF(x, y, cancelFrame.Width, cancelFrame.Height);
+                    HudView.SizeToFit();
+                    */
+                }
+                return _cancelHud;
+            }
+        }
+
+        UIImageView ImageView
+        {
+            get
+            {
+                _imageView ??= new UIImageView(new CGRect(0, 0, 32, 32))
+                {
+                    ContentMode = UIViewContentMode.ScaleAspectFill
+                };
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                if (_imageView.Superview == null)
+                {
+                    HudView.AddSubview(_imageView);
+                }
+                return _imageView;
+            }
+        }
+        UIActivityIndicatorView SpinnerView
+        {
+            get
+            {
+                _spinnerView ??= new UIActivityIndicatorView(UIActivityIndicatorViewStyle.WhiteLarge)
+                {
+                    HidesWhenStopped = true,
+                    Bounds = new CGRect(0, 0, 37, 37),
+                    Color = HudForegroundColor
+                };
+
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                if (_spinnerView.Superview == null)
+                    HudView.AddSubview(_spinnerView);
+
+                return _spinnerView;
+            }
+        }
+
+        float VisibleKeyboardHeight
+        {
+            get
+            {
+                foreach (var testWindow in UIApplication.SharedApplication.Windows)
+                {
+                    if (testWindow.Class.Handle != Class.GetHandle("UIWindow"))
+                    {
+                        foreach (var possibleKeyboard in testWindow.Subviews)
+                        {
+                            if ((ClsUIPeripheralHostView != null && possibleKeyboard.IsKindOfClass(ClsUIPeripheralHostView)) ||
+                                (ClsUIKeyboard != null && possibleKeyboard.IsKindOfClass(ClsUIKeyboard)))
+                            {
+                                // Check that the keyboard is actually on screen
+                                if (possibleKeyboard.Frame.IntersectsWith(testWindow.Frame))
+                                    return (float)possibleKeyboard.Bounds.Size.Height;
+                            }
+                            else if (ClsUIInputSetContainerView != null && possibleKeyboard.IsKindOfClass(ClsUIInputSetContainerView))
+                            {
+                                foreach (var possibleKeyboardSubview in possibleKeyboard.Subviews)
+                                {
+                                    if (ClsUIInputSetHostView != null && possibleKeyboardSubview.IsKindOfClass(ClsUIInputSetHostView))
+                                        // Check that the keyboard is actually on screen
+                                        if (possibleKeyboardSubview.Frame.IntersectsWith(testWindow.Frame))
+                                            return (float)possibleKeyboardSubview.Bounds.Size.Height;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return 0;
+            }
+        }
 
         public void SetOSSpecificLookAndFeel()
         {
@@ -448,7 +644,7 @@ namespace BigTed
 
         void StartDismissTimer(TimeSpan duration)
         {
-            _fadeoutTimer = NSTimer.CreateTimer(duration, timer => DismissWorker());
+            _fadeoutTimer = NSTimer.CreateTimer(duration, _ => DismissWorker());
             NSRunLoop.Main.AddTimer(_fadeoutTimer, NSRunLoopMode.Common);
         }
 
@@ -457,7 +653,7 @@ namespace BigTed
             if (_progressTimer != null)
                 return;
 
-            _progressTimer = NSTimer.CreateRepeatingTimer(duration, timer => UpdateProgress());
+            _progressTimer = NSTimer.CreateRepeatingTimer(duration, _ => UpdateProgress());
             NSRunLoop.Current.AddTimer(_progressTimer, NSRunLoopMode.Common);
         }
 
@@ -510,201 +706,6 @@ namespace BigTed
             BackgroundRingLayer = null;
 
             CATransaction.Commit();
-        }
-
-        CAShapeLayer RingLayer
-        {
-            get
-            {
-                if (_ringLayer == null)
-                {
-                    var center = new CGPoint(HudView.Frame.Width / 2, HudView.Frame.Height / 2);
-                    _ringLayer = ShapeHelper.CreateRingLayer(center, RingRadius, RingThickness, Ring.Color);
-                    HudView.Layer.AddSublayer(_ringLayer);
-                }
-                return _ringLayer;
-            }
-        }
-
-        CAShapeLayer? BackgroundRingLayer
-        {
-            get
-            {
-                if (_backgroundRingLayer == null)
-                {
-                    var center = new CGPoint(HudView.Frame.Width / 2, HudView.Frame.Height / 2);
-                    _backgroundRingLayer = ShapeHelper.CreateRingLayer(center, RingRadius, RingThickness, Ring.BackgroundColor);
-                    _backgroundRingLayer.StrokeEnd = 1;
-                    HudView.Layer.AddSublayer(_backgroundRingLayer);
-                }
-                return _backgroundRingLayer;
-            }
-            set { _backgroundRingLayer = value; }
-        }
-
-        bool IsClear => _maskType is MaskType.Clear or MaskType.None;
-
-        UIView OverlayView =>
-            _overlayView ??= new UIView(UIScreen.MainScreen.Bounds)
-            {
-                AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight,
-                BackgroundColor = UIColor.Clear,
-                UserInteractionEnabled = false,
-                AccessibilityViewIsModal = true
-            };
-
-        UIView HudView
-        {
-            get
-            {
-                if (_hudView != null)
-                    return _hudView;
-
-                var hudView = new UIToolbar
-                {
-                    Translucent = true,
-                    BarTintColor = HudBackgroundColour,
-                    BackgroundColor = HudBackgroundColour,
-                    AutoresizingMask =
-                        UIViewAutoresizing.FlexibleBottomMargin | UIViewAutoresizing.FlexibleTopMargin |
-                        UIViewAutoresizing.FlexibleRightMargin | UIViewAutoresizing.FlexibleLeftMargin
-                };
-                hudView.Layer.CornerRadius = 10;
-                hudView.Layer.MasksToBounds = true;
-
-                AddSubview(hudView);
-
-                hudView.LayoutIfNeeded();
-                _hudView = hudView;
-                return _hudView;
-            }
-        }
-
-        UILabel StringLabel
-        {
-            get
-            {
-                _stringLabel ??= new UILabel
-                {
-                    BackgroundColor = HudToastBackgroundColor,
-                    AdjustsFontSizeToFitWidth = true,
-                    TextAlignment = HudTextAlignment,
-                    BaselineAdjustment = UIBaselineAdjustment.AlignCenters,
-                    TextColor = HudForegroundColor,
-                    Font = HudFont,
-                    Lines = 0
-                };
-                
-                if (_stringLabel.Superview == null)
-                {
-                    HudView.AddSubview(_stringLabel);
-                }
-                return _stringLabel;
-            }
-        }
-
-        UIButton CancelHudButton
-        {
-            get
-            {
-                if (_cancelHud == null)
-                {
-                    _cancelHud = new UIButton
-                    {
-                        BackgroundColor = UIColor.Clear,
-                        UserInteractionEnabled = true,
-                        Font = HudFont
-                    };
-                    
-                    _cancelHud.SetTitleColor(HudForegroundColor, UIControlState.Normal);
-                    UserInteractionEnabled = true;
-                }
-                
-                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                if (_cancelHud.Superview == null)
-                {
-                    HudView.AddSubview(_cancelHud);
-                    // Position the Cancel button at the bottom
-                    /* var hudFrame = HudView.Frame;
-                    var cancelFrame = _cancelHud.Frame;
-                    var x = ((hudFrame.Width - cancelFrame.Width)/2) + 0;
-                    var y = (hudFrame.Height - cancelFrame.Height - 10);
-                    _cancelHud.Frame = new RectangleF(x, y, cancelFrame.Width, cancelFrame.Height);
-                    HudView.SizeToFit();
-                    */
-                }
-                return _cancelHud;
-            }
-        }
-
-        UIImageView ImageView
-        {
-            get
-            {
-                _imageView ??= new UIImageView(new CGRect(0, 0, 32, 32))
-                {
-                    ContentMode = UIViewContentMode.ScaleAspectFill
-                };
-                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                if (_imageView.Superview == null)
-                {
-                    HudView.AddSubview(_imageView);
-                }
-                return _imageView;
-            }
-        }
-        UIActivityIndicatorView SpinnerView
-        {
-            get
-            {
-                _spinnerView ??= new UIActivityIndicatorView(UIActivityIndicatorViewStyle.WhiteLarge)
-                {
-                    HidesWhenStopped = true,
-                    Bounds = new CGRect(0, 0, 37, 37),
-                    Color = HudForegroundColor
-                };
-
-                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                if (_spinnerView.Superview == null)
-                    HudView.AddSubview(_spinnerView);
-
-                return _spinnerView;
-            }
-        }
-
-        float VisibleKeyboardHeight
-        {
-            get
-            {
-                foreach (var testWindow in UIApplication.SharedApplication.Windows)
-                {
-                    if (testWindow.Class.Handle != Class.GetHandle("UIWindow"))
-                    {
-                        foreach (var possibleKeyboard in testWindow.Subviews)
-                        {
-                            if ((ClsUIPeripheralHostView != null && possibleKeyboard.IsKindOfClass(ClsUIPeripheralHostView)) ||
-                                (ClsUIKeyboard != null && possibleKeyboard.IsKindOfClass(ClsUIKeyboard)))
-                            {
-                                // Check that the keyboard is actually on screen
-                                if (possibleKeyboard.Frame.IntersectsWith(testWindow.Frame))
-                                    return (float)possibleKeyboard.Bounds.Size.Height;
-                            }
-                            else if (ClsUIInputSetContainerView != null && possibleKeyboard.IsKindOfClass(ClsUIInputSetContainerView))
-                            {
-                                foreach (var possibleKeyboardSubview in possibleKeyboard.Subviews)
-                                {
-                                    if (ClsUIInputSetHostView != null && possibleKeyboardSubview.IsKindOfClass(ClsUIInputSetHostView))
-                                        // Check that the keyboard is actually on screen
-                                        if (possibleKeyboardSubview.Frame.IntersectsWith(testWindow.Frame))
-                                            return (float)possibleKeyboardSubview.Bounds.Size.Height;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                return 0;
-            }
         }
 
         void DismissWorker()
@@ -803,8 +804,6 @@ namespace BigTed
             HudView.Center = newCenter;
         }
 
-        ToastPosition _toastPosition = ToastPosition.Center;
-
         void PositionHUD(NSNotification? notification)
         {
             double animationDuration = 0;
@@ -902,17 +901,17 @@ namespace BigTed
                 return VisibleKeyboardHeight;
             
             nfloat keyboardHeight = 0;
-                var keyboardFrame = UIKeyboard.FrameEndFromNotification(notification);
-                animationDuration = UIKeyboard.AnimationDurationFromNotification(notification);
+            var keyboardFrame = UIKeyboard.FrameEndFromNotification(notification);
+            animationDuration = UIKeyboard.AnimationDurationFromNotification(notification);
 
             if (notification.Name == UIKeyboard.WillShowNotification ||
                 notification.Name == UIKeyboard.DidShowNotification)
-                {
-                    if (ignoreOrientation || IsPortrait(orientation))
-                        keyboardHeight = keyboardFrame.Size.Height;
-                    else
-                        keyboardHeight = keyboardFrame.Size.Width;
-                }
+            {
+                if (ignoreOrientation || IsPortrait(orientation))
+                    keyboardHeight = keyboardFrame.Size.Height;
+                else
+                    keyboardHeight = keyboardFrame.Size.Width;
+            }
 
             return keyboardHeight;
         }
