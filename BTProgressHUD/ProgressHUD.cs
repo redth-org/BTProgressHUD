@@ -368,7 +368,7 @@ namespace BigTed
             }
         }
 
-        public void SetOSSpecificLookAndFeel()
+        private void SetOSSpecificLookAndFeel()
         {
             HudBackgroundColour = UIDevice.CurrentDevice.CheckSystemVersion(13, 0) ? UIColor.SystemBackgroundColor.ColorWithAlpha(0.8f) : UIColor.White.ColorWithAlpha(0.8f);
             HudForegroundColor = UIDevice.CurrentDevice.CheckSystemVersion(13, 0) ? UIColor.LabelColor.ColorWithAlpha(0.8f) : UIColor.FromWhiteAlpha(0.0f, 0.8f);
