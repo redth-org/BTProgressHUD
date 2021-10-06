@@ -16,7 +16,7 @@ jobs:
         dotnet-version: 3.1.200
 
     - name: Run the Cake script
-      uses: ecampidoglio/cake-action@master
+      uses: cake-build/cake-action@v1
 
     - uses: actions/upload-artifact@master
       with:
