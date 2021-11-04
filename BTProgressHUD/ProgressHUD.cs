@@ -869,7 +869,7 @@ namespace BTProgressHUD
                 keyboardHeight = VisibleKeyboardHeight;
             }
 
-            CGRect orientationFrame = UIApplication.SharedApplication.KeyWindow.Bounds;
+            CGRect orientationFrame = GetActiveWindow().Bounds;
 
             CGRect statusBarFrame = UIApplication.SharedApplication.StatusBarFrame;
 
