@@ -1,10 +1,10 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
   <PropertyGroup>
-    <TargetFrameworks>xamarin.ios10</TargetFrameworks>
+    <TargetFramework>xamarin.ios10</TargetFramework>
     <AssemblyName>BTProgressHUD</AssemblyName>
-    <RootNamespace>BTProgressHUD</RootNamespace>
+    <RootNamespace>BigTed</RootNamespace>
     <PackageId>BTProgressHUD</PackageId>
-    <Description>SVProgressHUD (and BTProgressHUD) is a clean and easy-to-use HUD meant to display the progress of an ongoing task.</Description>
+    <Description>BTProgressHUD is a clean and easy-to-use HUD meant to display the progress of an ongoing task.</Description>
   </PropertyGroup>
 
   <ItemGroup>

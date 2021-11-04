@@ -1,7 +1,7 @@
 ﻿using System;
 using UIKit;
 
-namespace BTProgressHUD
+namespace BigTed
 {
     public static class BTProgressHUD
     {

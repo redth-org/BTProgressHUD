@@ -3,7 +3,7 @@ using CoreAnimation;
 using CoreGraphics;
 using UIKit;
 
-namespace BTProgressHUD
+namespace BigTed
 {
     public static class ShapeHelper
     {

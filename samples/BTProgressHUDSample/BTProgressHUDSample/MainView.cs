@@ -7,7 +7,7 @@ using System;
 using UIKit;
 using Foundation;
 using System.Threading.Tasks;
-using BTProgressHUD;
+using BigTed;
 
 namespace BTProgressHUDDemo
 {
@@ -25,6 +25,7 @@ namespace BTProgressHUDDemo
         {
             base.LoadView();
             View.BackgroundColor = UIColor.White;
+            Title = "BTProgressHUD Samples";
 
             var scrollView = new UIScrollView
             {
@@ -58,11 +59,11 @@ namespace BTProgressHUDDemo
                 // once BTProgressHUD.ANTYTHING has been called once on the UI thread, 
                 // it'll be setup. So this is an initial call OFF the main thread.
                 // Should except in debug.
-                Task.Factory.StartNew(() =>
+                Task.Run(() =>
                 {
                     try
                     {
-                        BTProgressHUD.BTProgressHUD.Show(); 
+                        BTProgressHUD.Show(); 
                         KillAfter();
                     }
                     catch (Exception ex)
@@ -74,90 +75,90 @@ namespace BTProgressHUDDemo
 
             MakeButton("Show", () =>
             {
-                BTProgressHUD.BTProgressHUD.Show(); 
+                BTProgressHUD.Show(); 
                 KillAfter();
             }, stack);
 
             MakeButton("Cancel problem 3", () =>
-                BTProgressHUD.BTProgressHUD.Show("Cancel", () => KillAfter(), "Cancel and text"),
+                BTProgressHUD.Show("Cancel", () => KillAfter(), "Cancel and text"),
                 stack
             );
 
             MakeButton("Cancel problem 2", () =>
-                BTProgressHUD.BTProgressHUD.Show("Cancel", () => KillAfter()),
+                BTProgressHUD.Show("Cancel", () => KillAfter()),
                 stack
             );
 
             MakeButton("Cancel problem", () =>
-                BTProgressHUD.BTProgressHUD.Show("Cancel", () => KillAfter(), "This is a multilinetext\nSome more text\n more text\n and again more text"),
+                BTProgressHUD.Show("Cancel", () => KillAfter(), "This is a multilinetext\nSome more text\n more text\n and again more text"),
                 stack
             );
 
             MakeButton("Show Message", () =>
             {
-                BTProgressHUD.BTProgressHUD.Show("Processing your image", -1, MaskType.Black);
+                BTProgressHUD.Show("Processing your image", -1, MaskType.Black);
                 KillAfter();
             }, stack);
             
             MakeButton("Show Success", () =>
             {
-                BTProgressHUD.BTProgressHUD.ShowSuccessWithStatus("Great success!");
+                BTProgressHUD.ShowSuccessWithStatus("Great success!");
             }, stack);
 
             MakeButton("Show Fail", () =>
             {
-                BTProgressHUD.BTProgressHUD.ShowErrorWithStatus("Oh, thats bad");
+                BTProgressHUD.ShowErrorWithStatus("Oh, thats bad");
             }, stack);
             
             MakeButton("Show Info", () =>
             {
-                BTProgressHUD.BTProgressHUD.ShowInfoWithStatus("Notice me!");
+                BTProgressHUD.ShowInfoWithStatus("Notice me!");
             }, stack);
 
             MakeButton("Show Success (Outlined)", () =>
             {
-                BTProgressHUD.BTProgressHUD.ShowSuccessWithStatus("Great success!", default, 1000, ImageStyle.Outline);
+                BTProgressHUD.ShowSuccessWithStatus("Great success!", default, 1000, ImageStyle.Outline);
             }, stack);
 
             MakeButton("Show Fail (Outlined)", () =>
             {
-                BTProgressHUD.BTProgressHUD.ShowErrorWithStatus("Oh, thats bad", default, 1000, ImageStyle.Outline);
+                BTProgressHUD.ShowErrorWithStatus("Oh, thats bad", default, 1000, ImageStyle.Outline);
             }, stack);
             
             MakeButton("Show Info (Outlined)", () =>
             {
-                BTProgressHUD.BTProgressHUD.ShowInfoWithStatus("Notice me!", default, 1000,  ImageStyle.Outline);
+                BTProgressHUD.ShowInfoWithStatus("Notice me!", default, 1000,  ImageStyle.Outline);
             }, stack);
             
             MakeButton("Show Success (Full Outlined)", () =>
             {
-                BTProgressHUD.BTProgressHUD.ShowSuccessWithStatus("Great success!", default, 1000, ImageStyle.OutlineFull);
+                BTProgressHUD.ShowSuccessWithStatus("Great success!", default, 1000, ImageStyle.OutlineFull);
             }, stack);
 
             MakeButton("Show Fail (Full Outlined)", () =>
             {
-                BTProgressHUD.BTProgressHUD.ShowErrorWithStatus("Oh, thats bad", default, 1000, ImageStyle.OutlineFull);
+                BTProgressHUD.ShowErrorWithStatus("Oh, thats bad", default, 1000, ImageStyle.OutlineFull);
             }, stack);
             
             MakeButton("Show Info (Full Outlined)", () =>
             {
-                BTProgressHUD.BTProgressHUD.ShowInfoWithStatus("Notice me!", default, 1000,  ImageStyle.OutlineFull);
+                BTProgressHUD.ShowInfoWithStatus("Notice me!", default, 1000,  ImageStyle.OutlineFull);
             }, stack);
 
             MakeButton("Toast", () =>
             {
-                BTProgressHUD.BTProgressHUD.ShowToast("Hello from the toast", false, 1000);
+                BTProgressHUD.ShowToast("Hello from the toast", false, 1000);
             }, stack);
 
             MakeButton("Dismiss", () =>
             {
-                BTProgressHUD.BTProgressHUD.Dismiss(); 
+                BTProgressHUD.Dismiss(); 
             }, stack);
 
             MakeButton("Progress", () =>
             {
                 progress = 0;
-                BTProgressHUD.BTProgressHUD.Show("Hello!", progress);
+                BTProgressHUD.Show("Hello!", progress);
                 if (timer != null)
                 {
                     timer.Invalidate();
@@ -169,11 +170,11 @@ namespace BTProgressHUDDemo
                     {
                         timer.Invalidate();
                         timer = null;
-                        BTProgressHUD.BTProgressHUD.Dismiss();
+                        BTProgressHUD.Dismiss();
                     }
                     else
                     {
-                        BTProgressHUD.BTProgressHUD.Show("Hello!", progress);
+                        BTProgressHUD.Show("Hello!", progress);
                     }
                 });
                 NSRunLoop.Current.AddTimer(timer, NSRunLoopMode.Common);
@@ -181,7 +182,7 @@ namespace BTProgressHUDDemo
 
             MakeButton("Dismiss", () =>
             {
-                BTProgressHUD.BTProgressHUD.Dismiss(); 
+                BTProgressHUD.Dismiss(); 
             }, stack);
 
             // This demo only works on iOS 13 and above because of UIImage.GetSystemImage
@@ -189,7 +190,7 @@ namespace BTProgressHUDDemo
             if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
             {
                 MakeButton("Success With Status", () =>
-                    BTProgressHUD.BTProgressHUD.ShowImage(
+                    BTProgressHUD.ShowImage(
                         UIImage.GetSystemImage("photo"),
                         "Success with image", 
                         MaskType.Black, 
@@ -216,7 +217,7 @@ namespace BTProgressHUDDemo
             }
             timer = NSTimer.CreateRepeatingTimer(timeout, delegate
             {
-                BTProgressHUD.BTProgressHUD.Dismiss();
+                BTProgressHUD.Dismiss();
             });
             NSRunLoop.Current.AddTimer(timer, NSRunLoopMode.Common);
         }
