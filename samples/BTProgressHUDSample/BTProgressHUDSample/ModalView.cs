@@ -1,4 +1,5 @@
-﻿using UIKit;
+﻿using BigTed;
+using UIKit;
 
 namespace BTProgressHUDDemo
 {
@@ -24,7 +25,7 @@ namespace BTProgressHUDDemo
 
             button.TouchUpInside += (s, e) =>
             {
-                BTProgressHUD.BTProgressHUD.Show("Cancel", () => { }, "Hello from modal", maskType: BTProgressHUD.MaskType.Black);
+                BTProgressHUD.Show("Cancel", () => { }, "Hello from modal", maskType: MaskType.Black);
             };
         }
     }

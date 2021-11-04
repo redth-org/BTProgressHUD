@@ -23,7 +23,7 @@ using Foundation;
 using ObjCRuntime;
 using UIKit;
 
-namespace BTProgressHUD
+namespace BigTed
 {
     public class ProgressHUD : UIView
     {

@@ -2,7 +2,7 @@
 using Foundation;
 using UIKit;
 
-namespace BTProgressHUD
+namespace BigTed
 {
     public static class ImageHelper
     {

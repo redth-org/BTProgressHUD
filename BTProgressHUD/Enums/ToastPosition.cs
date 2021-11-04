@@ -1,4 +1,4 @@
-﻿namespace BTProgressHUD
+﻿namespace BigTed
 {
     public enum ToastPosition
     {
