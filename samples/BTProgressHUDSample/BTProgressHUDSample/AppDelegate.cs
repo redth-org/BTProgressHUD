@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Threading.Tasks;
 using Foundation;
 using UIKit;
 
@@ -39,6 +39,13 @@ namespace BTProgressHUDDemo
 
 			// make the window visible
 			window.MakeKeyAndVisible ();
+            
+            BTProgressHUD.BTProgressHUD.Show("Cancel", () => { }, "Startup");
+            Task.Run(async () =>
+            {
+                await Task.Delay(2000);
+                BTProgressHUD.BTProgressHUD.Dismiss();
+            });
 			
 			return true;
 		}
