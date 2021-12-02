@@ -1,6 +1,6 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+﻿<Project Sdk="Xamarin.Legacy.Sdk">
   <PropertyGroup>
-    <TargetFramework>xamarin.ios10</TargetFramework>
+    <TargetFrameworks>xamarin.ios10;net6.0-ios</TargetFrameworks>
     <AssemblyName>BTProgressHUD</AssemblyName>
     <RootNamespace>BigTed</RootNamespace>
     <PackageId>BTProgressHUD</PackageId>
