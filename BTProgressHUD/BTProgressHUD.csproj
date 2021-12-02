@@ -5,6 +5,7 @@
     <RootNamespace>BigTed</RootNamespace>
     <PackageId>BTProgressHUD</PackageId>
     <Description>BTProgressHUD is a clean and easy-to-use HUD meant to display the progress of an ongoing task.</Description>
+		<SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net6.0-ios'">14.2</SupportedOSPlatformVersion>
   </PropertyGroup>
 
   <ItemGroup>
