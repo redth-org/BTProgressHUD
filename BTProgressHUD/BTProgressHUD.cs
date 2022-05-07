@@ -5,17 +5,17 @@ namespace BigTed
 {
     public static class BTProgressHUD
     {
-        public static void Show(string status = null, float progress = -1, MaskType maskType = MaskType.None)
+        public static void Show(string? status = null, float progress = -1, MaskType maskType = MaskType.None)
         {
             ProgressHUD.Shared.Show(status, progress, maskType);
         }
 
-        public static void Show(string cancelCaption, Action cancelCallback, string status = null, float progress = -1, MaskType maskType = MaskType.None)
+        public static void Show(string cancelCaption, Action cancelCallback, string? status = null, float progress = -1, MaskType maskType = MaskType.None)
         {
             ProgressHUD.Shared.Show(cancelCaption, cancelCallback, status, progress, maskType);
         }
 
-        public static void ShowContinuousProgress(string status = null, MaskType maskType = MaskType.None)
+        public static void ShowContinuousProgress(string? status = null, MaskType maskType = MaskType.None)
         {
             ProgressHUD.Shared.ShowContinuousProgress(status, maskType);
         }

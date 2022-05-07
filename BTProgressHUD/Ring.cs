@@ -1,5 +1,4 @@
-﻿using System;
-using UIKit;
+﻿using UIKit;
 
 namespace BigTed
 {
@@ -8,27 +7,28 @@ namespace BigTed
         /// <summary>
         /// Ring color
         /// </summary>
-        public UIColor Color = UIColor.White;
+        public UIColor Color { get; set; } = UIColor.White;
         /// <summary>
         /// Background color
         /// </summary>
-        public UIColor BackgroundColor = UIColor.DarkGray;
+        public UIColor BackgroundColor { get; set; } = UIColor.DarkGray;
         /// <summary>
         /// Progress update interval in milliseconds
         /// </summary>
-        public Double ProgressUpdateInterval = 300;
+        public double ProgressUpdateInterval { get; set; } = 300;
 
         public void ResetStyle(UIColor colorToUse)
         {
             Color = colorToUse;
-            if(UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
+            if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
             {
-                BackgroundColor = UIColor.SystemBackgroundColor;
+                BackgroundColor = UIColor.SystemBackground;
             }
             else
             {
                 BackgroundColor = UIColor.White;
             }
+
             ProgressUpdateInterval = 300;
         }
     }
