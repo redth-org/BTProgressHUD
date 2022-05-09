@@ -1138,7 +1138,17 @@ namespace BigTed
             }
             
             var windows = UIApplication.SharedApplication.Windows;
-            return windows.LastOrDefault(w => w.WindowLevel == UIWindowLevel.Normal && !w.Hidden && w.IsKeyWindow);
+            var window = windows.LastOrDefault(w => w.WindowLevel == UIWindowLevel.Normal && !w.Hidden && w.IsKeyWindow);
+
+            // As a last resort, use the first window.
+            // In iOS 15, showing the HUD while the app is moving to the foreground sometimes
+            // leads to this method getting called in a condition where
+            // UIWindowScene.ActivationState == UISceneActivationStateForegroundInactive
+            // and there is no window with IsKeyWindow == true
+            if (window == null)
+                window = windows.FirstOrDefault(w => w.WindowLevel == UIWindowLevel.Normal);
+
+            return window ?? throw new Exception("Could not find active window");
         }
     }
 }
