@@ -472,8 +472,13 @@ namespace BigTed
                     context.FillRect(Bounds);
                     break;
                 case MaskType.Gradient:
+#if NET6
+                    var colors = new System.Runtime.InteropServices.NFloat[] { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.75f };
+                    var locations = new System.Runtime.InteropServices.NFloat[] { 0.0f, 1.0f };
+#else
                     var colors = new nfloat[] { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.75f };
                     var locations = new nfloat[] { 0.0f, 1.0f };
+#endif
                     using (var colorSpace = CGColorSpace.CreateDeviceRGB())
                     {
                         using (var gradient = new CGGradient(colorSpace, colors, locations))
@@ -820,9 +825,9 @@ namespace BigTed
             CGRect orientationFrame = GetActiveWindow().Bounds;
             var activeHeight = GetActiveHeight(ignoreOrientation, orientation, orientationFrame, keyboardHeight);
             
-            nfloat posY = (float)Math.Floor(activeHeight * 0.45); 
-            nfloat posX = orientationFrame.Size.Width / 2f;
-            nfloat textHeight = StringLabel.Frame.Height / 2f + 40;
+            float posY = MathF.Floor(activeHeight * 0.45f); 
+            float posX = (float)orientationFrame.Size.Width / 2f;
+            float textHeight = (float)StringLabel.Frame.Height / 2f + 40;
 
             posY = _toastPosition switch
             {
@@ -876,8 +881,8 @@ namespace BigTed
             }
         }
 
-        private static nfloat GetActiveHeight(bool ignoreOrientation, UIInterfaceOrientation orientation,
-            CGRect orientationFrame, nfloat keyboardHeight)
+        private static float GetActiveHeight(bool ignoreOrientation, UIInterfaceOrientation orientation,
+            CGRect orientationFrame, float keyboardHeight)
         {
             CGRect statusBarFrame = UIApplication.SharedApplication.StatusBarFrame;
 
@@ -893,16 +898,16 @@ namespace BigTed
                 activeHeight += statusBarFrame.Size.Height * 2;
 
             activeHeight -= keyboardHeight;
-            return activeHeight;
+            return (float)activeHeight;
         }
 
-        private nfloat GetKeyboardHeightFromNotification(NSNotification? notification, bool ignoreOrientation,
+        private float GetKeyboardHeightFromNotification(NSNotification? notification, bool ignoreOrientation,
             UIInterfaceOrientation orientation, ref double animationDuration)
         {
             if (notification == null)
                 return VisibleKeyboardHeight;
             
-            nfloat keyboardHeight = 0;
+            float keyboardHeight = 0;
             var keyboardFrame = UIKeyboard.FrameEndFromNotification(notification);
             animationDuration = UIKeyboard.AnimationDurationFromNotification(notification);
 
@@ -910,9 +915,9 @@ namespace BigTed
                 notification.Name == UIKeyboard.DidShowNotification)
             {
                 if (ignoreOrientation || IsPortrait(orientation))
-                    keyboardHeight = keyboardFrame.Size.Height;
+                    keyboardHeight = (float)keyboardFrame.Size.Height;
                 else
-                    keyboardHeight = keyboardFrame.Size.Width;
+                    keyboardHeight = (float)keyboardFrame.Size.Width;
             }
 
             return keyboardHeight;
@@ -941,10 +946,10 @@ namespace BigTed
 
         void UpdatePosition(bool textOnly = false)
         {
-            nfloat hudWidth = 100f;
-            nfloat stringHeight = 0f;
-            nfloat stringHeightBuffer = 20f;
-            nfloat stringAndImageHeightBuffer = 80f;
+            float hudWidth = 100f;
+            float stringHeight = 0f;
+            float stringHeightBuffer = 20f;
+            float stringAndImageHeightBuffer = 80f;
 
             var labelRect = CGRect.Empty;
 
@@ -957,7 +962,7 @@ namespace BigTed
                 imageUsed = false;
             }
 
-            nfloat hudHeight = GetDefaultHudHeight(textOnly, imageUsed, stringAndImageHeightBuffer, stringHeight, stringHeightBuffer);
+            float hudHeight = GetDefaultHudHeight(textOnly, imageUsed, stringAndImageHeightBuffer, stringHeight, stringHeightBuffer);
             hudHeight = AdjustSizesForText(text, hudHeight, imageUsed, ref hudWidth, ref labelRect);
 
             // Adjust for Cancel Button
@@ -972,17 +977,17 @@ namespace BigTed
                     new UIStringAttributes { Font = StringLabel.Font },
                     null);
 
-                var stringWidth = stringSize.Width;
-                stringHeight = stringSize.Height;
+                var stringWidth = (float)stringSize.Width;
+                stringHeight = (float)stringSize.Height;
 
                 if (stringWidth > hudWidth)
-                    hudWidth = (float)Math.Ceiling(stringWidth / 2) * 2;
+                    hudWidth = MathF.Ceiling(stringWidth / 2f) * 2;
 
                 // Adjust for label
-                nfloat cancelRectY;
+                float cancelRectY;
                 if (labelRect.Height > 0)
                 {
-                    cancelRectY = labelRect.Y + labelRect.Height + gap;
+                    cancelRectY = (float)(labelRect.Y + labelRect.Height + gap);
                 }
                 else
                 {
@@ -1010,7 +1015,7 @@ namespace BigTed
                     labelRect = new CGRect(0, labelRect.Y, hudWidth, labelRect.Height);
                 }
                 CancelHudButton.Frame = cancelRect;
-                hudHeight += cancelRect.Height + (string.IsNullOrEmpty(text) ? 10 : gap);
+                hudHeight += (float)cancelRect.Height + (string.IsNullOrEmpty(text) ? 10 : gap);
             }
 
             HudView.Bounds = new CGRect(0, 0, hudWidth, hudHeight);
@@ -1044,7 +1049,7 @@ namespace BigTed
             }
         }
 
-        private nfloat AdjustSizesForText(string? text, nfloat hudHeight, bool imageUsed, ref nfloat hudWidth,
+        private float AdjustSizesForText(string? text, float hudHeight, bool imageUsed, ref float hudWidth,
             ref CGRect labelRect)
         {
             if (string.IsNullOrEmpty(text))
@@ -1056,13 +1061,13 @@ namespace BigTed
                 NSStringDrawingOptions.UsesLineFragmentOrigin,
                 new UIStringAttributes { Font = StringLabel.Font },
                 null);
-            var stringWidth = stringSize.Width;
-            var stringHeight = stringSize.Height;
+            var stringWidth = (float)stringSize.Width;
+            var stringHeight = (float)stringSize.Height;
 
             hudHeight += stringHeight;
 
             if (stringWidth > hudWidth)
-                hudWidth = (float)Math.Ceiling(stringWidth / 2.0) * 2;
+                hudWidth = MathF.Ceiling(stringWidth / 2.0f) * 2;
 
             float labelRectY = imageUsed ? 66 : 9;
 
@@ -1080,10 +1085,10 @@ namespace BigTed
             return hudHeight;
         }
 
-        private static nfloat GetDefaultHudHeight(bool textOnly, bool imageUsed, nfloat stringAndImageHeightBuffer,
-            nfloat stringHeight, nfloat stringHeightBuffer)
+        private static float GetDefaultHudHeight(bool textOnly, bool imageUsed, float stringAndImageHeightBuffer,
+            float stringHeight, float stringHeightBuffer)
         {
-            nfloat hudHeight;
+            float hudHeight;
             if (imageUsed)
             {
                 hudHeight = stringAndImageHeightBuffer + stringHeight;
