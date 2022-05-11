@@ -822,7 +822,12 @@ namespace BigTed
 
             var keyboardHeight = GetKeyboardHeightFromNotification(notification, ignoreOrientation, orientation, ref animationDuration);
 
-            CGRect orientationFrame = GetActiveWindow().Bounds;
+            CGRect? activeWindowBounds = GetActiveWindow()?.Bounds;
+            if (activeWindowBounds == null)
+                return;
+
+            var orientationFrame = activeWindowBounds.Value;
+
             var activeHeight = GetActiveHeight(ignoreOrientation, orientation, orientationFrame, keyboardHeight);
             
             float posY = MathF.Floor(activeHeight * 0.45f); 
