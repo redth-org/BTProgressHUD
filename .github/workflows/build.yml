@@ -22,9 +22,12 @@ jobs:
 
     - name: Install iOS workload
       run: dotnet workload install ios
+      
+    - name: Restore dotnet tools
+      run: dotnet tool restore
 
     - name: Run the Cake script
-      uses: cake-build/cake-action@v1
+      run: dotnet cake
 
     - uses: actions/upload-artifact@master
       with:
