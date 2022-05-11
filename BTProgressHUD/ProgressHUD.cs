@@ -452,7 +452,7 @@ namespace BigTed
             ShowImage(image, status, maskType, timeoutMs);
         }
 
-        public void ShowImage(UIImage image, string status, MaskType maskType = MaskType.None, double timeoutMs = 1000)
+        public void ShowImage(UIImage image, string? status, MaskType maskType = MaskType.None, double timeoutMs = 1000)
         {
             obj.InvokeOnMainThread(() => ShowImageWorker(image, status, maskType, TimeSpan.FromMilliseconds(timeoutMs)));
         }

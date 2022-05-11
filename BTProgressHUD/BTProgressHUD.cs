@@ -56,7 +56,7 @@ namespace BigTed
             ProgressHUD.Shared.ShowInfoWithStatus(status, maskType, timeoutMs, imageStyle);
         }
 
-        public static void ShowImage(UIImage image, string status, MaskType maskType = MaskType.None, double timeoutMs = 1000)
+        public static void ShowImage(UIImage image, string? status, MaskType maskType = MaskType.None, double timeoutMs = 1000)
         {
             ProgressHUD.Shared.ShowImage(image, status, maskType, timeoutMs);
         }
