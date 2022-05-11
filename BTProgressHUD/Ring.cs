@@ -22,7 +22,7 @@ namespace BigTed
             Color = colorToUse;
             if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
             {
-                BackgroundColor = UIColor.SystemBackgroundColor;
+                BackgroundColor = UIColor.SystemBackground;
             }
             else
             {
