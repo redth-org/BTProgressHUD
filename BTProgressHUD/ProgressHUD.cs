@@ -273,9 +273,9 @@ namespace BigTed
                     _cancelHud = new UIButton
                     {
                         BackgroundColor = UIColor.Clear,
-                        UserInteractionEnabled = true,
-                        Font = HudFont
+                        UserInteractionEnabled = true
                     };
+                    _cancelHud.TitleLabel.Font = HudFont;
                     
                     _cancelHud.SetTitleColor(HudForegroundColor, UIControlState.Normal);
                     UserInteractionEnabled = true;
