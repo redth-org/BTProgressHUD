@@ -3,19 +3,20 @@ using UIKit;
 
 namespace BigTed
 {
+    // ReSharper disable once InconsistentNaming
     public static class BTProgressHUD
     {
-        public static void Show(string status = null, float progress = -1, MaskType maskType = MaskType.None)
+        public static void Show(string? status = null, float progress = -1, MaskType maskType = MaskType.None)
         {
             ProgressHUD.Shared.Show(status, progress, maskType);
         }
 
-        public static void Show(string cancelCaption, Action cancelCallback, string status = null, float progress = -1, MaskType maskType = MaskType.None)
+        public static void Show(string cancelCaption, Action cancelCallback, string? status = null, float progress = -1, MaskType maskType = MaskType.None)
         {
             ProgressHUD.Shared.Show(cancelCaption, cancelCallback, status, progress, maskType);
         }
 
-        public static void ShowContinuousProgress(string status = null, MaskType maskType = MaskType.None)
+        public static void ShowContinuousProgress(string? status = null, MaskType maskType = MaskType.None)
         {
             ProgressHUD.Shared.ShowContinuousProgress(status, maskType);
         }
@@ -55,7 +56,7 @@ namespace BigTed
             ProgressHUD.Shared.ShowInfoWithStatus(status, maskType, timeoutMs, imageStyle);
         }
 
-        public static void ShowImage(UIImage image, string status, MaskType maskType = MaskType.None, double timeoutMs = 1000)
+        public static void ShowImage(UIImage image, string? status, MaskType maskType = MaskType.None, double timeoutMs = 1000)
         {
             ProgressHUD.Shared.ShowImage(image, status, maskType, timeoutMs);
         }

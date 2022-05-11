@@ -1,5 +1,4 @@
-#module nuget:https://api.nuget.org/v3/index.json?package=Cake.DotNetTool.Module&version=0.4.0
-#tool dotnet:https://api.nuget.org/v3/index.json?package=GitVersion.Tool&version=5.7.0
+#tool dotnet:https://api.nuget.org/v3/index.json?package=GitVersion.Tool&version=5.10.1
 #tool nuget:https://api.nuget.org/v3/index.json?package=vswhere&version=2.8.4
 #addin nuget:https://api.nuget.org/v3/index.json?package=Cake.Figlet&version=2.0.1
 

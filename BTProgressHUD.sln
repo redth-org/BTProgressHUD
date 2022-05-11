@@ -15,6 +15,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{CCCB766D-95A7-4FCE-81BE-F9A8F1B3589B}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\build.yml = .github\workflows\build.yml
+		.github\workflows\release-nuget.yml = .github\workflows\release-nuget.yml
+		build.cake = build.cake
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Ad-Hoc|iPhone = Ad-Hoc|iPhone
@@ -62,5 +69,8 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FF80CC4C-1CE6-457A-BA02-04A7F403B8A3}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CCCB766D-95A7-4FCE-81BE-F9A8F1B3589B} = {519BA8F9-8A37-4096-BCCB-A66EE0DAA697}
 	EndGlobalSection
 EndGlobal

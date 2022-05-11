@@ -7,21 +7,21 @@ namespace BigTed
 {
     public static class ShapeHelper
     {
-        public static CGPoint PointOnCircle(float radius, float angleInDegrees)
+        private static CGPoint PointOnCircle(float radius, float angleInDegrees)
         {
             float x = radius * MathF.Cos(angleInDegrees * MathF.PI / 180f) + radius;
             float y = radius * MathF.Sin(angleInDegrees * MathF.PI / 180f) + radius;
             return new CGPoint(x, y);
         }
 
-        public static UIBezierPath CreateCirclePath(float radius, int sampleCount)
+        private static UIBezierPath CreateCirclePath(float radius, int sampleCount)
         {
             var smoothedPath = new UIBezierPath();
             CGPoint startPoint = PointOnCircle(radius, -90);
 
             smoothedPath.MoveTo(startPoint);
 
-            float delta = 360 / sampleCount;
+            float delta = 360f / sampleCount;
             float angleInDegrees = -90;
             for (int i = 1; i < sampleCount; i++)
             {
