@@ -27,40 +27,40 @@ namespace BigTed
 {
     public sealed class ProgressHUD : UIView
     {
-        static readonly Class? ClsUIPeripheralHostView;
-        static readonly Class? ClsUIKeyboard;
-        static readonly Class? ClsUIInputSetContainerView;
-        static readonly Class? ClsUIInputSetHostView;
+        private static readonly Class? ClsUIPeripheralHostView;
+        private static readonly Class? ClsUIKeyboard;
+        private static readonly Class? ClsUIInputSetContainerView;
+        private static readonly Class? ClsUIInputSetHostView;
 
-        static readonly NSObject obj = new();
+        private static readonly NSObject obj = new();
 
-        UIImage? _errorImage;
-        UIImage? _successImage;
-        UIImage? _infoImage;
-        UIImage? _errorOutlineImage;
-        UIImage? _successOutlineImage;
-        UIImage? _infoOutlineImage;
-        UIImage? _errorOutlineFullImage;
-        UIImage? _successOutlineFullImage;
-        UIImage? _infoOutlineFullImage;
+        private UIImage? _errorImage;
+        private UIImage? _successImage;
+        private UIImage? _infoImage;
+        private UIImage? _errorOutlineImage;
+        private UIImage? _successOutlineImage;
+        private UIImage? _infoOutlineImage;
+        private UIImage? _errorOutlineFullImage;
+        private UIImage? _successOutlineFullImage;
+        private UIImage? _infoOutlineFullImage;
 
-        MaskType _maskType;
-        NSTimer? _fadeoutTimer;
-        UIView? _overlayView;
-        UIView? _hudView;
-        UILabel? _stringLabel;
-        UIImageView? _imageView;
-        UIActivityIndicatorView? _spinnerView;
-        UIButton? _cancelHud;
-        NSTimer? _progressTimer;
-        float _progress;
-        CAShapeLayer? _backgroundRingLayer;
-        CAShapeLayer? _ringLayer;
-        List<NSObject>? _eventListeners;
-        bool _displayContinuousImage;
+        private MaskType _maskType;
+        private NSTimer? _fadeoutTimer;
+        private UIView? _overlayView;
+        private UIView? _hudView;
+        private UILabel? _stringLabel;
+        private UIImageView? _imageView;
+        private UIActivityIndicatorView? _spinnerView;
+        private UIButton? _cancelHud;
+        private NSTimer? _progressTimer;
+        private float _progress;
+        private CAShapeLayer? _backgroundRingLayer;
+        private CAShapeLayer? _ringLayer;
+        private List<NSObject>? _eventListeners;
+        private bool _displayContinuousImage;
         
-        static ProgressHUD? _sharedHud;
-        ToastPosition _toastPosition = ToastPosition.Center;
+        private static ProgressHUD? _sharedHud;
+        private ToastPosition _toastPosition = ToastPosition.Center;
 
         static ProgressHUD()
         {
@@ -493,7 +493,7 @@ namespace BigTed
             }
         }
 
-        void ShowProgressWorker(
+        private void ShowProgressWorker(
             float progress = -1, string? status = null, MaskType maskType = MaskType.None, bool textOnly = false,
             ToastPosition toastPosition = ToastPosition.Center, string? cancelCaption = null, Action? cancelCallback = null,
             double timeoutMs = 1000, bool showContinuousProgress = false, UIImage? displayContinuousImage = null)
@@ -621,7 +621,7 @@ namespace BigTed
             }
         }
 
-        void ShowImageWorker(UIImage image, string status, MaskType maskType, TimeSpan duration)
+        private void ShowImageWorker(UIImage image, string? status, MaskType maskType, TimeSpan duration)
         {
             _progress = -1;
             CancelRingLayerAnimation();
@@ -649,13 +649,13 @@ namespace BigTed
             StartDismissTimer(duration);
         }
 
-        void StartDismissTimer(TimeSpan duration)
+        private void StartDismissTimer(TimeSpan duration)
         {
             _fadeoutTimer = NSTimer.CreateTimer(duration, _ => DismissWorker());
             NSRunLoop.Main.AddTimer(_fadeoutTimer, NSRunLoopMode.Common);
         }
 
-        void StartProgressTimer(TimeSpan duration)
+        private void StartProgressTimer(TimeSpan duration)
         {
             if (_progressTimer != null)
                 return;
@@ -664,13 +664,13 @@ namespace BigTed
             NSRunLoop.Current.AddTimer(_progressTimer, NSRunLoopMode.Common);
         }
 
-        void StopProgressTimer()
+        private void StopProgressTimer()
         {
             _progressTimer?.Invalidate();
             _progressTimer = null;
         }
 
-        void UpdateProgress()
+        private void UpdateProgress()
         {
             obj.InvokeOnMainThread(delegate
             {
@@ -693,7 +693,7 @@ namespace BigTed
             });
         }
 
-        void CancelRingLayerAnimation()
+        private void CancelRingLayerAnimation()
         {
             CATransaction.Begin();
             CATransaction.DisableActions = true;
@@ -715,7 +715,7 @@ namespace BigTed
             CATransaction.Commit();
         }
 
-        void DismissWorker()
+        private void DismissWorker()
         {
             SetFadeoutTimer(null);
             SetProgressTimer(null);
@@ -741,7 +741,7 @@ namespace BigTed
                 });
         }
 
-        void RemoveHud()
+        private void RemoveHud()
         {
             Alpha = 0f;
             HudView.Alpha = 0f;
@@ -773,13 +773,13 @@ namespace BigTed
             GetActiveWindow()?.RootViewController?.SetNeedsStatusBarAppearanceUpdate();
         }
 
-        void SetStatusWorker(string status)
+        private void SetStatusWorker(string status)
         {
             StringLabel.Text = status;
             UpdatePosition();
         }
 
-        void RegisterNotifications()
+        private void RegisterNotifications()
         {
             _eventListeners ??= new List<NSObject>();
 
@@ -795,7 +795,7 @@ namespace BigTed
                 PositionHUD));
         }
 
-        void UnRegisterNotifications()
+        private void UnRegisterNotifications()
         {
             if (_eventListeners == null)
                 return;
@@ -805,13 +805,13 @@ namespace BigTed
             _eventListeners = null;
         }
 
-        void MoveToPoint(CGPoint newCenter, float angle)
+        private void MoveToPoint(CGPoint newCenter, float angle)
         {
             HudView.Transform = CGAffineTransform.MakeRotation(angle);
             HudView.Center = newCenter;
         }
 
-        void PositionHUD(NSNotification? notification)
+        private void PositionHUD(NSNotification? notification)
         {
             double animationDuration = 0;
 
@@ -928,7 +928,7 @@ namespace BigTed
             return keyboardHeight;
         }
 
-        void SetFadeoutTimer(NSTimer? newTimer)
+        private void SetFadeoutTimer(NSTimer? newTimer)
         {
             if (_fadeoutTimer != null)
             {
@@ -941,7 +941,7 @@ namespace BigTed
         }
 
 
-        void SetProgressTimer(NSTimer? newTimer)
+        private void SetProgressTimer(NSTimer? newTimer)
         {
             StopProgressTimer();
 
@@ -949,12 +949,12 @@ namespace BigTed
                 _progressTimer = newTimer;
         }
 
-        void UpdatePosition(bool textOnly = false)
+        private void UpdatePosition(bool textOnly = false)
         {
             float hudWidth = 100f;
             float stringHeight = 0f;
-            float stringHeightBuffer = 20f;
-            float stringAndImageHeightBuffer = 80f;
+            const float stringHeightBuffer = 20f;
+            const float stringAndImageHeightBuffer = 80f;
 
             var labelRect = CGRect.Empty;
 
