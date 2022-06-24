@@ -38,56 +38,31 @@ Task("Clean")
     EnsureDirectoryExists(artifactsDir);
 });
 
-FilePath msBuildPath;
-Task("ResolveBuildTools")
-    .WithCriteria(() => IsRunningOnWindows())
+Task("Restore")
     .Does(() => 
 {
-    var vsWhereSettings = new VSWhereLatestSettings
-    {
-        IncludePrerelease = true,
-        Requires = "Component.Xamarin"
-    };
-
-    var vsLatest = VSWhereLatest(vsWhereSettings);
-    msBuildPath = (vsLatest == null)
-        ? null
-        : vsLatest.CombineWithFilePath("./MSBuild/Current/Bin/MSBuild.exe");
-
-    if (msBuildPath != null)
-        Information("Found MSBuild at {0}", msBuildPath.ToString());
-});
-
-Task("Restore")
-    .IsDependentOn("ResolveBuildTools")
-    .Does(() => 
-    {
-    var settings = GetDefaultBuildSettings()
-        .WithTarget("Restore");
-    MSBuild(sln, settings);
+    DotNetRestore(sln.ToString());
 });
 
 Task("Build")
-    .IsDependentOn("ResolveBuildTools")
     .IsDependentOn("Clean")
     .IsDependentOn("Restore")
     .Does(() =>  
 {
-    var settings = GetDefaultBuildSettings()
-        .WithProperty("Version", versionInfo.SemVer)
-        .WithProperty("PackageVersion", versionInfo.SemVer)
-        .WithProperty("InformationalVersion", versionInfo.InformationalVersion)
-        .WithProperty("NoPackageAnalysis", "True")
-        .WithTarget("Build");
-
-    if (IsRunningOnWindows())
+    var msBuildSettings = new DotNetMSBuildSettings
     {
-        var javaSdkDir = EnvironmentVariable("JAVA_HOME_8_X64");
-        Information("Setting JavaSdkDirectory to: " + javaSdkDir);
-        settings = settings.WithProperty("JavaSdkDirectory", javaSdkDir);
-    }
+        Version = versionInfo.SemVer,
+        PackageVersion = versionInfo.SemVer,
+        InformationalVersion = versionInfo.InformationalVersion
+    };
 
-    MSBuild(sln, settings);
+    var settings = new DotNetBuildSettings
+    {
+         Configuration = configuration,
+         OutputDirectory = artifactsDir.ToString()
+    };
+
+    DotNetBuild(sln.ToString(), settings);
 });
 
 Task("CopyArtifacts")
@@ -103,18 +78,3 @@ Task("Default")
     .IsDependentOn("CopyArtifacts");
 
 RunTarget(target);
-
-MSBuildSettings GetDefaultBuildSettings()
-{
-    var settings = new MSBuildSettings 
-    {
-        Configuration = configuration,
-        ArgumentCustomization = args => args.Append("/m"),
-        ToolVersion = MSBuildToolVersion.VS2019
-    };
-
-    if (msBuildPath != null)
-        settings.ToolPath = msBuildPath;
-
-    return settings;
-}
