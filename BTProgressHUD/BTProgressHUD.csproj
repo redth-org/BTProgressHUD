@@ -1,11 +1,12 @@
 ﻿<Project Sdk="Xamarin.Legacy.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>xamarin.ios10;net6.0-ios</TargetFrameworks>
+    <TargetFrameworks>xamarin.ios10;net6.0-ios;net6.0-maccatalyst</TargetFrameworks>
     <AssemblyName>BTProgressHUD</AssemblyName>
     <RootNamespace>BigTed</RootNamespace>
     <PackageId>BTProgressHUD</PackageId>
     <Description>BTProgressHUD is a clean and easy-to-use HUD meant to display the progress of an ongoing task.</Description>
     <SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net6.0-ios'">14.2</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net6.0-maccatalyst'">14.2</SupportedOSPlatformVersion>
     <Nullable>enable</Nullable>
     <NoNFloatUsing>true</NoNFloatUsing>
   </PropertyGroup>

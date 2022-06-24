@@ -906,6 +906,10 @@ namespace BigTed
             return (float)activeHeight;
         }
 
+#if MACCATALYST
+        private float GetKeyboardHeightFromNotification(NSNotification? notification, bool ignoreOrientation,
+            UIInterfaceOrientation orientation, ref double animationDuration) => 0;
+#else
         private float GetKeyboardHeightFromNotification(NSNotification? notification, bool ignoreOrientation,
             UIInterfaceOrientation orientation, ref double animationDuration)
         {
@@ -927,6 +931,7 @@ namespace BigTed
 
             return keyboardHeight;
         }
+#endif
 
         private void SetFadeoutTimer(NSTimer? newTimer)
         {
