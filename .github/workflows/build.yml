@@ -16,7 +16,7 @@ jobs:
         dotnet-version: 6.0.x
 
     - name: Install iOS workload
-      run: dotnet workload install ios
+      run: dotnet workload install ios maccatalyst maui-tizen
       
     - name: Restore dotnet tools
       run: dotnet tool restore
