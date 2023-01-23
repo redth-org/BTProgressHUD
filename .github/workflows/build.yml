@@ -5,18 +5,18 @@ on: [push]
 jobs:
   build:
 
-    runs-on: macos-12
+    runs-on: macos-latest
 
     steps:
     - uses: actions/checkout@v1
 
-    - name: Setup .NET 6
+    - name: Setup .NET 7
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 7.0.x
 
     - name: Install iOS workload
-      run: dotnet workload install ios maccatalyst maui maui-maccatalyst
+      run: dotnet workload install maui ios maccatalyst
       
     - name: Restore dotnet tools
       run: dotnet tool restore
