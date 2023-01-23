@@ -1,8 +1,0 @@
-<Project>
-  <PropertyGroup Condition="$(TargetFramework.StartsWith('xamarin.ios'))">
-    <DefineConstants>$(DefineConstants);MONO;UIKIT;COCOA;IOS</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="$(TargetFramework.StartsWith('net6'))">
-    <DefineConstants>$(DefineConstants);NET6</DefineConstants>
-  </PropertyGroup>
-</Project>
