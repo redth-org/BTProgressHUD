@@ -13,6 +13,10 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
+#if IOS || MACCATALYST
+        BigTed.ProgressHUD.Initialize();
+#endif
+
         return builder.Build();
     }
 }

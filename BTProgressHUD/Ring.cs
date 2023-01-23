@@ -1,4 +1,5 @@
-﻿using UIKit;
+﻿using System;
+using UIKit;
 
 namespace BigTed
 {
@@ -20,7 +21,7 @@ namespace BigTed
         public void ResetStyle(UIColor colorToUse)
         {
             Color = colorToUse;
-            if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
+            if (OperatingSystem.IsIOSVersionAtLeast(13) || OperatingSystem.IsMacCatalystVersionAtLeast(13))
             {
                 BackgroundColor = UIColor.SystemBackground;
             }

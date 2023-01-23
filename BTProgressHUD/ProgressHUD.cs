@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 using CoreAnimation;
 using CoreGraphics;
 using Foundation;
@@ -59,8 +60,22 @@ namespace BigTed
         private List<NSObject>? _eventListeners;
         private bool _displayContinuousImage;
         
-        private static ProgressHUD? _sharedHud;
         private ToastPosition _toastPosition = ToastPosition.Center;
+
+        public static void Initialize()
+        {
+#if IOS
+            NSNotificationCenter.DefaultCenter.AddObserver(UIKeyboard.DidShowNotification, n =>
+            {
+                KeyboardSize = UIKeyboard.FrameEndFromNotification(n);
+            });
+
+            NSNotificationCenter.DefaultCenter.AddObserver(UIKeyboard.DidHideNotification, n =>
+            {
+                KeyboardSize = CGRect.Empty;
+            });
+#endif
+        }
 
         static ProgressHUD()
         {
@@ -79,12 +94,9 @@ namespace BigTed
                 ClsUIInputSetHostView = new Class(ptrUIInputSetHostView);
         }
 
-        public ProgressHUD() : this(UIScreen.MainScreen.Bounds)
+        public ProgressHUD(UIWindow window) : base(window.Bounds)
         {
-        }
-
-        public ProgressHUD(CGRect frame) : base(frame)
-        {
+            HudWindow = window;
             UserInteractionEnabled = false;
             BackgroundColor = UIColor.Clear;
             Alpha = 0;
@@ -92,6 +104,10 @@ namespace BigTed
 
             SetOSSpecificLookAndFeel();
         }
+
+        public UIWindow HudWindow { get; private set; }
+
+        public static CGRect KeyboardSize { get; private set; } = CGRect.Empty;
 
         public UIColor HudBackgroundColour { get; set; } = UIColor.FromWhiteAlpha(0.0f, 0.8f);
         public UIColor HudForegroundColor { get; set; } = UIColor.White;
@@ -103,71 +119,109 @@ namespace BigTed
 
         public UIImage ErrorImage
         {
-            get => _errorImage ?? ImageHelper.ErrorImage.Value;
+            get => _errorImage ?? ImageHelper.ErrorImage.Value!;
             set => _errorImage = value;
         }
 
         public UIImage SuccessImage
         {
-            get => _successImage ?? ImageHelper.SuccessImage.Value;
+            get => _successImage ?? ImageHelper.SuccessImage.Value!;
             set => _successImage = value;
         }
 
         public UIImage InfoImage
         {
-            get => _infoImage ?? ImageHelper.InfoImage.Value;
+            get => _infoImage ?? ImageHelper.InfoImage.Value!;
             set => _infoImage = value;
         }
 
         public UIImage ErrorOutlineImage
         {
-            get => _errorOutlineImage ?? ImageHelper.ErrorOutlineImage.Value;
+            get => _errorOutlineImage ?? ImageHelper.ErrorOutlineImage.Value!;
             set => _errorOutlineImage = value;
         }
 
         public UIImage SuccessOutlineImage
         {
-            get => _successOutlineImage ?? ImageHelper.SuccessOutlineImage.Value;
+            get => _successOutlineImage ?? ImageHelper.SuccessOutlineImage.Value!;
             set => _successOutlineImage = value;
         }
 
         public UIImage InfoOutlineImage
         {
-            get => _infoOutlineImage ?? ImageHelper.InfoOutlineImage.Value;
+            get => _infoOutlineImage ?? ImageHelper.InfoOutlineImage.Value!;
             set => _infoOutlineImage = value;
         }
 
         public UIImage ErrorOutlineFullImage
         {
-            get => _errorOutlineFullImage ?? ImageHelper.ErrorOutlineFullImage.Value;
+            get => _errorOutlineFullImage ?? ImageHelper.ErrorOutlineFullImage.Value!;
             set => _errorOutlineFullImage = value;
         }
 
         public UIImage SuccessOutlineFullImage
         {
-            get => _successOutlineFullImage ?? ImageHelper.SuccessOutlineFullImage.Value;
+            get => _successOutlineFullImage ?? ImageHelper.SuccessOutlineFullImage.Value!;
             set => _successOutlineFullImage = value;
         }
 
         public UIImage InfoOutlineFullImage
         {
-            get => _infoOutlineFullImage ?? ImageHelper.InfoOutlineFullImage.Value;
+            get => _infoOutlineFullImage ?? ImageHelper.InfoOutlineFullImage.Value!;
             set => _infoOutlineFullImage = value;
         }
 
         public bool IsVisible => Alpha == 1;
 
-        public static ProgressHUD Shared
+        static Dictionary<NativeHandle, ProgressHUD> windowHuds = new ();
+
+        public static ProgressHUD For(UIWindow window)
         {
-            get
+            ProgressHUD? hud = null;
+
+            window.InvokeOnMainThread(() =>
             {
-                if (_sharedHud == null)
+                var handle = window.Handle;
+
+                if (!windowHuds.ContainsKey(handle))
+                    windowHuds[handle] = new ProgressHUD(window);
+
+                hud = windowHuds[handle];
+            });
+
+            return hud!;
+        }
+
+        public static ProgressHUD ForDefaultWindow()
+        {
+            UIWindow? window = null;
+
+            if (OperatingSystem.IsMacCatalystVersionAtLeast(15) || OperatingSystem.IsIOSVersionAtLeast(15))
+            {
+                foreach (var scene in UIApplication.SharedApplication.ConnectedScenes)
                 {
-                    UIApplication.EnsureUIThread();
-                    _sharedHud = new ProgressHUD(UIScreen.MainScreen.Bounds);
+                    if (scene is UIWindowScene windowScene)
+                    {
+                        window = windowScene.KeyWindow;
+
+                        if (window is null)
+                        {
+                            window = windowScene?.Windows?.LastOrDefault();
+                        }
+                    }
                 }
-                return _sharedHud;
             }
+            else if (OperatingSystem.IsMacCatalystVersionAtLeast(13) || OperatingSystem.IsIOSVersionAtLeast(13))
+            {
+                window = UIApplication.SharedApplication.Windows?.LastOrDefault();
+            }
+            else
+            {
+                window = UIApplication.SharedApplication.KeyWindow
+                    ?? UIApplication.SharedApplication.Windows?.LastOrDefault();
+            }
+
+            return For(window!);
         }
 
         public float RingRadius { get; set; } = 14f;
@@ -205,7 +259,7 @@ namespace BigTed
         bool IsClear => _maskType is MaskType.Clear or MaskType.None;
 
         UIView OverlayView =>
-            _overlayView ??= new UIView(UIScreen.MainScreen.Bounds)
+            _overlayView ??= new UIView(HudWindow.Bounds)
             {
                 AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight,
                 BackgroundColor = UIColor.Clear,
@@ -333,46 +387,17 @@ namespace BigTed
             }
         }
 
-        float VisibleKeyboardHeight
-        {
-            get
-            {
-                foreach (var testWindow in UIApplication.SharedApplication.Windows)
-                {
-                    if (testWindow.Class.Handle != Class.GetHandle("UIWindow"))
-                    {
-                        foreach (var possibleKeyboard in testWindow.Subviews)
-                        {
-                            if ((ClsUIPeripheralHostView != null && possibleKeyboard.IsKindOfClass(ClsUIPeripheralHostView)) ||
-                                (ClsUIKeyboard != null && possibleKeyboard.IsKindOfClass(ClsUIKeyboard)))
-                            {
-                                // Check that the keyboard is actually on screen
-                                if (possibleKeyboard.Frame.IntersectsWith(testWindow.Frame))
-                                    return (float)possibleKeyboard.Bounds.Size.Height;
-                            }
-                            else if (ClsUIInputSetContainerView != null && possibleKeyboard.IsKindOfClass(ClsUIInputSetContainerView))
-                            {
-                                foreach (var possibleKeyboardSubview in possibleKeyboard.Subviews)
-                                {
-                                    if (ClsUIInputSetHostView != null && possibleKeyboardSubview.IsKindOfClass(ClsUIInputSetHostView))
-                                        // Check that the keyboard is actually on screen
-                                        if (possibleKeyboardSubview.Frame.IntersectsWith(testWindow.Frame))
-                                            return (float)possibleKeyboardSubview.Bounds.Size.Height;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                return 0;
-            }
-        }
-
         private void SetOSSpecificLookAndFeel()
         {
-            HudBackgroundColour = UIDevice.CurrentDevice.CheckSystemVersion(13, 0) ? UIColor.SystemBackground.ColorWithAlpha(0.8f) : UIColor.White.ColorWithAlpha(0.8f);
-            HudForegroundColor = UIDevice.CurrentDevice.CheckSystemVersion(13, 0) ? UIColor.Label.ColorWithAlpha(0.8f) : UIColor.FromWhiteAlpha(0.0f, 0.8f);
-            HudStatusShadowColor = UIDevice.CurrentDevice.CheckSystemVersion(13, 0) ? UIColor.Label.ColorWithAlpha(0.8f) : UIColor.FromWhiteAlpha(200f / 255f, 0.8f);
+            HudBackgroundColour =
+                (System.OperatingSystem.IsIOSVersionAtLeast(13, 0) || OperatingSystem.IsMacCatalystVersionAtLeast(13))
+                  ? UIColor.SystemBackground.ColorWithAlpha(0.8f) : UIColor.White.ColorWithAlpha(0.8f);
+            HudForegroundColor =
+                (System.OperatingSystem.IsIOSVersionAtLeast(13, 0) || OperatingSystem.IsMacCatalystVersionAtLeast(13))
+                ? UIColor.Label.ColorWithAlpha(0.8f) : UIColor.FromWhiteAlpha(0.0f, 0.8f);
+            HudStatusShadowColor =
+                (System.OperatingSystem.IsIOSVersionAtLeast(13, 0) || OperatingSystem.IsMacCatalystVersionAtLeast(13))
+                ? UIColor.Label.ColorWithAlpha(0.8f) : UIColor.FromWhiteAlpha(200f / 255f, 0.8f);
             RingThickness = 1f;
         }
 
@@ -472,13 +497,8 @@ namespace BigTed
                     context.FillRect(Bounds);
                     break;
                 case MaskType.Gradient:
-#if NET6
                     var colors = new System.Runtime.InteropServices.NFloat[] { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.75f };
                     var locations = new System.Runtime.InteropServices.NFloat[] { 0.0f, 1.0f };
-#else
-                    var colors = new nfloat[] { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.75f };
-                    var locations = new nfloat[] { 0.0f, 1.0f };
-#endif
                     using (var colorSpace = CGColorSpace.CreateDeviceRGB())
                     {
                         using (var gradient = new CGGradient(colorSpace, colors, locations))
@@ -504,7 +524,7 @@ namespace BigTed
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if (OverlayView.Superview == null)
             {
-                var window = GetActiveWindow();
+                var window = HudWindow;
                 window?.AddSubview(OverlayView);
             }
 
@@ -770,7 +790,7 @@ namespace BigTed
             _overlayView = null;
             RemoveFromSuperview();
 
-            GetActiveWindow()?.RootViewController?.SetNeedsStatusBarAppearanceUpdate();
+            HudWindow?.RootViewController?.SetNeedsStatusBarAppearanceUpdate();
         }
 
         private void SetStatusWorker(string status)
@@ -783,8 +803,12 @@ namespace BigTed
         {
             _eventListeners ??= new List<NSObject>();
 
-            _eventListeners.Add(NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidChangeStatusBarOrientationNotification,
-                PositionHUD));
+            if (!OperatingSystem.IsMacCatalystVersionAtLeast(13) && !OperatingSystem.IsIOSVersionAtLeast(11))
+            {
+                _eventListeners.Add(NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidChangeStatusBarOrientationNotification,
+                    PositionHUD));
+            }
+
             _eventListeners.Add(NSNotificationCenter.DefaultCenter.AddObserver(UIKeyboard.WillHideNotification,
                 PositionHUD));
             _eventListeners.Add(NSNotificationCenter.DefaultCenter.AddObserver(UIKeyboard.DidHideNotification,
@@ -815,14 +839,18 @@ namespace BigTed
         {
             double animationDuration = 0;
 
-            Frame = UIScreen.MainScreen.Bounds;
+            Frame = HudWindow.Bounds;
 
-            UIInterfaceOrientation orientation = UIApplication.SharedApplication.StatusBarOrientation;
-            bool ignoreOrientation = UIDevice.CurrentDevice.CheckSystemVersion(8, 0);
+            UIInterfaceOrientation orientation = UIInterfaceOrientation.Unknown;
+
+            if (!System.OperatingSystem.IsIOSVersionAtLeast(9) && !OperatingSystem.IsMacCatalystVersionAtLeast(9))
+                orientation = UIApplication.SharedApplication.StatusBarOrientation;
+
+            bool ignoreOrientation = (System.OperatingSystem.IsIOSVersionAtLeast(8) || OperatingSystem.IsMacCatalystVersionAtLeast(8));
 
             var keyboardHeight = GetKeyboardHeightFromNotification(notification, ignoreOrientation, orientation, ref animationDuration);
 
-            CGRect? activeWindowBounds = GetActiveWindow()?.Bounds;
+            CGRect? activeWindowBounds = HudWindow?.Bounds;
             if (activeWindowBounds == null)
                 return;
 
@@ -889,7 +917,12 @@ namespace BigTed
         private static float GetActiveHeight(bool ignoreOrientation, UIInterfaceOrientation orientation,
             CGRect orientationFrame, float keyboardHeight)
         {
-            CGRect statusBarFrame = UIApplication.SharedApplication.StatusBarFrame;
+            CGRect statusBarFrame = CGRect.Empty;
+
+            if (!OperatingSystem.IsMacCatalystVersionAtLeast(13) && !OperatingSystem.IsIOSVersionAtLeast(11))
+            {
+                statusBarFrame = UIApplication.SharedApplication.StatusBarFrame;
+            }
 
             if (!ignoreOrientation && IsLandscape(orientation))
             {
@@ -914,7 +947,7 @@ namespace BigTed
             UIInterfaceOrientation orientation, ref double animationDuration)
         {
             if (notification == null)
-                return VisibleKeyboardHeight;
+                return (float)KeyboardSize.Height.Value;
             
             float keyboardHeight = 0;
             var keyboardFrame = UIKeyboard.FrameEndFromNotification(notification);
@@ -1117,32 +1150,32 @@ namespace BigTed
         public static bool IsPortrait(UIInterfaceOrientation orientation) =>
             orientation is UIInterfaceOrientation.Portrait or UIInterfaceOrientation.PortraitUpsideDown;
 
-        private static UIWindow? GetActiveWindow()
-        {
-            if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
-            {
-                var scene = UIApplication.SharedApplication.ConnectedScenes.ToArray()
-                    .OfType<UIWindowScene>()
-                    .FirstOrDefault(s =>
-                        s.ActivationState == UISceneActivationState.ForegroundActive || // scene in foreground or
-                        s.Windows.Any(w => w.IsKeyWindow)); // current shown window
+        //private static UIWindow? GetActiveWindow()
+        //{
+        //    if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
+        //    {
+        //        var scene = UIApplication.SharedApplication.ConnectedScenes.ToArray()
+        //            .OfType<UIWindowScene>()
+        //            .FirstOrDefault(s =>
+        //                s.ActivationState == UISceneActivationState.ForegroundActive || // scene in foreground or
+        //                s.Windows.Any(w => w.IsKeyWindow)); // current shown window
 
-                if (scene != null)
-                    return scene.Windows.FirstOrDefault(w => w.IsKeyWindow);
-            }
+        //        if (scene != null)
+        //            return scene.Windows.FirstOrDefault(w => w.IsKeyWindow);
+        //    }
             
-            var windows = UIApplication.SharedApplication.Windows;
-            var window = windows.LastOrDefault(w => w.WindowLevel == UIWindowLevel.Normal && !w.Hidden && w.IsKeyWindow);
+        //    var windows = UIApplication.SharedApplication.Windows;
+        //    var window = windows.LastOrDefault(w => w.WindowLevel == UIWindowLevel.Normal && !w.Hidden && w.IsKeyWindow);
 
-            // As a last resort, use the first window.
-            // In iOS 15, showing the HUD while the app is moving to the foreground sometimes
-            // leads to this method getting called in a condition where
-            // UIWindowScene.ActivationState == UISceneActivationStateForegroundInactive
-            // and there is no window with IsKeyWindow == true
-            if (window == null)
-                window = windows.FirstOrDefault(w => w.WindowLevel == UIWindowLevel.Normal);
+        //    // As a last resort, use the first window.
+        //    // In iOS 15, showing the HUD while the app is moving to the foreground sometimes
+        //    // leads to this method getting called in a condition where
+        //    // UIWindowScene.ActivationState == UISceneActivationStateForegroundInactive
+        //    // and there is no window with IsKeyWindow == true
+        //    if (window == null)
+        //        window = windows.FirstOrDefault(w => w.WindowLevel == UIWindowLevel.Normal);
 
-            return window ?? throw new Exception("Could not find active window");
-        }
+        //    return window ?? throw new Exception("Could not find active window");
+        //}
     }
 }
