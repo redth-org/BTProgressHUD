@@ -9,7 +9,8 @@
         <bth:MainViewModel />
     </ContentPage.BindingContext>
 
-    <CollectionView ItemsSource="{Binding Items}">
+    <Grid RowDefinitions="*,Auto">
+    <CollectionView ItemsSource="{Binding Items}" Grid.Row="0">
         <CollectionView.ItemTemplate>
             <DataTemplate>
                 <VerticalStackLayout>
@@ -22,6 +23,8 @@
             </DataTemplate>
         </CollectionView.ItemTemplate>
     </CollectionView>
- 
+
+        <Entry Grid.Row="1"></Entry>
+ </Grid>
 </ContentPage>
 
