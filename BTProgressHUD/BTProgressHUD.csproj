@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.Net.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net6.0-ios;net6.0-maccatalyst</TargetFrameworks>
+    <TargetFrameworks>net6.0-ios;net6.0-maccatalyst;net7.0-ios;net7.0-maccatalyst</TargetFrameworks>
     <AssemblyName>BTProgressHUD</AssemblyName>
     <RootNamespace>BigTed</RootNamespace>
     <PackageId>BTProgressHUD</PackageId>
