@@ -175,11 +175,11 @@ namespace BigTed
 
         static Dictionary<NativeHandle, ProgressHUD> windowHuds = new ();
 
-        public static ProgressHUD For(UIWindow window)
+        public static ProgressHUD? For(UIWindow? window)
         {
             ProgressHUD? hud = null;
 
-            window.InvokeOnMainThread(() =>
+            window?.InvokeOnMainThread(() =>
             {
                 var handle = window.Handle;
 
@@ -189,10 +189,10 @@ namespace BigTed
                 hud = windowHuds[handle];
             });
 
-            return hud!;
+            return hud;
         }
 
-        public static ProgressHUD ForDefaultWindow()
+        public static ProgressHUD? ForDefaultWindow()
         {
             UIWindow? window = null;
 
@@ -221,7 +221,7 @@ namespace BigTed
                     ?? UIApplication.SharedApplication.Windows?.LastOrDefault();
             }
 
-            return For(window!);
+            return For(window);
         }
 
         public float RingRadius { get; set; } = 14f;
