@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
 using CoreAnimation;
 using CoreGraphics;
 using Foundation;
@@ -175,11 +174,11 @@ namespace BigTed
 
         static Dictionary<NativeHandle, ProgressHUD> windowHuds = new ();
 
-        public static ProgressHUD For(UIWindow window)
+        public static ProgressHUD? For(UIWindow? window)
         {
             ProgressHUD? hud = null;
 
-            window.InvokeOnMainThread(() =>
+            window?.InvokeOnMainThread(() =>
             {
                 var handle = window.Handle;
 
@@ -189,10 +188,10 @@ namespace BigTed
                 hud = windowHuds[handle];
             });
 
-            return hud!;
+            return hud;
         }
 
-        public static ProgressHUD ForDefaultWindow()
+        public static ProgressHUD? ForDefaultWindow()
         {
             UIWindow? window = null;
 
@@ -200,15 +199,8 @@ namespace BigTed
             {
                 foreach (var scene in UIApplication.SharedApplication.ConnectedScenes)
                 {
-                    if (scene is UIWindowScene windowScene)
-                    {
-                        window = windowScene.KeyWindow;
-
-                        if (window is null)
-                        {
-                            window = windowScene?.Windows?.LastOrDefault();
-                        }
-                    }
+                    if (scene is not UIWindowScene windowScene) continue;
+                    window = windowScene.KeyWindow ?? windowScene.Windows?.LastOrDefault();
                 }
             }
             else if (OperatingSystem.IsMacCatalystVersionAtLeast(13) || OperatingSystem.IsIOSVersionAtLeast(13))
@@ -221,7 +213,7 @@ namespace BigTed
                     ?? UIApplication.SharedApplication.Windows?.LastOrDefault();
             }
 
-            return For(window!);
+            return For(window);
         }
 
         public float RingRadius { get; set; } = 14f;
@@ -1149,33 +1141,5 @@ namespace BigTed
 
         public static bool IsPortrait(UIInterfaceOrientation orientation) =>
             orientation is UIInterfaceOrientation.Portrait or UIInterfaceOrientation.PortraitUpsideDown;
-
-        //private static UIWindow? GetActiveWindow()
-        //{
-        //    if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
-        //    {
-        //        var scene = UIApplication.SharedApplication.ConnectedScenes.ToArray()
-        //            .OfType<UIWindowScene>()
-        //            .FirstOrDefault(s =>
-        //                s.ActivationState == UISceneActivationState.ForegroundActive || // scene in foreground or
-        //                s.Windows.Any(w => w.IsKeyWindow)); // current shown window
-
-        //        if (scene != null)
-        //            return scene.Windows.FirstOrDefault(w => w.IsKeyWindow);
-        //    }
-            
-        //    var windows = UIApplication.SharedApplication.Windows;
-        //    var window = windows.LastOrDefault(w => w.WindowLevel == UIWindowLevel.Normal && !w.Hidden && w.IsKeyWindow);
-
-        //    // As a last resort, use the first window.
-        //    // In iOS 15, showing the HUD while the app is moving to the foreground sometimes
-        //    // leads to this method getting called in a condition where
-        //    // UIWindowScene.ActivationState == UISceneActivationStateForegroundInactive
-        //    // and there is no window with IsKeyWindow == true
-        //    if (window == null)
-        //        window = windows.FirstOrDefault(w => w.WindowLevel == UIWindowLevel.Normal);
-
-        //    return window ?? throw new Exception("Could not find active window");
-        //}
     }
 }
