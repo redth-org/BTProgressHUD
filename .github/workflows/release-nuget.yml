@@ -19,7 +19,7 @@ jobs:
       uses: dawidd6/action-download-artifact@v2
       with:
         workflow: build.yml
-        branch: master
+        branch: main
         run_id: ${{ github.event.inputs.runId }}
 
     - name: Download latest artifact
@@ -27,7 +27,7 @@ jobs:
       uses: dawidd6/action-download-artifact@v2
       with:
         workflow: build.yml
-        branch: master
+        branch: main
       
     - shell: pwsh
       name: Publish NuGet Package
