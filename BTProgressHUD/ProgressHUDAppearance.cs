@@ -10,17 +10,7 @@ public static class ProgressHUDAppearance
             UIColor.SystemBackground.ColorWithAlpha(0.8f) :
             UIColor.White.ColorWithAlpha(0.8f);
 
-    public static UIColor DefaultHudImageTintColor { get; } =
-        OperatingSystem.IsIOSVersionAtLeast(13, 0) || OperatingSystem.IsMacCatalystVersionAtLeast(13) ?
-            UIColor.Label.ColorWithAlpha(0.8f) :
-            UIColor.FromWhiteAlpha(0.0f, 0.8f);
-
-    public static UIColor DefaultHudTextColor { get; } =
-        OperatingSystem.IsIOSVersionAtLeast(13, 0) || OperatingSystem.IsMacCatalystVersionAtLeast(13) ?
-            UIColor.Label.ColorWithAlpha(0.8f) :
-            UIColor.FromWhiteAlpha(0.0f, 0.8f);
-    
-    public static UIColor DefaultHudButtonTextColor { get; } =
+    public static UIColor DefaultForegroundColor { get; } =
         OperatingSystem.IsIOSVersionAtLeast(13, 0) || OperatingSystem.IsMacCatalystVersionAtLeast(13) ?
             UIColor.Label.ColorWithAlpha(0.8f) :
             UIColor.FromWhiteAlpha(0.0f, 0.8f);
@@ -34,7 +24,7 @@ public static class ProgressHUDAppearance
     public static UIColor DefaultRingBackgroundColor =
         OperatingSystem.IsIOSVersionAtLeast(13) || OperatingSystem.IsMacCatalystVersionAtLeast(13)
             ? UIColor.SystemBackground
-            : UIColor.White;
+            : DefaultHudBackgroundColor;
 
     public const float DefaultRingRadius = 14f;
     public const float DefaultRingThickness = 1f;
@@ -79,7 +69,7 @@ public static class ProgressHUDAppearance
     /// <summary>
     /// Get or set image tint color
     /// </summary>
-    public static UIColor HudImageTintColor { get; set; } = DefaultHudImageTintColor;
+    public static UIColor HudImageTintColor { get; set; } = DefaultForegroundColor;
     
     /// <summary>
     /// Get or set background color of toast
@@ -94,7 +84,7 @@ public static class ProgressHUDAppearance
     /// <summary>
     /// Get or set color of texts shown in hud
     /// </summary>
-    public static UIColor HudTextColor { get; set; } = DefaultHudTextColor;
+    public static UIColor HudTextColor { get; set; } = DefaultForegroundColor;
     
     /// <summary>
     /// Get or set font to use for cancel button
@@ -104,7 +94,7 @@ public static class ProgressHUDAppearance
     /// <summary>
     /// Get or set text color on cancel button
     /// </summary>
-    public static UIColor HudButtonTextColor { get; set; } = DefaultHudButtonTextColor;
+    public static UIColor HudButtonTextColor { get; set; } = DefaultForegroundColor;
     
     /// <summary>
     /// Get or set alignment on texts shown in hud
@@ -131,12 +121,12 @@ public static class ProgressHUDAppearance
 
         HudCornerRadius = DefaultHudCornerRadius;
         HudBackgroundColor = DefaultHudBackgroundColor;
-        HudImageTintColor = DefaultHudImageTintColor;
+        HudImageTintColor = DefaultForegroundColor;
         HudToastBackgroundColor = DefaultHudToastBackgroundColor;
         HudFont = DefaultHudFont;
         HudButtonFont = DefaultHudFont;
-        HudTextColor = DefaultHudTextColor;
-        HudButtonTextColor = DefaultHudButtonTextColor;
+        HudTextColor = DefaultForegroundColor;
+        HudButtonTextColor = DefaultForegroundColor;
         HudTextAlignment = DefaultHudTextAlignment;
     }
 }
