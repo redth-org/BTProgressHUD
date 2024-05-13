@@ -34,15 +34,15 @@ namespace BigTed
 
         private static readonly NSObject obj = new();
 
-        private UIImage? _errorImage;
-        private UIImage? _successImage;
-        private UIImage? _infoImage;
-        private UIImage? _errorOutlineImage;
-        private UIImage? _successOutlineImage;
-        private UIImage? _infoOutlineImage;
-        private UIImage? _errorOutlineFullImage;
-        private UIImage? _successOutlineFullImage;
-        private UIImage? _infoOutlineFullImage;
+        private UIImage? _errorImage = ProgressHUDAppearance.ErrorImage;
+        private UIImage? _successImage = ProgressHUDAppearance.SuccessImage;
+        private UIImage? _infoImage = ProgressHUDAppearance.InfoImage;
+        private UIImage? _errorOutlineImage = ProgressHUDAppearance.ErrorOutlineImage;
+        private UIImage? _successOutlineImage = ProgressHUDAppearance.SuccessOutlineImage;
+        private UIImage? _infoOutlineImage = ProgressHUDAppearance.InfoOutlineImage;
+        private UIImage? _errorOutlineFullImage = ProgressHUDAppearance.ErrorOutlineFullImage;
+        private UIImage? _successOutlineFullImage = ProgressHUDAppearance.SuccessOutlineFullImage;
+        private UIImage? _infoOutlineFullImage = ProgressHUDAppearance.InfoOutlineFullImage;
 
         private MaskType _maskType;
         private NSTimer? _fadeoutTimer;
@@ -100,20 +100,17 @@ namespace BigTed
             BackgroundColor = UIColor.Clear;
             Alpha = 0;
             AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
-
-            SetOSSpecificLookAndFeel();
         }
 
         public UIWindow HudWindow { get; private set; }
 
         public static CGRect KeyboardSize { get; private set; } = CGRect.Empty;
 
-        public UIColor HudBackgroundColour { get; set; } = UIColor.FromWhiteAlpha(0.0f, 0.8f);
-        public UIColor HudForegroundColor { get; set; } = UIColor.White;
-        public UIColor HudStatusShadowColor { get; set; } = UIColor.Black;
-        public UIColor HudToastBackgroundColor { get; set; } = UIColor.Clear;
-        public UIFont HudFont { get; set; } = UIFont.BoldSystemFontOfSize(16f);
-        public UITextAlignment HudTextAlignment { get; set; } = UITextAlignment.Center;
+        public UIColor HudBackgroundColour { get; set; } = ProgressHUDAppearance.HudBackgroundColour;
+        public UIColor HudForegroundColor { get; set; } = ProgressHUDAppearance.HudForegroundColor;
+        public UIColor HudToastBackgroundColor { get; set; } = ProgressHUDAppearance.HudToastBackgroundColor;
+        public UIFont HudFont { get; set; } = ProgressHUDAppearance.HudFont;
+        public UITextAlignment HudTextAlignment { get; set; } = ProgressHUDAppearance.HudTextAlignment;
         public Ring Ring { get; } = new();
 
         public UIImage ErrorImage
@@ -216,8 +213,8 @@ namespace BigTed
             return For(window);
         }
 
-        public float RingRadius { get; set; } = 14f;
-        public float RingThickness { get; set; } = 6f;
+        public float RingRadius { get; set; } = ProgressHUDAppearance.RingRadius;
+        public float RingThickness { get; set; } = ProgressHUDAppearance.RingThickness;
         
         CAShapeLayer RingLayer
         {
@@ -377,20 +374,6 @@ namespace BigTed
 
                 return _spinnerView;
             }
-        }
-
-        private void SetOSSpecificLookAndFeel()
-        {
-            HudBackgroundColour =
-                (System.OperatingSystem.IsIOSVersionAtLeast(13, 0) || OperatingSystem.IsMacCatalystVersionAtLeast(13))
-                  ? UIColor.SystemBackground.ColorWithAlpha(0.8f) : UIColor.White.ColorWithAlpha(0.8f);
-            HudForegroundColor =
-                (System.OperatingSystem.IsIOSVersionAtLeast(13, 0) || OperatingSystem.IsMacCatalystVersionAtLeast(13))
-                ? UIColor.Label.ColorWithAlpha(0.8f) : UIColor.FromWhiteAlpha(0.0f, 0.8f);
-            HudStatusShadowColor =
-                (System.OperatingSystem.IsIOSVersionAtLeast(13, 0) || OperatingSystem.IsMacCatalystVersionAtLeast(13))
-                ? UIColor.Label.ColorWithAlpha(0.8f) : UIColor.FromWhiteAlpha(200f / 255f, 0.8f);
-            RingThickness = 1f;
         }
 
         public void Show(string? status = null, float progress = -1, MaskType maskType = MaskType.None, double timeoutMs = 1000)

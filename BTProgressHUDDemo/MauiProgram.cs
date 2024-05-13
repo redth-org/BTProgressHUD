@@ -1,4 +1,7 @@
-﻿namespace BTProgressHUDDemo2;
+﻿using BigTed;
+using UIKit;
+
+namespace BTProgressHUDDemo2;
 
 public static class MauiProgram
 {
@@ -14,7 +17,9 @@ public static class MauiProgram
             });
 
 #if IOS || MACCATALYST
-        BigTed.ProgressHUD.Initialize();
+        ProgressHUD.Initialize();
+        ProgressHUDAppearance.HudFont = UIFont.PreferredHeadline;
+        ProgressHUDAppearance.HudForegroundColor = UIColor.Purple;
 #endif
 
         return builder.Build();
