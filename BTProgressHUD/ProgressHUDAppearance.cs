@@ -10,7 +10,7 @@ public static class ProgressHUDAppearance
             UIColor.SystemBackground.ColorWithAlpha(0.8f) :
             UIColor.White.ColorWithAlpha(0.8f);
 
-    public static UIColor DefaultHudForegroundColor { get; } =
+    public static UIColor DefaultHudImageTintColor { get; } =
         OperatingSystem.IsIOSVersionAtLeast(13, 0) || OperatingSystem.IsMacCatalystVersionAtLeast(13) ?
             UIColor.Label.ColorWithAlpha(0.8f) :
             UIColor.FromWhiteAlpha(0.0f, 0.8f);
@@ -79,7 +79,7 @@ public static class ProgressHUDAppearance
     /// <summary>
     /// Get or set image tint color
     /// </summary>
-    public static UIColor HudForegroundColor { get; set; } = DefaultHudForegroundColor;
+    public static UIColor HudImageTintColor { get; set; } = DefaultHudImageTintColor;
     
     /// <summary>
     /// Get or set background color of toast
@@ -131,7 +131,7 @@ public static class ProgressHUDAppearance
 
         HudCornerRadius = DefaultHudCornerRadius;
         HudBackgroundColor = DefaultHudBackgroundColor;
-        HudForegroundColor = DefaultHudForegroundColor;
+        HudImageTintColor = DefaultHudImageTintColor;
         HudToastBackgroundColor = DefaultHudToastBackgroundColor;
         HudFont = DefaultHudFont;
         HudButtonFont = DefaultHudFont;

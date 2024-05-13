@@ -625,7 +625,7 @@ namespace BigTed
                 Show(null, -1F, maskType);
             }
 
-            ImageView.TintColor = ProgressHUDAppearance.HudForegroundColor;
+            ImageView.TintColor = ProgressHUDAppearance.HudImageTintColor;
             ImageView.Image = image.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
             ImageView.Hidden = false;
             StringLabel.Text = status;
