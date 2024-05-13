@@ -87,6 +87,20 @@ BTProgressHUD.ShowImage(UIImage.FromFile(…), "Nice one Stu!");
 
 You can use the timeout parameter of ShowImage to control the time before it's dismissed.
 
+## Customization
+You can customize the appearance of the ProgressHUD through the `ProgressHUDAppearance` class where you can controll the
+following options:
+
+- Background Color
+- Foreground Color
+- Font
+- TextAlignment
+- Ring Radius
+- Ring Thickness
+- Images and the various outlined/full versions for:
+  - Error
+  - Success
+  - Info
 
 ## Credits
 
