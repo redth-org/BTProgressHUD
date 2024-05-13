@@ -91,12 +91,17 @@ You can use the timeout parameter of ShowImage to control the time before it's d
 You can customize the appearance of the ProgressHUD through the `ProgressHUDAppearance` class where you can controll the
 following options:
 
+- Corner Radius
 - Background Color
-- Foreground Color
-- Font
-- TextAlignment
+- Image Tint Color
+- Text Font
+- Button Font
+- Text Color
+- Button Text Color
+- Text Alignment
 - Ring Radius
-- Ring Thickness
+- Ring Stroke Thickness
+- Ring Color
 - Images and the various outlined/full versions for:
   - Error
   - Success
