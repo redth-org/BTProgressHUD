@@ -18,8 +18,6 @@ public static class MauiProgram
 
 #if IOS || MACCATALYST
         ProgressHUD.Initialize();
-        ProgressHUDAppearance.HudFont = UIFont.PreferredHeadline;
-        ProgressHUDAppearance.HudForegroundColor = UIColor.Purple;
 #endif
 
         return builder.Build();
