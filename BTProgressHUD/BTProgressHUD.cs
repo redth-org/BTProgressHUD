@@ -69,9 +69,6 @@ namespace BigTed
         public static bool IsVisible
             => ProgressHUD.ForDefaultWindow()?.IsVisible ?? false;
 
-
-
-
         public static void Show(UIWindow forWindow, string? status = null, float progress = -1, MaskType maskType = MaskType.None)
         {
             ProgressHUD.For(forWindow)?.Show(status, progress, maskType);

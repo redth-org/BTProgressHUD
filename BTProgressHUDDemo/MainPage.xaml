@@ -10,21 +10,17 @@
     </ContentPage.BindingContext>
 
     <Grid RowDefinitions="*,Auto">
-    <CollectionView ItemsSource="{Binding Items}" Grid.Row="0">
+    <CollectionView ItemsSource="{Binding Items}" Grid.Row="0"
+                    ItemSizingStrategy="MeasureFirstItem">
         <CollectionView.ItemTemplate>
             <DataTemplate>
-                <VerticalStackLayout>
+                <VerticalStackLayout Margin="16, 2">
                     <Button Text="{Binding Text}"
-                            Command="{Binding Command}" />
-                    <BoxView HeightRequest="1"
-                             HorizontalOptions="FillAndExpand"
-                             Background="Black" />
+                            Command="{Binding Command}"/>
                 </VerticalStackLayout>
             </DataTemplate>
         </CollectionView.ItemTemplate>
     </CollectionView>
-
-        <Entry Grid.Row="1"></Entry>
  </Grid>
 </ContentPage>
 

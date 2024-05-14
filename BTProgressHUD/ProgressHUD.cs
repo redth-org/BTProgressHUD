@@ -34,15 +34,15 @@ namespace BigTed
 
         private static readonly NSObject obj = new();
 
-        private UIImage? _errorImage;
-        private UIImage? _successImage;
-        private UIImage? _infoImage;
-        private UIImage? _errorOutlineImage;
-        private UIImage? _successOutlineImage;
-        private UIImage? _infoOutlineImage;
-        private UIImage? _errorOutlineFullImage;
-        private UIImage? _successOutlineFullImage;
-        private UIImage? _infoOutlineFullImage;
+        private UIImage? _errorImage = ProgressHUDAppearance.ErrorImage;
+        private UIImage? _successImage = ProgressHUDAppearance.SuccessImage;
+        private UIImage? _infoImage = ProgressHUDAppearance.InfoImage;
+        private UIImage? _errorOutlineImage = ProgressHUDAppearance.ErrorOutlineImage;
+        private UIImage? _successOutlineImage = ProgressHUDAppearance.SuccessOutlineImage;
+        private UIImage? _infoOutlineImage = ProgressHUDAppearance.InfoOutlineImage;
+        private UIImage? _errorOutlineFullImage = ProgressHUDAppearance.ErrorOutlineFullImage;
+        private UIImage? _successOutlineFullImage = ProgressHUDAppearance.SuccessOutlineFullImage;
+        private UIImage? _infoOutlineFullImage = ProgressHUDAppearance.InfoOutlineFullImage;
 
         private MaskType _maskType;
         private NSTimer? _fadeoutTimer;
@@ -100,21 +100,11 @@ namespace BigTed
             BackgroundColor = UIColor.Clear;
             Alpha = 0;
             AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
-
-            SetOSSpecificLookAndFeel();
         }
 
         public UIWindow HudWindow { get; private set; }
 
         public static CGRect KeyboardSize { get; private set; } = CGRect.Empty;
-
-        public UIColor HudBackgroundColour { get; set; } = UIColor.FromWhiteAlpha(0.0f, 0.8f);
-        public UIColor HudForegroundColor { get; set; } = UIColor.White;
-        public UIColor HudStatusShadowColor { get; set; } = UIColor.Black;
-        public UIColor HudToastBackgroundColor { get; set; } = UIColor.Clear;
-        public UIFont HudFont { get; set; } = UIFont.BoldSystemFontOfSize(16f);
-        public UITextAlignment HudTextAlignment { get; set; } = UITextAlignment.Center;
-        public Ring Ring { get; } = new();
 
         public UIImage ErrorImage
         {
@@ -215,9 +205,6 @@ namespace BigTed
 
             return For(window);
         }
-
-        public float RingRadius { get; set; } = 14f;
-        public float RingThickness { get; set; } = 6f;
         
         CAShapeLayer RingLayer
         {
@@ -226,7 +213,8 @@ namespace BigTed
                 if (_ringLayer == null)
                 {
                     var center = new CGPoint(HudView.Frame.Width / 2, HudView.Frame.Height / 2);
-                    _ringLayer = ShapeHelper.CreateRingLayer(center, RingRadius, RingThickness, Ring.Color);
+                    _ringLayer = ShapeHelper.CreateRingLayer(center, ProgressHUDAppearance.RingRadius,
+                        ProgressHUDAppearance.RingThickness, ProgressHUDAppearance.RingColor);
                     HudView.Layer.AddSublayer(_ringLayer);
                 }
                 return _ringLayer;
@@ -240,7 +228,8 @@ namespace BigTed
                 if (_backgroundRingLayer == null)
                 {
                     var center = new CGPoint(HudView.Frame.Width / 2, HudView.Frame.Height / 2);
-                    _backgroundRingLayer = ShapeHelper.CreateRingLayer(center, RingRadius, RingThickness, Ring.BackgroundColor);
+                    _backgroundRingLayer = ShapeHelper.CreateRingLayer(center, ProgressHUDAppearance.RingRadius,
+                        ProgressHUDAppearance.RingThickness, ProgressHUDAppearance.RingBackgroundColor);
                     _backgroundRingLayer.StrokeEnd = 1;
                     HudView.Layer.AddSublayer(_backgroundRingLayer);
                 }
@@ -269,13 +258,13 @@ namespace BigTed
                 var hudView = new UIToolbar
                 {
                     Translucent = true,
-                    BarTintColor = HudBackgroundColour,
-                    BackgroundColor = HudBackgroundColour,
+                    BarTintColor = ProgressHUDAppearance.HudBackgroundColor,
+                    BackgroundColor = ProgressHUDAppearance.HudBackgroundColor,
                     AutoresizingMask =
                         UIViewAutoresizing.FlexibleBottomMargin | UIViewAutoresizing.FlexibleTopMargin |
                         UIViewAutoresizing.FlexibleRightMargin | UIViewAutoresizing.FlexibleLeftMargin
                 };
-                hudView.Layer.CornerRadius = 10;
+                hudView.Layer.CornerRadius = ProgressHUDAppearance.HudCornerRadius;
                 hudView.Layer.MasksToBounds = true;
 
                 AddSubview(hudView);
@@ -292,12 +281,12 @@ namespace BigTed
             {
                 _stringLabel ??= new UILabel
                 {
-                    BackgroundColor = HudToastBackgroundColor,
+                    BackgroundColor = ProgressHUDAppearance.HudToastBackgroundColor,
                     AdjustsFontSizeToFitWidth = true,
-                    TextAlignment = HudTextAlignment,
+                    TextAlignment = ProgressHUDAppearance.HudTextAlignment,
                     BaselineAdjustment = UIBaselineAdjustment.AlignCenters,
-                    TextColor = HudForegroundColor,
-                    Font = HudFont,
+                    TextColor = ProgressHUDAppearance.HudTextColor,
+                    Font = ProgressHUDAppearance.HudFont,
                     Lines = 0
                 };
                 
@@ -321,9 +310,8 @@ namespace BigTed
                         BackgroundColor = UIColor.Clear,
                         UserInteractionEnabled = true
                     };
-                    _cancelHud.TitleLabel.Font = HudFont;
-                    
-                    _cancelHud.SetTitleColor(HudForegroundColor, UIControlState.Normal);
+                    _cancelHud.TitleLabel.Font = ProgressHUDAppearance.HudButtonFont;
+                    _cancelHud.SetTitleColor(ProgressHUDAppearance.HudButtonTextColor, UIControlState.Normal);
                     UserInteractionEnabled = true;
                 }
                 
@@ -364,11 +352,14 @@ namespace BigTed
         {
             get
             {
-                _spinnerView ??= new UIActivityIndicatorView(UIActivityIndicatorViewStyle.WhiteLarge)
+                _spinnerView ??= new UIActivityIndicatorView(
+                    OperatingSystem.IsMacCatalystVersionAtLeast(13, 1) || OperatingSystem.IsIOSVersionAtLeast(13) ?
+                        UIActivityIndicatorViewStyle.Large :
+                        UIActivityIndicatorViewStyle.WhiteLarge)
                 {
                     HidesWhenStopped = true,
                     Bounds = new CGRect(0, 0, 37, 37),
-                    Color = HudForegroundColor
+                    Color = ProgressHUDAppearance.RingColor
                 };
 
                 // ReSharper disable once ConditionIsAlwaysTrueOrFalse
@@ -377,20 +368,6 @@ namespace BigTed
 
                 return _spinnerView;
             }
-        }
-
-        private void SetOSSpecificLookAndFeel()
-        {
-            HudBackgroundColour =
-                (System.OperatingSystem.IsIOSVersionAtLeast(13, 0) || OperatingSystem.IsMacCatalystVersionAtLeast(13))
-                  ? UIColor.SystemBackground.ColorWithAlpha(0.8f) : UIColor.White.ColorWithAlpha(0.8f);
-            HudForegroundColor =
-                (System.OperatingSystem.IsIOSVersionAtLeast(13, 0) || OperatingSystem.IsMacCatalystVersionAtLeast(13))
-                ? UIColor.Label.ColorWithAlpha(0.8f) : UIColor.FromWhiteAlpha(0.0f, 0.8f);
-            HudStatusShadowColor =
-                (System.OperatingSystem.IsIOSVersionAtLeast(13, 0) || OperatingSystem.IsMacCatalystVersionAtLeast(13))
-                ? UIColor.Label.ColorWithAlpha(0.8f) : UIColor.FromWhiteAlpha(200f / 255f, 0.8f);
-            RingThickness = 1f;
         }
 
         public void Show(string? status = null, float progress = -1, MaskType maskType = MaskType.None, double timeoutMs = 1000)
@@ -510,9 +487,6 @@ namespace BigTed
             ToastPosition toastPosition = ToastPosition.Center, string? cancelCaption = null, Action? cancelCallback = null,
             double timeoutMs = 1000, bool showContinuousProgress = false, UIImage? displayContinuousImage = null)
         {
-            if (TintColor != null)
-                Ring.ResetStyle(TintColor);
-
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if (OverlayView.Superview == null)
             {
@@ -557,7 +531,7 @@ namespace BigTed
                 }
 
                 RingLayer.StrokeEnd = 0.0f;
-                StartProgressTimer(TimeSpan.FromMilliseconds(Ring.ProgressUpdateInterval));
+                StartProgressTimer(TimeSpan.FromMilliseconds(ProgressHUDAppearance.RingProgressUpdateInterval));
             }
             else
             {
@@ -651,7 +625,7 @@ namespace BigTed
                 Show(null, -1F, maskType);
             }
 
-            ImageView.TintColor = HudForegroundColor;
+            ImageView.TintColor = ProgressHUDAppearance.HudImageTintColor;
             ImageView.Image = image.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
             ImageView.Hidden = false;
             StringLabel.Text = status;
@@ -761,9 +735,6 @@ namespace BigTed
             //Removing observers
             UnRegisterNotifications();
             NSNotificationCenter.DefaultCenter.RemoveObserver(this);
-
-            if (TintColor != null)
-                Ring.ResetStyle(TintColor);
 
             CancelRingLayerAnimation();
             StringLabel.RemoveFromSuperview();

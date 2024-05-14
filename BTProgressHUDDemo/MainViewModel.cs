@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using BigTed;
 using Foundation;
+using UIKit;
 
 namespace BTProgressHUDDemo2
 {
@@ -12,13 +13,18 @@ namespace BTProgressHUDDemo2
 
         public MainViewModel()
         {
-            this.Items = new[]
-            {
+            Items =
+            [
+                Create("Dismiss", () =>
+                {
+                    BTProgressHUD.Dismiss();
+                }, false),
                 Create("Show", () => BTProgressHUD.Show(), true),
                 Create("Cancel problem 3", () => BTProgressHUD.Show("Cancel", () => KillAfter(), "Cancel and text"), false),
                 Create("Cancel problem 2", () => BTProgressHUD.Show("Cancel", () => KillAfter()), false),
                 Create("Cancel problem", () => BTProgressHUD.Show("Cancel", () => KillAfter(), "This is a multilinetext\nSome more text\n more text\n and again more text"), false),
-                Create("Show Message", () => BTProgressHUD.Show("Processing your image", -1, MaskType.Black), false),
+                Create("Show Message", () => 
+                    BTProgressHUD.Show("Processing your image", 10, MaskType.Black), true),
                 Create("Show Success", () =>
                 {
                     BTProgressHUD.ShowSuccessWithStatus("Great success!");
@@ -68,12 +74,6 @@ namespace BTProgressHUDDemo2
                 {
                     BTProgressHUD.ShowToast("Hello from the toast", false, 1000);
                 }, false),
-
-                Create("Dismiss", () =>
-                {
-                    BTProgressHUD.Dismiss();
-                }, false),
-
                 Create("Progress", () =>
                 {
                     progress = 0;
@@ -98,12 +98,21 @@ namespace BTProgressHUDDemo2
                     });
                     NSRunLoop.Current.AddTimer(timer, NSRunLoopMode.Common);
                 }, false),
-
-                Create("Dismiss", () =>
+                Create("Customize", () =>
                 {
-                    BTProgressHUD.Dismiss();
-                }, false)
-            };
+                    ProgressHUDAppearance.RingColor = UIColor.Green;
+                    ProgressHUDAppearance.RingBackgroundColor = UIColor.Brown;
+                    
+                    ProgressHUDAppearance.HudBackgroundColor = UIColor.Yellow;
+                    ProgressHUDAppearance.HudTextColor = UIColor.Purple;
+                    ProgressHUDAppearance.HudButtonTextColor = UIColor.Orange;
+                    ProgressHUDAppearance.HudCornerRadius = 2;
+                    ProgressHUDAppearance.HudTextAlignment = UITextAlignment.Left;
+                    ProgressHUDAppearance.HudTextColor = UIColor.Cyan;
+                    ProgressHUDAppearance.HudToastBackgroundColor = UIColor.Blue;
+                }, false),
+                Create("Reset Customization", ProgressHUDAppearance.ResetToDefaults, false)
+            ];
         }
 
 
