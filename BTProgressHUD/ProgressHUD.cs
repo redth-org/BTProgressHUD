@@ -255,15 +255,28 @@ namespace BigTed
                 if (_hudView != null)
                     return _hudView;
 
-                var hudView = new UIToolbar
+                UIView hudView;
+                if (ProgressHUDAppearance.HudBackgroundColor.Equals(UIColor.Clear))
                 {
-                    Translucent = true,
-                    BarTintColor = ProgressHUDAppearance.HudBackgroundColor,
-                    BackgroundColor = ProgressHUDAppearance.HudBackgroundColor,
-                    AutoresizingMask =
-                        UIViewAutoresizing.FlexibleBottomMargin | UIViewAutoresizing.FlexibleTopMargin |
-                        UIViewAutoresizing.FlexibleRightMargin | UIViewAutoresizing.FlexibleLeftMargin
-                };
+                    hudView = new UIView
+                    {
+                        BackgroundColor = ProgressHUDAppearance.HudBackgroundColor
+                    };
+                }
+                else
+                {
+                    hudView = new UIToolbar
+                    {
+                        Translucent = true,
+                        BarTintColor = ProgressHUDAppearance.HudBackgroundColor,
+                        BackgroundColor = ProgressHUDAppearance.HudBackgroundColor
+                    };    
+                }
+
+                hudView.AutoresizingMask =
+                    UIViewAutoresizing.FlexibleBottomMargin | UIViewAutoresizing.FlexibleTopMargin |
+                    UIViewAutoresizing.FlexibleRightMargin | UIViewAutoresizing.FlexibleLeftMargin;
+                
                 hudView.Layer.CornerRadius = ProgressHUDAppearance.HudCornerRadius;
                 hudView.Layer.MasksToBounds = true;
 
