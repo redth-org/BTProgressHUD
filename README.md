@@ -1,13 +1,9 @@
 BTProgressHUD
 =============
 
-__This has been taken over by [@Redth](https://github.com/redth) - please contact him for bug reports etc__
+BTProgressHUD is a clean and easy-to-use HUD meant to display the progress of an ongoing task.
 
-Port to Xamarin.iOS of the [SVProgressHUD](https://github.com/samvermette/SVProgressHUD). 
-
-SVProgressHUD (and BTProgressHUD) is a clean and easy-to-use HUD meant to display the progress of an ongoing task.
-
-If you need this for Xamarin.Android, [redth has a very similar component](https://github.com/Redth/AndHUD)
+If you need a similar library for Android, [AndHUD is very similar component](https://github.com/redth-org/AndHUD)
 
 ## Installation
 
@@ -15,7 +11,7 @@ Install the NuGet package [BTProgressHUD][nuget]
 
 ## TODO
 
-* The progress HUD is not Accessability-aware, which would be very good to add.
+* The progress HUD is not Accessibility-aware, which would be very good to add.
 
 ## Usage
 
@@ -88,8 +84,8 @@ BTProgressHUD.ShowImage(UIImage.FromFile(…), "Nice one Stu!");
 You can use the timeout parameter of ShowImage to control the time before it's dismissed.
 
 ## Customization
-You can customize the appearance of the ProgressHUD through the `ProgressHUDAppearance` class where you can controll the
-following options:
+You can customize the appearance of the ProgressHUD globally through the `ProgressHUDAppearance` class, where you can
+control the following options:
 
 - Corner Radius
 - Background Color
@@ -109,21 +105,19 @@ following options:
 
 ## Credits
 
-SVProgressHUD is brought to you by [Sam Vermette](http://samvermette.com) and [contributors to the project](https://github.com/samvermette/SVProgressHUD/contributors). 
+SVProgressHUD which this library is originally based on is brought to you by [Sam Vermette](http://samvermette.com) and [contributors to the project](https://github.com/samvermette/SVProgressHUD/contributors). 
 
-The success, error and info icons are from [Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/sf-symbols/overview/) from Apple. If you have feature suggestions or bug reports, feel free to help out by sending pull requests or by [creating new issues](https://github.com/samvermette/SVProgressHUD/issues/new). If you're using SVProgressHUD in your project, attribution would be nice.
+The success, error and info icons are from [Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/sf-symbols/overview/) from Apple.
 
-BTProgressHUD is brought to you by [Nic Wise](http://www.fastchicken.co.nz/). I'm also happy to take bug reports and pull 
-requests for the MonoTouch version. If you use BTProgressHUD in your project, attribution would also be 
-nice - or [tweet](http://twitter.com/fastchicken) me a link to your project when it's live.
+## Contributors
 
-Thanks to 
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
 
-* [mloenow](https://github.com/mloenow)
-* [Ramesh Sringeri](https://github.com/idispose) 
-* [Danny Cabrera](https://github.com/dannycabrera)
-* [Greg Shackles](https://github.com/gshackles)
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
 
-for the updates / fixes.
+<!-- ALL-CONTRIBUTORS-LIST:END -->
         
 [nuget]: https://www.nuget.org/packages/BTProgressHUD/
