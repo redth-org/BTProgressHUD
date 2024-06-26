@@ -6,7 +6,7 @@
     <PackageIcon>icon.png</PackageIcon>
     <Authors>nicwise</Authors>
     <Owners>nicwise,ravensorb,redth,cheesebaron</Owners>
-    <PackageTags>Xamarin, MonoTouch, Progress, BTProgressHUD</PackageTags>
+    <PackageTags>Xamarin, iOS, Progress, BTProgressHUD</PackageTags>
     <PackageReleaseNotes>https://github.com/redth-org/BTProgressHUD/releases</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 
@@ -37,7 +37,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All"/>
   </ItemGroup>
 
   <ItemGroup>
