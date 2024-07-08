@@ -1,17 +1,34 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
-  <PropertyGroup>
-    <TargetFrameworks>xamarin.ios10</TargetFrameworks>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net8.0-ios</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>true</ImplicitUsings>
+        <SupportedOSPlatformVersion>13.0</SupportedOSPlatformVersion>
     <AssemblyName>BTProgressHUD</AssemblyName>
     <RootNamespace>BTProgressHUD</RootNamespace>
     <PackageId>BTProgressHUD</PackageId>
     <Description>SVProgressHUD (and BTProgressHUD) is a clean and easy-to-use HUD meant to display the progress of an ongoing task.</Description>
+    <Configurations>Release;Debug;Test</Configurations>
+    <Platforms>AnyCPU;iPhoneSimulator</Platforms>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release</OutputPath>
     <DefineConstants>__IOS__;__MOBILE__;__UNIFIED__;TRACE;MONO;UIKIT;COCOA;IOS;RELEASE;XAMARIN_IOS;XAMARIN_IOS10</DefineConstants>
+    <DefineConstants>__IOS__;__MOBILE__;__UNIFIED__;TRACE;MONO;UIKIT;COCOA;IOS;RELEASE;</DefineConstants>
     <DocumentationFile>obj\Release\BTProgressHUD.xml</DocumentationFile>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <CreatePackage>false</CreatePackage>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <CreatePackage>false</CreatePackage>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Test|iPhoneSimulator' ">
+    <CreatePackage>false</CreatePackage>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Test|AnyCPU' ">
+    <CreatePackage>false</CreatePackage>
   </PropertyGroup>
   <ItemGroup>
 	  <BundleResource Include="**\*.png" />
