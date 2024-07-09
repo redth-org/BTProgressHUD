@@ -1,0 +1,79 @@
+parameters:
+  - name: projectPath
+    type: string
+  - name: testsPath
+    type: string
+    default: ''
+  - name: artifactName
+    type: string
+    default: ''
+  - name: dotNetSdkVersion
+    type: string
+    default: '8.0.x'   
+  - name: publishWebProjects
+    type: boolean
+    default: true       
+  - name: zipArtifact
+    type: boolean
+    default: true
+  - name: nugetFeedId
+    type: string
+
+steps:
+  - task: UseDotNet@2
+    displayName: 'Install .NET SDK'
+    inputs:
+      version: '${{ parameters.dotNetSdkVersion }}'
+      packageType: sdk
+
+  - task: Bash@3
+    displayName: 'dotnet workload restore'
+    inputs:
+      targetType: 'inline'
+      script: |
+        dotnet workload restore '$(Build.SourcesDirectory)/${{ parameters.projectPath }}'
+    
+  - task: DotNetCoreCLI@2
+    displayName: '.NET Restore'
+    inputs:
+      command: restore
+      projects: '${{ parameters.projectPath }}'
+      feedsToUse: 'select'
+      vstsFeed: '/68c5d2c6-c71b-4066-92f8-a6bd2065a595'
+
+  - task: DotNetCoreCLI@2
+    displayName: '.NET Build'
+    inputs:
+      command: build
+      projects: '${{ parameters.projectPath }}'
+      arguments: '-c Release --no-restore'
+
+  - task: DotNetCoreCLI@2
+    displayName: '.NET Publish'
+    condition: not(eq('${{ parameters.artifactName }}', ''))
+    inputs:
+      command: publish
+      publishWebProjects: ${{ parameters.publishWebProjects }}
+      projects: '${{ parameters.projectPath }}'
+      arguments: '-c Release --no-restore --output $(Build.ArtifactStagingDirectory)'
+      modifyOutputPath: false
+      zipAfterPublish: ${{ parameters.zipArtifact }}
+
+  - task: DotNetCoreCLI@2
+    displayName: 'dotnet pack'
+    inputs:
+      command: pack
+      packagesToPack: '${{ parameters.projectPath }}'
+      packDirectory: '$(Build.ArtifactStagingDirectory)/packages'
+      versioningScheme: byBuildNumber
+      configuration: 'Release'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'dotnet push'
+    inputs:
+      command: push
+      nuGetFeedType: 'internal'
+      packagesToPush: '$(Build.ArtifactStagingDirectory)/packages/*.nupkg'
+      feedsToUse: 'select'
+      publishVstsFeed: '${{ parameters.nugetFeedId }}'
+      configuration: 'Release'      
