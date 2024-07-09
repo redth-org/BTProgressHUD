@@ -52,7 +52,7 @@ stages:
           - name: buildNumber
             value: $[counter(variables['versionPrefix'], 0)]
           - name: projectPath
-            value: 'BTProgressHUD/BTProgressHUD/BTProgressHUD.csproj'
+            value: 'BTProgressHUD/BTProgressHUD.csproj'
           - name: artifactName
             value: 'BTProgressHUD'
           - name: nugetFeedId
