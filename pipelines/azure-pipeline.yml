@@ -2,12 +2,10 @@ trigger:
   batch: true
   branches:
     include:
-      - feature/dotnet8-ios-upgrade
-#      - master
-#      - release/*
-#  paths:
-#    include:
-#      - BTProgressHUD/BTProgressHUD/src/*
+      - '*'
+  paths:
+    include:
+      - BTProgressHUD/BTProgressHUD/src/*
 
 pr: none
 
