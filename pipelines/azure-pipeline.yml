@@ -1,0 +1,87 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - BTProgressHUD/BTProgressHUD/src/*
+
+pr: none
+
+pool:
+  vmImage: 'macOS-14'
+
+resources:
+  repositories:
+    - repository: self
+      type: git
+
+stages:
+  - stage: Build
+    displayName: Build and Pack and Push to nuget
+    jobs:
+      - job: 'PreBuildSetup'
+        steps:
+          - checkout: none
+
+          - task: PowerShell@2
+            displayName: 'Create Version Prefix'
+            name: CreateVersionPrefix
+            inputs:
+              targetType: 'inline'
+              script: |
+                $sourceBranch = "$(Build.SourceBranch)"
+                $versionPrefix = ([regex]'(\d+\.\d+)').Match(($sourceBranch)).Value
+
+                if (!$versionPrefix) { 
+                  $versionPrefix = "$(DefaultVersionPrefix)"
+                } 
+                Write-Host "Extracted Version: $versionPrefix"
+                Write-Host "Branch $(Build.SourceBranch)"
+
+                echo "##vso[task.setvariable variable=VersionPrefix;isOutput=true]$versionPrefix"
+      
+      - job: BuildPackAndPushToNuget
+        dependsOn: PreBuildSetup
+        variables:
+          - name: versionPrefix
+            value: $[dependencies.PreBuildSetup.outputs['CreateVersionPrefix.VersionPrefix']]
+          - name: buildNumber
+            value: $[counter(variables['versionPrefix'], 0)]
+          - name: projectPath
+            value: 'BTProgressHUD/BTProgressHUD.csproj'
+          - name: artifactName
+            value: 'BTProgressHUD'
+          - name: nugetFeedId
+            value: '/68c5d2c6-c71b-4066-92f8-a6bd2065a595'            
+            
+        steps:
+          - checkout: self
+            fetchDepth: 0
+            
+          - task: PowerShell@2
+            displayName: 'Creating Version Information'
+            inputs:
+              targetType: 'inline'
+              script: |
+                $version = "$(versionPrefix).$(buildNumber)" 
+                Write-Host "Built version: $version"
+                echo "##vso[task.setvariable variable=Version]$version"
+                Write-Host "##vso[build.updatebuildnumber]$version"
+
+          - task: Bash@3
+            displayName: 'Display Version values'
+            inputs:
+              targetType: 'inline'
+              script: |
+                echo "VersionPrefix = $(versionPrefix)"
+                echo "BuildNumber = $(buildNumber)"
+                echo "Version = $(Version)"
+                
+          - template: 'templates/build-dotnet-ios.yml'
+            parameters:
+              projectPath: $(projectPath)
+              artifactName: $(artifactName)
+              publishWebProjects: false
+              nugetFeedId: $(nugetFeedId)
