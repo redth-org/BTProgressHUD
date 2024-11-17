@@ -58,7 +58,7 @@ namespace BigTed
         private CAShapeLayer? _ringLayer;
         private List<NSObject>? _eventListeners;
         private bool _displayContinuousImage;
-        
+
         private ToastPosition _toastPosition = ToastPosition.Center;
 
         public static void Initialize()
@@ -162,7 +162,7 @@ namespace BigTed
 
         public bool IsVisible => Alpha == 1;
 
-        static Dictionary<NativeHandle, ProgressHUD> windowHuds = new ();
+        static Dictionary<NativeHandle, ProgressHUD> windowHuds = new();
 
         public static ProgressHUD? For(UIWindow? window)
         {
@@ -205,7 +205,7 @@ namespace BigTed
 
             return For(window);
         }
-        
+
         CAShapeLayer RingLayer
         {
             get
@@ -270,13 +270,13 @@ namespace BigTed
                         Translucent = true,
                         BarTintColor = ProgressHUDAppearance.HudBackgroundColor,
                         BackgroundColor = ProgressHUDAppearance.HudBackgroundColor
-                    };    
+                    };
                 }
 
                 hudView.AutoresizingMask =
                     UIViewAutoresizing.FlexibleBottomMargin | UIViewAutoresizing.FlexibleTopMargin |
                     UIViewAutoresizing.FlexibleRightMargin | UIViewAutoresizing.FlexibleLeftMargin;
-                
+
                 hudView.Layer.CornerRadius = ProgressHUDAppearance.HudCornerRadius;
                 hudView.Layer.MasksToBounds = true;
 
@@ -302,7 +302,7 @@ namespace BigTed
                     Font = ProgressHUDAppearance.HudFont,
                     Lines = 0
                 };
-                
+
                 // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                 if (_stringLabel.Superview == null)
                 {
@@ -327,7 +327,7 @@ namespace BigTed
                     _cancelHud.SetTitleColor(ProgressHUDAppearance.HudButtonTextColor, UIControlState.Normal);
                     UserInteractionEnabled = true;
                 }
-                
+
                 // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                 if (_cancelHud.Superview == null)
                 {
@@ -371,9 +371,11 @@ namespace BigTed
                         UIActivityIndicatorViewStyle.WhiteLarge)
                 {
                     HidesWhenStopped = true,
-                    Bounds = new CGRect(0, 0, 37, 37),
+                    Bounds = new CGRect(0, 0, 37, 37 ),
                     Color = ProgressHUDAppearance.RingColor
                 };
+
+                _spinnerView.Transform = CGAffineTransform.MakeScale(ProgressHUDAppearance.ActivityIndicatorScale, ProgressHUDAppearance.ActivityIndicatorScale);
 
                 // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                 if (_spinnerView.Superview == null)
@@ -583,7 +585,7 @@ namespace BigTed
             OverlayView.Hidden = false;
             _toastPosition = toastPosition;
             PositionHUD(null);
-            
+
             if (Alpha != 1)
             {
                 RegisterNotifications();
@@ -833,8 +835,8 @@ namespace BigTed
             var orientationFrame = activeWindowBounds.Value;
 
             var activeHeight = GetActiveHeight(ignoreOrientation, orientation, orientationFrame, keyboardHeight);
-            
-            float posY = MathF.Floor(activeHeight * 0.45f); 
+
+            float posY = MathF.Floor(activeHeight * 0.45f);
             float posX = (float)orientationFrame.Size.Width / 2f;
             float textHeight = (float)StringLabel.Frame.Height / 2f + 40;
 
@@ -844,7 +846,7 @@ namespace BigTed
                 ToastPosition.Top => textHeight,
                 _ => posY
             };
-            
+
             CGPoint newCenter;
             float rotateAngle;
 
@@ -1073,7 +1075,7 @@ namespace BigTed
         {
             if (string.IsNullOrEmpty(text))
                 return hudHeight;
-            
+
             var lineCount = Math.Min(10, text!.Split('\n').Length + 1);
 
             var stringSize = new NSString(text).GetBoundingRect(new CGSize(200, 30 * lineCount),
