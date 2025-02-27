@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UIKit;
 
 namespace BigTed;
@@ -30,7 +30,8 @@ public static class ProgressHUDAppearance
     public const float DefaultRingThickness = 1f;
     public const float DefaultHudCornerRadius = 10f;
     public const double DefaultProgressUpdateInterval = 300;
-    
+    public const float DefaultActivityIndicatorScale = 1f;
+
     /// <summary>
     /// Get or set definite progress indicator ring radius to control its size
     /// </summary>
@@ -45,7 +46,12 @@ public static class ProgressHUDAppearance
     /// Get or set update interval for definite progress indicator ring animation
     /// </summary>
     public static double RingProgressUpdateInterval { get; set; } = DefaultProgressUpdateInterval;
-    
+
+    /// <summary>
+    /// Get or set definite activity indicator scale to control its size
+    /// </summary>
+    public static float ActivityIndicatorScale { get; set; } = DefaultActivityIndicatorScale;
+
     /// <summary>
     /// Get or set definite progress indicator ring foreground color
     /// </summary>

@@ -19,7 +19,8 @@ namespace BTProgressHUDDemo2
                 {
                     BTProgressHUD.Dismiss();
                 }, false),
-                Create("Show", () => BTProgressHUD.Show(), true),
+                Create("Show", () => { ProgressHUDAppearance.ActivityIndicatorScale = ProgressHUDAppearance.DefaultActivityIndicatorScale; BTProgressHUD.Show(); }, true),
+                Create("Show with scaled activity indicator", () => { ProgressHUDAppearance.ActivityIndicatorScale = 2f; BTProgressHUD.Show(); }, true),
                 Create("Cancel problem 3", () => BTProgressHUD.Show("Cancel", () => KillAfter(), "Cancel and text"), false),
                 Create("Cancel problem 2", () => BTProgressHUD.Show("Cancel", () => KillAfter()), false),
                 Create("Cancel problem", () => BTProgressHUD.Show("Cancel", () => KillAfter(), "This is a multilinetext\nSome more text\n more text\n and again more text"), false),
