@@ -833,10 +833,10 @@ namespace BigTed
 
             UIInterfaceOrientation orientation = UIInterfaceOrientation.Unknown;
 
-            if (!System.OperatingSystem.IsIOSVersionAtLeast(9) && !OperatingSystem.IsMacCatalystVersionAtLeast(9))
+            if (!OperatingSystem.IsIOSVersionAtLeast(9) && !OperatingSystem.IsMacCatalystVersionAtLeast(9))
                 orientation = UIApplication.SharedApplication.StatusBarOrientation;
 
-            bool ignoreOrientation = (System.OperatingSystem.IsIOSVersionAtLeast(8) || OperatingSystem.IsMacCatalystVersionAtLeast(8));
+            bool ignoreOrientation = OperatingSystem.IsIOSVersionAtLeast(8) || OperatingSystem.IsMacCatalystVersionAtLeast(8);
 
             var keyboardHeight = GetKeyboardHeightFromNotification(notification, ignoreOrientation, orientation, ref animationDuration);
 
