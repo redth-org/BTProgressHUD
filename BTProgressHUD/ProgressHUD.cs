@@ -240,7 +240,7 @@ namespace BigTed
         bool IsClear => _maskType is MaskType.Clear or MaskType.None;
 
         UIView OverlayView =>
-            _overlayView ??= new UIView(HudWindow.Bounds)
+            _overlayView ??= new UIView(HudWindow?.Bounds ?? CGRect.Empty)
             {
                 AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight,
                 BackgroundColor = UIColor.Clear,
@@ -817,7 +817,9 @@ namespace BigTed
         {
             double animationDuration = 0;
 
-            Frame = HudWindow.Bounds;
+            var windowBounds = HudWindow?.Bounds ?? CGRect.Empty;
+            if (windowBounds.IsEmpty) return; // Window disposed, can't position
+            Frame = windowBounds;
 
             UIInterfaceOrientation orientation = UIInterfaceOrientation.Unknown;
 
