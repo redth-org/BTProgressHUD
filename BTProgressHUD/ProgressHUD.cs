@@ -896,7 +896,7 @@ namespace BigTed
                     0, UIViewAnimationOptions.AllowUserInteraction, delegate
                     {
                         MoveToPoint(newCenter, rotateAngle);
-                    }, null);
+                    }, () => { });
             }
             else
             {
