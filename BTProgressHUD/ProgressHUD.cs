@@ -240,7 +240,7 @@ namespace BigTed
         bool IsClear => _maskType is MaskType.Clear or MaskType.None;
 
         UIView OverlayView =>
-            _overlayView ??= new UIView(HudWindow.Bounds)
+            _overlayView ??= new UIView(HudWindow?.Bounds ?? CGRect.Empty)
             {
                 AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight,
                 BackgroundColor = UIColor.Clear,
@@ -768,7 +768,17 @@ namespace BigTed
             _overlayView = null;
             RemoveFromSuperview();
 
-            HudWindow?.RootViewController?.SetNeedsStatusBarAppearanceUpdate();
+            try
+            {
+                HudWindow?.RootViewController?.SetNeedsStatusBarAppearanceUpdate();
+            }
+            catch (ObjectDisposedException)
+            {
+                // Window was disposed while HUD cleanup was in progress.
+                // This can happen in scenarios where the window gets disposed 
+                // during the dismiss animation. Since the HUD is being cleaned up anyway,
+                // we can safely ignore this.
+            }
         }
 
         private void SetStatusWorker(string status)
@@ -817,14 +827,16 @@ namespace BigTed
         {
             double animationDuration = 0;
 
-            Frame = HudWindow.Bounds;
+            var windowBounds = HudWindow?.Bounds ?? CGRect.Empty;
+            if (windowBounds.IsEmpty) return; // Window disposed, can't position
+            Frame = windowBounds;
 
             UIInterfaceOrientation orientation = UIInterfaceOrientation.Unknown;
 
-            if (!System.OperatingSystem.IsIOSVersionAtLeast(9) && !OperatingSystem.IsMacCatalystVersionAtLeast(9))
+            if (!OperatingSystem.IsIOSVersionAtLeast(9) && !OperatingSystem.IsMacCatalystVersionAtLeast(9))
                 orientation = UIApplication.SharedApplication.StatusBarOrientation;
 
-            bool ignoreOrientation = (System.OperatingSystem.IsIOSVersionAtLeast(8) || OperatingSystem.IsMacCatalystVersionAtLeast(8));
+            bool ignoreOrientation = OperatingSystem.IsIOSVersionAtLeast(8) || OperatingSystem.IsMacCatalystVersionAtLeast(8);
 
             var keyboardHeight = GetKeyboardHeightFromNotification(notification, ignoreOrientation, orientation, ref animationDuration);
 
@@ -884,7 +896,7 @@ namespace BigTed
                     0, UIViewAnimationOptions.AllowUserInteraction, delegate
                     {
                         MoveToPoint(newCenter, rotateAngle);
-                    }, null);
+                    }, () => { });
             }
             else
             {

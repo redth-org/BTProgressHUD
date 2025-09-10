@@ -3,7 +3,7 @@
 
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
-var sln = new FilePath("./BTProgressHUD.sln");
+var sln = new FilePath("./BTProgressHUD/BTProgressHUD.csproj");
 var artifactsDir = new DirectoryPath("./artifacts");
 var gitVersionLog = new FilePath("./gitversion.log");
 
