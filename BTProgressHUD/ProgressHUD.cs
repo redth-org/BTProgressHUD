@@ -768,7 +768,17 @@ namespace BigTed
             _overlayView = null;
             RemoveFromSuperview();
 
-            HudWindow?.RootViewController?.SetNeedsStatusBarAppearanceUpdate();
+            try
+            {
+                HudWindow?.RootViewController?.SetNeedsStatusBarAppearanceUpdate();
+            }
+            catch (ObjectDisposedException)
+            {
+                // Window was disposed while HUD cleanup was in progress.
+                // This can happen in popup scenarios (like Mopup) where the window
+                // gets disposed during the dismiss animation. Since the HUD is being
+                // cleaned up anyway, we can safely ignore this.
+            }
         }
 
         private void SetStatusWorker(string status)
