@@ -24,7 +24,7 @@ namespace BTProgressHUDDemo2
                 Create("Cancel problem 3", () => BTProgressHUD.Show("Cancel", () => KillAfter(), "Cancel and text"), false),
                 Create("Cancel problem 2", () => BTProgressHUD.Show("Cancel", () => KillAfter()), false),
                 Create("Cancel problem", () => BTProgressHUD.Show("Cancel", () => KillAfter(), "This is a multilinetext\nSome more text\n more text\n and again more text"), false),
-                Create("Show Message", () => 
+                Create("Show Message", () =>
                     BTProgressHUD.Show("Processing your image", 10, MaskType.Black), true),
                 Create("Show Success", () =>
                 {
@@ -103,7 +103,7 @@ namespace BTProgressHUDDemo2
                 {
                     ProgressHUDAppearance.RingColor = UIColor.Green;
                     ProgressHUDAppearance.RingBackgroundColor = UIColor.Brown;
-                    
+
                     ProgressHUDAppearance.HudBackgroundColor = UIColor.Yellow;
                     ProgressHUDAppearance.HudTextColor = UIColor.Purple;
                     ProgressHUDAppearance.HudButtonTextColor = UIColor.Orange;
@@ -112,7 +112,74 @@ namespace BTProgressHUDDemo2
                     ProgressHUDAppearance.HudTextColor = UIColor.Cyan;
                     ProgressHUDAppearance.HudToastBackgroundColor = UIColor.Blue;
                 }, false),
-                Create("Reset Customization", ProgressHUDAppearance.ResetToDefaults, false)
+                Create("Reset Customization", ProgressHUDAppearance.ResetToDefaults, false),
+                Create("GH117 ObjectDisposeException", async () => {
+                    try 
+                    {
+                        // Test 1: Immediate disposal after show
+                        Console.WriteLine("Test 1: Immediate disposal after show");
+                        var window1 = new UIWindow(UIScreen.MainScreen.Bounds);
+                        window1.RootViewController = new UIViewController();
+                        window1.MakeKeyAndVisible();
+                        BTProgressHUD.Show(window1, "Test 1");
+                        window1.Dispose();
+                        await Task.Delay(100);
+                        BTProgressHUD.Dismiss(window1);
+                        
+                        // Test 2: Disposal during dismiss animation
+                        Console.WriteLine("Test 2: Disposal during dismiss animation");
+                        var window2 = new UIWindow(UIScreen.MainScreen.Bounds);
+                        window2.RootViewController = new UIViewController();
+                        window2.MakeKeyAndVisible();
+                        BTProgressHUD.Show(window2, "Test 2");
+                        await Task.Delay(100);
+                        BTProgressHUD.Dismiss(window2);
+                        await Task.Delay(150); // Half way through 0.3s animation
+                        window2.Dispose();
+                        await Task.Delay(200); // Let animation complete
+                        
+                        // Test 3: Rapid show/dismiss/dispose cycles
+                        Console.WriteLine("Test 3: Rapid cycles");
+                        for (int i = 0; i < 5; i++)
+                        {
+                            var window = new UIWindow(UIScreen.MainScreen.Bounds);
+                            window.RootViewController = new UIViewController();
+                            window.MakeKeyAndVisible();
+                            BTProgressHUD.Show(window, $"Rapid {i}");
+                            await Task.Delay(25);
+                            BTProgressHUD.Dismiss(window);
+                            await Task.Delay(25);
+                            window.Dispose();
+                            await Task.Delay(25);
+                        }
+                        
+                        // Test 4: Force garbage collection
+                        Console.WriteLine("Test 4: Force GC");
+                        var window4 = new UIWindow(UIScreen.MainScreen.Bounds);
+                        window4.RootViewController = new UIViewController();
+                        window4.MakeKeyAndVisible();
+                        BTProgressHUD.Show(window4, "GC Test");
+                        window4 = null; // Remove reference
+                        GC.Collect();
+                        GC.WaitForPendingFinalizers();
+                        GC.Collect();
+                        await Task.Delay(100);
+                        // This might cause issues when dismiss tries to access the collected window
+                        
+                        BTProgressHUD.Dismiss();
+                        Console.WriteLine("All tests completed without ObjectDisposedException");
+                    }
+                    catch (ObjectDisposedException ex)
+                    {
+                        Console.WriteLine($"SUCCESS: ObjectDisposedException reproduced! {ex.Message}");
+                        Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Other exception: {ex.GetType().Name}: {ex.Message}");
+                        Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                    }
+                }, false)
             ];
         }
 
