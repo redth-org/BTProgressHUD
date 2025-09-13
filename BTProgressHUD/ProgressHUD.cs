@@ -745,16 +745,17 @@ namespace BigTed
         private void RemoveHud()
         {
             Alpha = 0f;
-            HudView.Alpha = 0f;
+            if (_hudView != null)
+                _hudView.Alpha = 0f;
 
             //Removing observers
             UnRegisterNotifications();
             NSNotificationCenter.DefaultCenter.RemoveObserver(this);
 
             CancelRingLayerAnimation();
-            StringLabel.RemoveFromSuperview();
-            SpinnerView.RemoveFromSuperview();
-            ImageView.RemoveFromSuperview();
+            _stringLabel?.RemoveFromSuperview();
+            _spinnerView?.RemoveFromSuperview();
+            _imageView?.RemoveFromSuperview();
             _cancelHud?.RemoveFromSuperview();
 
             _stringLabel = null;
@@ -762,9 +763,9 @@ namespace BigTed
             _imageView = null;
             _cancelHud = null;
 
-            HudView.RemoveFromSuperview();
+            _hudView?.RemoveFromSuperview();
             _hudView = null;
-            OverlayView.RemoveFromSuperview();
+            _overlayView?.RemoveFromSuperview();
             _overlayView = null;
             RemoveFromSuperview();
 
