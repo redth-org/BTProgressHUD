@@ -3,8 +3,8 @@ name: CI
 on: [push]
 
 env:
-  xcodeVersion: 16.2
-  dotnetVersion: 9.0.200
+  xcodeVersion: 16.4
+  dotnetVersion: 9.0.304
 
 jobs:
   build:
@@ -33,9 +33,9 @@ jobs:
       run: dotnet tool restore
 
     - name: Run the Cake script
-      run: dotnet cake
+      run: dotnet run --project build/Build.csproj --artifactsDir ${{ github.workspace }}/artifacts
 
     - uses: actions/upload-artifact@v4
       with:
         name: NugetPackage
-        path: artifacts
+        path: ${{ github.workspace }}/artifacts
