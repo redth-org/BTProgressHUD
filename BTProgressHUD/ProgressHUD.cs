@@ -102,7 +102,7 @@ namespace BigTed
             AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
         }
 
-        public UIWindow HudWindow { get; private set; }
+        public UIWindow? HudWindow { get; private set; }
 
         public static CGRect KeyboardSize { get; private set; } = CGRect.Empty;
 
@@ -774,6 +774,7 @@ namespace BigTed
             try
             {
                 HudWindow?.RootViewController?.SetNeedsStatusBarAppearanceUpdate();
+                HudWindow = null!;
             }
             catch (ObjectDisposedException)
             {
