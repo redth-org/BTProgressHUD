@@ -698,18 +698,20 @@ namespace BigTed
         {
             CATransaction.Begin();
             CATransaction.DisableActions = true;
-            HudView.Layer.RemoveAllAnimations();
+            _hudView?.Layer.RemoveAllAnimations();
 
-            RingLayer.StrokeEnd = 0;
-            if (RingLayer.SuperLayer != null)
+            if (_ringLayer != null)
+                _ringLayer.StrokeEnd = 0;
+            
+            if (_ringLayer?.SuperLayer != null)
             {
-                RingLayer.RemoveFromSuperLayer();
+                _ringLayer.RemoveFromSuperLayer();
             }
             _ringLayer = null;
 
-            if (BackgroundRingLayer?.SuperLayer != null)
+            if (_backgroundRingLayer?.SuperLayer != null)
             {
-                BackgroundRingLayer.RemoveFromSuperLayer();
+                _backgroundRingLayer.RemoveFromSuperLayer();
             }
             _backgroundRingLayer = null;
 
