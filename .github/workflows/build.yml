@@ -33,9 +33,9 @@ jobs:
       run: dotnet tool restore
 
     - name: Run the Cake script
-      run: dotnet run --project build/Build.csproj --artifactsDir artifacts/
+      run: dotnet run --project build/Build.csproj --artifactsDir ${{ github.workspace }}/artifacts
 
     - uses: actions/upload-artifact@v4
       with:
         name: NugetPackage
-        path: artifacts
+        path: ${{ github.workspace }}/artifacts
