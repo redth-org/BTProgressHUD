@@ -102,7 +102,7 @@ namespace BigTed
             AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
         }
 
-        public UIWindow HudWindow { get; private set; }
+        public UIWindow? HudWindow { get; private set; }
 
         public static CGRect KeyboardSize { get; private set; } = CGRect.Empty;
 
@@ -698,18 +698,20 @@ namespace BigTed
         {
             CATransaction.Begin();
             CATransaction.DisableActions = true;
-            HudView.Layer.RemoveAllAnimations();
+            _hudView?.Layer.RemoveAllAnimations();
 
-            RingLayer.StrokeEnd = 0;
-            if (RingLayer.SuperLayer != null)
+            if (_ringLayer != null)
+                _ringLayer.StrokeEnd = 0;
+            
+            if (_ringLayer?.SuperLayer != null)
             {
-                RingLayer.RemoveFromSuperLayer();
+                _ringLayer.RemoveFromSuperLayer();
             }
             _ringLayer = null;
 
-            if (BackgroundRingLayer?.SuperLayer != null)
+            if (_backgroundRingLayer?.SuperLayer != null)
             {
-                BackgroundRingLayer.RemoveFromSuperLayer();
+                _backgroundRingLayer.RemoveFromSuperLayer();
             }
             _backgroundRingLayer = null;
 
@@ -745,16 +747,17 @@ namespace BigTed
         private void RemoveHud()
         {
             Alpha = 0f;
-            HudView.Alpha = 0f;
+            if (_hudView != null)
+                _hudView.Alpha = 0f;
 
             //Removing observers
             UnRegisterNotifications();
             NSNotificationCenter.DefaultCenter.RemoveObserver(this);
 
             CancelRingLayerAnimation();
-            StringLabel.RemoveFromSuperview();
-            SpinnerView.RemoveFromSuperview();
-            ImageView.RemoveFromSuperview();
+            _stringLabel?.RemoveFromSuperview();
+            _spinnerView?.RemoveFromSuperview();
+            _imageView?.RemoveFromSuperview();
             _cancelHud?.RemoveFromSuperview();
 
             _stringLabel = null;
@@ -762,15 +765,16 @@ namespace BigTed
             _imageView = null;
             _cancelHud = null;
 
-            HudView.RemoveFromSuperview();
+            _hudView?.RemoveFromSuperview();
             _hudView = null;
-            OverlayView.RemoveFromSuperview();
+            _overlayView?.RemoveFromSuperview();
             _overlayView = null;
             RemoveFromSuperview();
 
             try
             {
                 HudWindow?.RootViewController?.SetNeedsStatusBarAppearanceUpdate();
+                HudWindow = null!;
             }
             catch (ObjectDisposedException)
             {
