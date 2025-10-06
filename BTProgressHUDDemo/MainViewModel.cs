@@ -214,6 +214,8 @@ namespace BTProgressHUDDemo2
             timer = NSTimer.CreateRepeatingTimer(5, delegate
             {
                 BTProgressHUD.Dismiss();
+                timer.Invalidate();
+                timer = null;
             });
             NSRunLoop.Current.AddTimer(timer, NSRunLoopMode.Common);
         }
