@@ -774,7 +774,6 @@ namespace BigTed
             try
             {
                 HudWindow?.RootViewController?.SetNeedsStatusBarAppearanceUpdate();
-                HudWindow = null!;
             }
             catch (ObjectDisposedException)
             {
