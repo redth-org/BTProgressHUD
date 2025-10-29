@@ -256,26 +256,39 @@ namespace BigTed
                     return _hudView;
 
                 UIView hudView;
-                if (ProgressHUDAppearance.HudBackgroundColor.Equals(UIColor.Clear))
+                if (ProgressHUDAppearance.HudBackgroundVisualEffect != null)
                 {
                     hudView = new UIView
                     {
-                        BackgroundColor = ProgressHUDAppearance.HudBackgroundColor
+                        BackgroundColor = UIColor.Clear,
                     };
+
+                    hudView.AddSubview(new UIVisualEffectView(ProgressHUDAppearance.HudBackgroundVisualEffect)
+                    {
+                        AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight
+                    });
                 }
                 else
                 {
-                    hudView = new UIToolbar
+                    hudView = new UIView
                     {
-                        Translucent = true,
-                        BarTintColor = ProgressHUDAppearance.HudBackgroundColor,
-                        BackgroundColor = ProgressHUDAppearance.HudBackgroundColor
+                        BackgroundColor = ProgressHUDAppearance.HudBackgroundColor,
                     };
                 }
 
                 hudView.AutoresizingMask =
                     UIViewAutoresizing.FlexibleBottomMargin | UIViewAutoresizing.FlexibleTopMargin |
                     UIViewAutoresizing.FlexibleRightMargin | UIViewAutoresizing.FlexibleLeftMargin;
+
+                if (ProgressHUDAppearance.HudBorderThickness > 0)
+                {
+                    hudView.Layer.BorderWidth = ProgressHUDAppearance.HudBorderThickness;
+                }
+
+                if (ProgressHUDAppearance.HudBorderColor != null)
+                {
+                    hudView.Layer.BorderColor = ProgressHUDAppearance.HudBorderColor.CGColor;
+                }
 
                 hudView.Layer.CornerRadius = ProgressHUDAppearance.HudCornerRadius;
                 hudView.Layer.MasksToBounds = true;
