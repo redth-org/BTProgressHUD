@@ -11,6 +11,18 @@ namespace BTProgressHUDDemo2
         float progress = -1;
         NSTimer timer;
 
+        Color[] colors =
+        [
+            Color.FromRgb(255, 59, 48),
+            Color.FromRgb(255, 149, 0),
+            Color.FromRgb(255, 204, 0),
+            Color.FromRgb(76, 217, 100),
+            Color.FromRgb(90, 200, 250),
+            Color.FromRgb(0, 122, 255),
+            Color.FromRgb(88, 86, 214),
+            Color.FromRgb(255, 45, 85)
+        ];
+
         public MainViewModel()
         {
             Items =
@@ -104,10 +116,10 @@ namespace BTProgressHUDDemo2
                     ProgressHUDAppearance.RingColor = UIColor.Green;
                     ProgressHUDAppearance.RingBackgroundColor = UIColor.Brown;
 
-                    ProgressHUDAppearance.HudBackgroundColor = UIColor.Yellow;
+                    ProgressHUDAppearance.HudBackgroundColor = UIColor.Brown;
                     ProgressHUDAppearance.HudTextColor = UIColor.Purple;
                     ProgressHUDAppearance.HudButtonTextColor = UIColor.Orange;
-                    ProgressHUDAppearance.HudCornerRadius = 2;
+                    ProgressHUDAppearance.HudCornerRadius = 16;
                     ProgressHUDAppearance.HudTextAlignment = UITextAlignment.Left;
                     ProgressHUDAppearance.HudTextColor = UIColor.Cyan;
                     ProgressHUDAppearance.HudToastBackgroundColor = UIColor.Blue;
@@ -188,6 +200,7 @@ namespace BTProgressHUDDemo2
 
         CommandItem Create(string text, Action action, bool timedKill) => new CommandItem(
             text,
+            colors[Random.Shared.Next(colors.Length)],
             new Command(() =>
             {
                 try
@@ -224,6 +237,7 @@ namespace BTProgressHUDDemo2
 
     public record CommandItem(
         string Text,
+        Color Color,
         ICommand Command
     );
 }

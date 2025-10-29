@@ -16,7 +16,8 @@
             <DataTemplate>
                 <VerticalStackLayout Margin="16, 2">
                     <Button Text="{Binding Text}"
-                            Command="{Binding Command}"/>
+                            Command="{Binding Command}"
+                            BackgroundColor="{Binding Color}"/>
                 </VerticalStackLayout>
             </DataTemplate>
         </CollectionView.ItemTemplate>
