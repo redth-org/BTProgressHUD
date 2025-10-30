@@ -89,6 +89,9 @@ control the following options:
 
 - Corner Radius
 - Background Color
+- Background Visual Effect (overrides background color)
+- Border Thickness
+- Border Color
 - Image Tint Color
 - Text Font
 - Button Font

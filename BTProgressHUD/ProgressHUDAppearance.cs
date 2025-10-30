@@ -14,6 +14,11 @@ public static class ProgressHUDAppearance
         OperatingSystem.IsIOSVersionAtLeast(13, 0) || OperatingSystem.IsMacCatalystVersionAtLeast(13) ?
             UIColor.Label.ColorWithAlpha(0.8f) :
             UIColor.FromWhiteAlpha(0.0f, 0.8f);
+
+    public static UIVisualEffect DefaultBackgroundVisualEffect { get; } =
+        OperatingSystem.IsIOSVersionAtLeast(26, 0) || OperatingSystem.IsMacCatalystVersionAtLeast(26) ?
+            UIGlassEffect.Create(UIGlassEffectStyle.Regular) :
+            UIBlurEffect.FromStyle(UIBlurEffectStyle.Regular);
     
     public static UIColor DefaultHudToastBackgroundColor { get; } = UIColor.Clear;
     public static UIFont DefaultHudFont { get; } = UIFont.BoldSystemFontOfSize(16f);
@@ -28,7 +33,19 @@ public static class ProgressHUDAppearance
 
     public const float DefaultRingRadius = 14f;
     public const float DefaultRingThickness = 1f;
-    public const float DefaultHudCornerRadius = 10f;
+    public static float DefaultHudCornerRadius { get; } =
+        OperatingSystem.IsIOSVersionAtLeast(26, 0) || OperatingSystem.IsMacCatalystVersionAtLeast(26) ?
+            20f : 10f;
+
+    public static float DefaultHudBorderThickness { get; } =
+        OperatingSystem.IsIOSVersionAtLeast(26, 0) || OperatingSystem.IsMacCatalystVersionAtLeast(26) ?
+            1f : 0f;
+
+    public static UIColor DefaultHudBorderColor { get; } =
+        OperatingSystem.IsIOSVersionAtLeast(26, 0) || OperatingSystem.IsMacCatalystVersionAtLeast(26) ?
+            UIColor.FromWhiteAlpha(1.0f, 0.3f) :
+            UIColor.Clear;
+
     public const double DefaultProgressUpdateInterval = 300;
     public const float DefaultActivityIndicatorScale = 1f;
 
@@ -66,11 +83,26 @@ public static class ProgressHUDAppearance
     /// Get or set hud corner radius
     /// </summary>
     public static float HudCornerRadius { get; set; } = DefaultHudCornerRadius;
-    
+
     /// <summary>
-    /// Get or set hud background color
+    /// Get or set hud background color. This only works if HudBackgroundVisualEffect is null
     /// </summary>
     public static UIColor HudBackgroundColor { get; set; } = DefaultHudBackgroundColor;
+
+    /// <summary>
+    /// Get or set hud border thickness
+    /// </summary>
+    public static float HudBorderThickness { get; set; } = DefaultHudBorderThickness;
+
+    /// <summary>
+    /// Get or set hud border color
+    /// </summary>
+    public static UIColor HudBorderColor { get; set; } = DefaultHudBorderColor;
+    
+    /// <summary>
+    /// Get or set hud background visual effect
+    /// </summary>
+    public static UIVisualEffect? HudBackgroundVisualEffect { get; set; } = DefaultBackgroundVisualEffect;
     
     /// <summary>
     /// Get or set image tint color
@@ -127,6 +159,9 @@ public static class ProgressHUDAppearance
 
         HudCornerRadius = DefaultHudCornerRadius;
         HudBackgroundColor = DefaultHudBackgroundColor;
+        HudBorderThickness = DefaultHudBorderThickness;
+        HudBackgroundVisualEffect = DefaultBackgroundVisualEffect;
+        HudBorderThickness = DefaultHudBorderThickness;
         HudImageTintColor = DefaultForegroundColor;
         HudToastBackgroundColor = DefaultHudToastBackgroundColor;
         HudFont = DefaultHudFont;

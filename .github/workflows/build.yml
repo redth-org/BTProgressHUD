@@ -4,7 +4,7 @@ on: [push]
 
 env:
   xcodeVersion: 26.0.1
-  dotnetVersion: 10.0.100-rc.1.25451.107
+  dotnetVersion: 10.0.100-rc.2.25502.107
 
 jobs:
   build:
