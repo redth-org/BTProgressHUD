@@ -12,7 +12,7 @@ namespace BigTed
 	{
 		public static void Show(string status = null, float progress = -1, ProgressHUD.MaskType maskType = ProgressHUD.MaskType.None)
 		{
-			ProgressHUD.Shared.Show(status, progress, maskType);
+			ProgressHUD.Shared.Show(status, progress, maskType) ;
 		}
 
 		public static void Show(string cancelCaption, Action cancelCallback, string status = null, float progress = -1, ProgressHUD.MaskType maskType = ProgressHUD.MaskType.None)
