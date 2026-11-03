@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
-using System.Runtime.Versioning;
 using UIKit;
 
 namespace BigTed;
@@ -17,7 +15,13 @@ public static class ProgressHUDAppearance
             UIColor.Label.ColorWithAlpha(0.8f) :
             UIColor.FromWhiteAlpha(0.0f, 0.8f);
 
-    public static UIVisualEffect DefaultBackgroundVisualEffect { get; } = CreateDefaultBackgroundVisualEffect();
+    public static UIVisualEffect DefaultBackgroundVisualEffect { get; } =
+#if IOS26_0_OR_GREATER || MACCATALYST26_0_OR_GREATER
+        // Only compiled in when the TFM's platform bindings include UIGlassEffect (iOS/Mac Catalyst 26 SDK+)
+        OperatingSystem.IsIOSVersionAtLeast(26, 0) || OperatingSystem.IsMacCatalystVersionAtLeast(26) ?
+            UIGlassEffect.Create(UIGlassEffectStyle.Regular) :
+#endif
+            UIBlurEffect.FromStyle(UIBlurEffectStyle.Regular);
     
     public static UIColor DefaultHudToastBackgroundColor { get; } = UIColor.Clear;
     public static UIFont DefaultHudFont { get; } = UIFont.BoldSystemFontOfSize(16f);
@@ -169,36 +173,4 @@ public static class ProgressHUDAppearance
         HudButtonTextColor = DefaultForegroundColor;
         HudTextAlignment = DefaultHudTextAlignment;
     }
-
-    private static UIVisualEffect CreateDefaultBackgroundVisualEffect()
-    {
-        if (OperatingSystem.IsIOSVersionAtLeast(26, 0) || OperatingSystem.IsMacCatalystVersionAtLeast(26))
-        {
-            try
-            {
-                return CreateGlassEffect();
-            }
-            catch (TypeLoadException)
-            {
-                // The app was built against a Microsoft.iOS/Microsoft.MacCatalyst SDK that predates
-                // UIGlassEffect (e.g. an older .NET 9 workload). Fall back to a blur effect.
-            }
-            catch (MissingMemberException)
-            {
-                // Same as above, but the type resolved while a member did not.
-            }
-        }
-
-        return UIBlurEffect.FromStyle(UIBlurEffectStyle.Regular);
-    }
-
-    // UIGlassEffect must only be referenced from this separate, non-inlined method. If it were
-    // referenced directly in the static initializer, the runtime would try to resolve the type
-    // when the initializer runs. On SDKs that don't have UIGlassEffect, that makes the whole
-    // ProgressHUDAppearance type unusable (TypeInitializationException), even on iOS < 26 where
-    // the code path is never taken. See https://github.com/redth-org/BTProgressHUD/issues/127
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    [SupportedOSPlatform("ios26.0")]
-    [SupportedOSPlatform("maccatalyst26.0")]
-    private static UIVisualEffect CreateGlassEffect() => UIGlassEffect.Create(UIGlassEffectStyle.Regular);
 }
