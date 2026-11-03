@@ -154,6 +154,7 @@ public static class ProgressHUDAppearance
         RingRadius = DefaultRingRadius;
         RingThickness = DefaultRingThickness;
         RingProgressUpdateInterval = DefaultProgressUpdateInterval;
+        ActivityIndicatorScale = DefaultActivityIndicatorScale;
         RingColor = DefaultRingColor;
         RingBackgroundColor = DefaultRingBackgroundColor;
 
@@ -161,7 +162,7 @@ public static class ProgressHUDAppearance
         HudBackgroundColor = DefaultHudBackgroundColor;
         HudBorderThickness = DefaultHudBorderThickness;
         HudBackgroundVisualEffect = DefaultBackgroundVisualEffect;
-        HudBorderThickness = DefaultHudBorderThickness;
+        HudBorderColor = DefaultHudBorderColor;
         HudImageTintColor = DefaultForegroundColor;
         HudToastBackgroundColor = DefaultHudToastBackgroundColor;
         HudFont = DefaultHudFont;
