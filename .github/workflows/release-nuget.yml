@@ -22,8 +22,10 @@ jobs:
         branch: main
         run_id: ${{ github.event.inputs.runId }}
 
+    # On release events there are no inputs (runId is null, which compares as 0), so this must
+    # also cover that case; otherwise neither download step runs and there is nothing to push.
     - name: Download latest artifact
-      if: ${{ github.event.inputs.runId == -1 }}
+      if: ${{ !(github.event.inputs.runId > 0) }}
       uses: dawidd6/action-download-artifact@v6
       with:
         workflow: build.yml
@@ -31,10 +33,10 @@ jobs:
       
     - shell: pwsh
       name: Publish NuGet Package
-      run: dotnet nuget push **/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
+      run: dotnet nuget push **/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json --skip-duplicate
 
     - shell: pwsh
       name: Publish NuGet Package (GitHub)
       run: |
         dotnet nuget add source "https://nuget.pkg.github.com/redth-org/index.json" -n "Github" -u redth-org -p ${{ secrets.GITHUB_TOKEN }}
-        dotnet nuget push **/*.nupkg -s "Github" -n true
+        dotnet nuget push **/*.nupkg -s "Github" --no-symbols --skip-duplicate
