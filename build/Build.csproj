@@ -2,15 +2,17 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <RunWorkingDirectory>$(MSBuildProjectDirectory)</RunWorkingDirectory>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Cake.Frosting" Version="5.0.0" />
-    <PackageReference Include="Cake.GitVersioning" Version="3.8.106-alpha" />
+    <PackageReference Include="Cake.Frosting" Version="6.3.0" />
+    <PackageReference Include="Cake.GitVersioning" Version="3.10.94" />
+    <!-- Cake 6.3.0 pulls in System.Security.Cryptography.Pkcs 10.0.12 (CVE-2026-84008, CVE-2026-70162); pin a patched version until Cake updates -->
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.14" />
   </ItemGroup>
 
 </Project>
