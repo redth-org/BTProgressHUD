@@ -33,6 +33,6 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\BTProgressHUD\BTProgressHUD.csproj" />
-      <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+      <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.20" />
 	</ItemGroup>
 </Project>
