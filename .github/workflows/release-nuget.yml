@@ -24,7 +24,7 @@ jobs:
       uses: dawidd6/action-download-artifact@v6
       with:
         workflow: build.yml
-        branch: main
+        # run_id can't be combined with branch/commit/pr in this action
         run_id: ${{ github.event.inputs.runId }}
 
     # On release events there are no inputs (runId is null, which compares as 0), so this must
