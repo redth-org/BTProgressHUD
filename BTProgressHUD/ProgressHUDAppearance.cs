@@ -16,8 +16,11 @@ public static class ProgressHUDAppearance
             UIColor.FromWhiteAlpha(0.0f, 0.8f);
 
     public static UIVisualEffect DefaultBackgroundVisualEffect { get; } =
+#if IOS26_0_OR_GREATER || MACCATALYST26_0_OR_GREATER
+        // Only compiled in when the TFM's platform bindings include UIGlassEffect (iOS/Mac Catalyst 26 SDK+)
         OperatingSystem.IsIOSVersionAtLeast(26, 0) || OperatingSystem.IsMacCatalystVersionAtLeast(26) ?
             UIGlassEffect.Create(UIGlassEffectStyle.Regular) :
+#endif
             UIBlurEffect.FromStyle(UIBlurEffectStyle.Regular);
     
     public static UIColor DefaultHudToastBackgroundColor { get; } = UIColor.Clear;
