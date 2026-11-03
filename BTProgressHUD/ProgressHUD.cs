@@ -27,11 +27,6 @@ namespace BigTed
 {
     public sealed class ProgressHUD : UIView
     {
-        private static readonly Class? ClsUIPeripheralHostView;
-        private static readonly Class? ClsUIKeyboard;
-        private static readonly Class? ClsUIInputSetContainerView;
-        private static readonly Class? ClsUIInputSetHostView;
-
         private static readonly NSObject obj = new();
 
         private UIImage? _errorImage = ProgressHUDAppearance.ErrorImage;
@@ -74,23 +69,6 @@ namespace BigTed
                 KeyboardSize = CGRect.Empty;
             });
 #endif
-        }
-
-        static ProgressHUD()
-        {
-            //initialize static fields used for input view detection
-            var ptrUIPeripheralHostView = Class.GetHandle("UIPeripheralHostView");
-            if (ptrUIPeripheralHostView != IntPtr.Zero)
-                ClsUIPeripheralHostView = new Class(ptrUIPeripheralHostView);
-            var ptrUIKeyboard = Class.GetHandle("UIKeyboard");
-            if (ptrUIKeyboard != IntPtr.Zero)
-                ClsUIKeyboard = new Class(ptrUIKeyboard);
-            var ptrUIInputSetContainerView = Class.GetHandle("UIInputSetContainerView");
-            if (ptrUIInputSetContainerView != IntPtr.Zero)
-                ClsUIInputSetContainerView = new Class(ptrUIInputSetContainerView);
-            var ptrUIInputSetHostView = Class.GetHandle("UIInputSetHostView");
-            if (ptrUIInputSetHostView != IntPtr.Zero)
-                ClsUIInputSetHostView = new Class(ptrUIInputSetHostView);
         }
 
         public ProgressHUD(UIWindow window) : base(window.Bounds)
