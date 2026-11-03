@@ -989,8 +989,15 @@ namespace BigTed
                 imageUsed = false;
             }
 
+            // The layout below is designed around a 37pt indicator. If the spinner has been scaled up via
+            // ProgressHUDAppearance.ActivityIndicatorScale, or the ring made larger via RingRadius, make room
+            // for it so it isn't clipped by the hud bounds or drawn on top of the text.
+            float indicatorExtra = GetIndicatorExtraSize(textOnly);
+
             float hudHeight = GetDefaultHudHeight(textOnly, imageUsed, stringAndImageHeightBuffer, stringHeight, stringHeightBuffer);
-            hudHeight = AdjustSizesForText(text, hudHeight, imageUsed, ref hudWidth, ref labelRect);
+            hudHeight += indicatorExtra;
+            hudWidth += indicatorExtra;
+            hudHeight = AdjustSizesForText(text, hudHeight, imageUsed, indicatorExtra, ref hudWidth, ref labelRect);
 
             // Adjust for Cancel Button
             string? cancelCaption = _cancelHud == null ? null : CancelHudButton.Title(UIControlState.Normal);
@@ -1020,11 +1027,11 @@ namespace BigTed
                 {
                     if (string.IsNullOrEmpty(text))
                     {
-                        cancelRectY = 76;
+                        cancelRectY = 76 + indicatorExtra;
                     }
                     else
                     {
-                        cancelRectY = (imageUsed ? 66 : 9);
+                        cancelRectY = (imageUsed ? 66 + indicatorExtra : 9);
                     }
                 }
 
@@ -1059,10 +1066,10 @@ namespace BigTed
             {
                 if (!string.IsNullOrEmpty(text) || !string.IsNullOrEmpty(cancelCaption))
                 {
-                    SpinnerView.Center = new CGPoint((float)Math.Ceiling(HudView.Bounds.Width / 2.0f) + 0.5f, 40.5f);
+                    SpinnerView.Center = new CGPoint((float)Math.Ceiling(HudView.Bounds.Width / 2.0f) + 0.5f, 40.5f + indicatorExtra / 2f);
                     if (_progress > -1 && BackgroundRingLayer != null)
                     {
-                        BackgroundRingLayer.Position = RingLayer.Position = new CGPoint(HudView.Bounds.Width / 2, 36f);
+                        BackgroundRingLayer.Position = RingLayer.Position = new CGPoint(HudView.Bounds.Width / 2, 36f + indicatorExtra / 2f);
                     }
                 }
                 else
@@ -1076,8 +1083,8 @@ namespace BigTed
             }
         }
 
-        private float AdjustSizesForText(string? text, float hudHeight, bool imageUsed, ref float hudWidth,
-            ref CGRect labelRect)
+        private float AdjustSizesForText(string? text, float hudHeight, bool imageUsed, float indicatorExtra,
+            ref float hudWidth, ref CGRect labelRect)
         {
             if (string.IsNullOrEmpty(text))
                 return hudHeight;
@@ -1096,7 +1103,7 @@ namespace BigTed
             if (stringWidth > hudWidth)
                 hudWidth = MathF.Ceiling(stringWidth / 2.0f) * 2;
 
-            float labelRectY = imageUsed ? 66 : 9;
+            float labelRectY = imageUsed ? 66 + indicatorExtra : 9;
 
             if (hudHeight > 100)
             {
@@ -1110,6 +1117,26 @@ namespace BigTed
             }
 
             return hudHeight;
+        }
+
+        /// <summary>
+        /// Returns how much larger than the default 37pt slot the currently visible activity indicator
+        /// (spinner or progress ring) is. Returns 0 with default appearance settings, so the default layout is unchanged.
+        /// </summary>
+        private float GetIndicatorExtraSize(bool textOnly)
+        {
+            const float defaultIndicatorSize = 37f;
+
+            // No indicator when showing text only, or when an image is being shown instead
+            bool indicatorVisible = !textOnly && (ImageView.Hidden || ImageView.Image == null);
+            if (!indicatorVisible)
+                return 0f;
+
+            float indicatorSize = _progress > -1
+                ? 2 * ProgressHUDAppearance.RingRadius + ProgressHUDAppearance.RingThickness
+                : defaultIndicatorSize * Math.Abs(ProgressHUDAppearance.ActivityIndicatorScale);
+
+            return MathF.Ceiling(Math.Max(0f, indicatorSize - defaultIndicatorSize));
         }
 
         private static float GetDefaultHudHeight(bool textOnly, bool imageUsed, float stringAndImageHeightBuffer,
