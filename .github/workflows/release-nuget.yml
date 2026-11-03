@@ -13,6 +13,11 @@ on:
 jobs:
   nuget-publish:
     runs-on: windows-latest
+    permissions:
+      id-token: write   # GitHub OIDC token for nuget.org Trusted Publishing
+      actions: read     # download artifacts from build.yml runs
+      contents: read
+      packages: write   # push to GitHub Packages
     steps:
     - name: Download specific artifact
       if: ${{ github.event.inputs.runId > 0 }}
@@ -31,9 +36,17 @@ jobs:
         workflow: build.yml
         branch: main
       
+    # Trusted Publishing: exchange the OIDC token for a short-lived (1 hour) nuget.org API key.
+    # Requires a Trusted Publishing policy on nuget.org for redth-org/BTProgressHUD, workflow file release-nuget.yml.
+    - name: NuGet login (OIDC -> temporary API key)
+      id: nuget-login
+      uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1.2.0
+      with:
+        user: redth # nuget.org username (profile name) of the policy creator
+
     - shell: pwsh
       name: Publish NuGet Package
-      run: dotnet nuget push **/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json --skip-duplicate
+      run: dotnet nuget push **/*.nupkg -k ${{ steps.nuget-login.outputs.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json --skip-duplicate
 
     - shell: pwsh
       name: Publish NuGet Package (GitHub)
